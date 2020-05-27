@@ -1,0 +1,1128 @@
+<?python
+  """template.html
+
+  Part of proespm: HTML template.
+
+  (C) Copyright Nicolas Bock, licensed under GPL v3 
+  See LICENSE or http://www.gnu.org/licenses/gpl-3.0.html
+  """
+  
+  import base64
+  import html
+  import numpy as np
+  import pandas
+?>
+
+<html lang="en-US" xmlns:py="http://genshi.edgewall.org/">
+  <head>
+    <meta charset="utf-8"/>
+    <title py:content="title"></title>
+      <?python
+        # workaround because this js and css file has a bad html style and therfore cannot be parsed by genshi
+        with open('1.4.0_bokeh.min.js', 'r') as f:
+            js = f.read()
+      ?>
+    <script>
+      ${Markup(js)}
+    </script>
+  </head>
+  <body>
+  <style>
+    body {
+      font-family: Verdana, sans-serif;
+      margin: 20px;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    a:link {
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    a:active {
+      text-decoration: underline;
+    }
+    a:visited {
+      text-decoration: none;
+    }
+    .row{
+        box-shadow: 0 0 15px 0 #d4d4d4;
+        margin-bottom: 20px;
+    }
+    .row > .column {
+      padding: 0;
+    }
+    .row:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+    .column {
+      float: left;
+      width: 25%;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 3;
+      padding-top: 20px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 97%;
+      overflow: none;
+      background-color: black;
+    }
+    .modal-content {
+      position: relative;
+      background-color: #fefefe;
+      margin: auto;
+      padding: 0;
+      min-width: 1200px;
+    }
+    .close {
+      color: #fefefe;
+      position: absolute;
+      top: 10px;
+      right: 25px;
+      font-size: 35px;
+      font-weight: bold;
+      z-index: 1;
+    }
+    .close:hover,
+    .close:focus {
+      color: #999;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .mySlides {
+      display: none;
+      background-color: black;
+      padding: 0;
+    }
+    .cursor {
+      cursor: pointer
+    }
+    .prev,
+    .next {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      width: auto;
+      padding: 13px;
+      margin-top: -50px;
+      background-color: #e4e0e0;
+      font-weight: bold;
+      font-size: 20px;
+      transition: 0.6s ease;
+      border-radius: 10px 0 0 10px;
+      user-select: none;
+      -webkit-user-select: none;
+      opacity: 0.6
+    }
+    .next {
+      right: 0;
+      border-radius: 0 10px 10px 0;
+    }
+    .prev:hover,
+    .next:hover {
+      background-color: #535353;
+      opacity: 1;
+    }
+    .numbertext {
+      color: #fefefe;
+      line-height: 24px;
+      font-weight: bold;
+      font-size: 12px;
+      padding: 8px 12px;
+      position: relative;
+      top: -10px;
+      left: 50px;
+    }
+    img {
+      margin-bottom: -4px;
+    }
+    .caption-container {
+      text-align: center;
+      background-color: black;
+      padding: 2px 2px;
+      color: white;
+    }
+    img.hover-shadow {
+      transition: 0.3s
+    }
+    .hover-shadow:hover {
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)
+    }
+    table {
+      border-collapse: collapse;
+      font-size:10pt;
+      width: 100%;
+    }
+    th, td {
+      padding: 5px;
+      text-align: left;
+    }
+    th{
+      border-bottom: 1px solid #ddd;
+    }
+    tr:hover {background-color:#f5f5f5;}
+    .value{
+      font-weight: normal;
+    }
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #333;
+      color: #fefefe;
+      z-index: 3;
+    }
+    li {
+      float: left;
+    }
+    li a {
+      display: block;
+      color: #fefefe;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+    li a:hover {
+      background-color: #111;
+    }
+    .bk-root{
+
+    }
+    .button {
+      background-color: #333;
+      border: none;
+      color: #fefefe;
+      padding: 10px 15px;
+      text-align: center;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 3;
+    }
+    .button:hover {
+      background-color: green;
+    }
+    .like{
+      background-color: #4CAF50;
+    }
+    .comment{
+      padding: 8px;
+      margin-left: 78%;
+      font-size: small;
+    }
+    #dry_table{
+      width: 25%;
+      position: absolute;
+      margin-left: 49%;
+    }
+    #cv_table{
+      width: 24%;
+    }
+    #div_table_vertical{
+      padding: 15px;
+    }
+    #favorites{
+      padding: 10px;
+      padding-left: 15px;
+      padding-bottom: 10px;
+      margin: 0px;
+      }
+
+    </style>
+      <h2 style="text-align:center; font-family:Helvetica" py:content="title"></h2>
+      <div class="general_information row">
+        <ul>
+          <li py:for="link in html.createHtmlHead(src_dir)">
+            <a href="${link[0]}" title="${link[1]}">${link[2]}</a>
+          </li>
+        </ul>
+        <p id="favorites">Favorites:  </p>
+      </div>
+          <?python
+            list_img_mod = []
+            i = 1
+            for item in list_classes:
+                if type(item).__name__ in ['ecstm', 'stm', 'image', 'sem', 'afm']:
+                    list_img_mod.append([i, item.id, type(item).__name__])
+                    i = i + 1
+          ?>
+      <div class="row" py:for="item in list_classes">
+        <div py:if="type(item).__name__ is 'stm'">
+                <div class="column">
+                  <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
+                  <style>
+                    <?python
+                      with open(item.img_topo_fwd, "rb") as image_file:
+                          encoded_string_fwd = 'data:image/png;base64, ' + base64.b64encode(image_file.read())
+                    ?>
+                    .id${item.id}_fwd{
+                       background: url('${encoded_string_fwd}');
+                       background-repeat: no-repeat;
+                       background-position: 50% 50%;
+                       background-size: 85%;
+                       height: 50%;
+                     }
+                  </style>
+                  <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_fwd hover-shadow cursor" title="Click for zoomed view"></div>
+                </div>
+                <div class="column">
+                  <style>
+                    <?python
+                      with open(item.img_topo_bwd, "rb") as image_file:
+                          encoded_bwd = base64.b64encode(image_file.read())
+                          encoded_string_bwd = 'data:image/png;base64, ' + encoded_bwd
+                    ?>
+                    .id${item.id}_bwd{
+                       background: url('${encoded_string_bwd}');
+                       background-repeat: no-repeat;
+                       background-position: 50% 50%;
+                       background-size: 85%;
+                       height: 50%;
+                     }
+                  </style>
+                  <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_bwd hover-shadow cursor" title="Click for zoomed view"></div>
+                </div>
+            <div id="div_table_vertical">
+              <table id="dry_table">
+                <tr>
+                  <th>Datetime</th>
+                  <th class="value">${item.datetime}</th>
+                </tr>
+                <tr>
+                  <th>ID<sub>STM</sub></th>
+                  <th class="value"><a href="${'file:' + item.file}" title="Open file in Gwyddion">${item.id}</a></th>
+                </tr>
+                <tr>
+                  <th>I<sub>tun</sub></th>
+                  <th class="value">${'{:0.3e}'.format(item.i_tun)} A</th>
+                </tr>
+                <tr>
+                  <th>U<sub>tun</sub></th>
+                  <th class="value">${item.u_tun} V</th>
+                </tr>
+                <tr>
+                  <th>Tip</th>
+                  <th class="value">${item.tip}</th>
+                </tr>
+                <tr>
+                  <th>Surface</th>
+                  <th class="value">${item.surface}</th>
+                </tr>
+                <tr>
+                  <th>Scan Size</th>
+                  <th class="value">${item.size}</th>
+                </tr>
+                <tr>
+                  <th>Rotation</th>
+                  <th class="value">${item.rotation}</th>
+                </tr>
+                <tr>
+                  <td><b>Line time</b></td>
+                  <td class="value">${item.line_time}</td>
+                </tr>
+
+            </table>
+            <div class="comment">
+                <b>Remark</b><p>${item.remark}</p>
+            </div>
+          </div>
+        </div>
+        <div py:if="type(item).__name__ is 'ecstm'">
+            <div class="column">
+              <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
+              <style>
+                <?python
+                  with open(item.img_topo_fwd, "rb") as image_file:
+                      encoded_string = base64.b64encode(image_file.read())
+                      encoded_string = 'data:image/png;base64, ' + encoded_string
+                ?>
+                .id${item.id}_fwd{
+                   background: url('${encoded_string}');
+                   background-repeat: no-repeat;
+                   background-position: 50% 50%;
+                   background-size: 85%;
+                   height: 50%;
+                 }
+              </style>
+              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_fwd hover-shadow cursor" title="Click for zoomed view"></div>
+            </div>
+            <div class="column">
+              <style>
+                <?python
+                  with open(item.img_topo_bwd, "rb") as image_file:
+                      encoded_string = base64.b64encode(image_file.read())
+                      encoded_string = 'data:image/png;base64, ' + encoded_string
+                ?>
+                .id${item.id}_bwd{
+                   background: url('${encoded_string}');
+                   background-repeat: no-repeat;
+                   background-position: 50% 50%;
+                   background-size: 85%;
+                   height: 50%;
+                   z-index:2;
+                 }
+              </style>
+              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_bwd hover-shadow cursor" title="Click for zoomed view"></div>
+            </div>
+          <div>
+            <div class="column" style="padding-left:8px;">
+              <?python
+                from bokeh.plotting import figure
+                from bokeh.embed import components
+
+                with open(item.file_ec_igor) as f:
+                    data_ec = list(map(lambda x: float(x), f))
+
+                with open(item.file_utun_igor) as f:
+                    data_utun = list(map(lambda x: float(x), f))
+
+                plot = figure(plot_width = 390,
+                              plot_height = 390,
+                              x_axis_label = 'ECSTM line',
+                              y_axis_label = 'U [V vs ' + str(item.re) + ']',
+                              sizing_mode = 'scale_width',
+                              tools = 'pan, wheel_zoom, box_zoom, crosshair, save, reset')
+                plot.toolbar.active_drag = "auto"
+                plot.toolbar.active_scroll = "auto"
+                plot.toolbar.active_inspect = None
+                plot.toolbar.logo = None
+                plot.background_fill_alpha = 0
+                plot.circle(range(len(data_ec)), data_ec, size=2, legend_label="Ecell")
+                plot.circle(range(len(data_utun)), data_utun, color="olive", size=2, legend_label="Utun")
+                plot.toolbar.active_scroll = "auto"
+
+                # see https://bokeh.pydata.org/en/latest/docs/reference/embed.html for modifing the div tag
+                script_ec, div_ec = components(plot, wrap_script = False)
+
+              ?>
+              <script py:content="Markup(script_ec)"></script>
+              <div py:replace="Markup(div_ec)"></div>
+            </div>
+            <div class="column">
+               <?python
+                from bokeh.plotting import figure
+                from bokeh.embed import components
+
+                with open(item.file_ic_igor) as f:
+                    data_ic = list(map(lambda x: float(x), f))
+
+                if hasattr(item, 'jcell'):
+                    y_axis = 'I [uA/cm2]'
+                else:
+                    y_axis = 'I [uA]'
+
+
+                plot = figure(plot_width = 390,
+                              plot_height = 390,
+                              x_axis_label = 'ECSTM line',
+                              y_axis_label = y_axis,
+                              sizing_mode = 'scale_width',
+                              tools = 'pan, wheel_zoom, box_zoom, crosshair, save, reset')
+                plot.toolbar.active_drag = "auto"
+                plot.toolbar.active_scroll = "auto"
+                plot.toolbar.active_inspect = None
+                plot.toolbar.logo = None
+                plot.background_fill_alpha = 0
+                plot.circle(range(len(data_ic)), data_ic, size=2)
+                plot.toolbar.active_scroll = "auto"
+                script_ic, div_ic = components(plot, wrap_script = False)
+
+              ?>
+              <script py:content="Markup(script_ic)"></script>
+              <div py:replace="Markup(div_ic)"></div>
+            </div>
+          </div>
+          <table style="margin-bottom:20px">
+          <tr>
+            <th>Datetime</th>
+            <th>ID<sub>ECSTM</sub></th>
+            <th>Tip</th>
+            <th>Surface</th>
+            <th>Scan Size</th>
+            <th>Rotation</th>
+            <th>Line time</th>
+            <th>Counter Electrode</th>
+            <th>Reference Electrode</th>
+            <th>Electrolyte</th>
+            <th>pH</th>
+            <th>I<sub>tun</sub></th>
+          </tr>
+          <tr>
+            <th class="value">${item.datetime}</th>
+            <th class="value"><a href="${'file:' + item.file}" title="Open file in Gwyddion">${item.id}</a></th>
+            <th class="value">${item.tip}</th>
+            <th class="value">${item.surface}</th>
+            <th class="value">${item.size}</th>
+            <th class="value">${item.rotation}</th>
+            <th class="value">${item.line_time}</th>
+            <th class="value">${item.ce}</th>
+            <th class="value">${item.re}</th>
+            <th class="value">${item.electrolyte}</th>
+            <th class="value">${item.pH}</th>
+            <th class="value">${'{:0.3e}'.format(item.i_tun)} A</th>
+          </tr>
+          <tr>
+            <td><b>Remark </b></td><td colspan="11"><span>${item.remark}</span></td>
+          </tr>
+        </table>
+        </div>
+        <div py:if="type(item).__name__ is 'afm'">
+            <div class="column">
+              <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
+              <style>
+                <?python
+                  with open(item.img_topo_fwd, "rb") as image_file:
+                      encoded_string = base64.b64encode(image_file.read())
+                      encoded_string = 'data:image/png;base64, ' + encoded_string
+                ?>
+                .id${item.id}_fwd{
+                   background: url('${encoded_string}');
+                   background-repeat: no-repeat;
+                   background-position: 50% 50%;
+                   background-size: 85%;
+                   height: 50%;
+                 }
+              </style>
+              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_fwd hover-shadow cursor" title="Click for zoomed view"></div>
+            </div>
+            <div class="column">
+              <style>
+                <?python
+                  with open(item.img_topo_bwd, "rb") as image_file:
+                      encoded_string = base64.b64encode(image_file.read())
+                      encoded_string = 'data:image/png;base64, ' + encoded_string
+                ?>
+                .id${item.id}_bwd{
+                   background: url('${encoded_string}');
+                   background-repeat: no-repeat;
+                   background-position: 50% 50%;
+                   background-size: 85%;
+                   height: 50%;
+                   z-index:2;
+                 }
+              </style>
+              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_bwd hover-shadow cursor" title="Click for zoomed view"></div>
+            </div>
+            <div class="column">
+              <style>
+                <?python
+                  with open(item.img_phase_fwd, "rb") as image_file:
+                      encoded_string = base64.b64encode(image_file.read())
+                      encoded_string = 'data:image/png;base64, ' + encoded_string
+                ?>
+                .id${item.id}_phase_fwd{
+                   background: url('${encoded_string}');
+                   background-repeat: no-repeat;
+                   background-position: 50% 50%;
+                   background-size: 85%;
+                   height: 50%;
+                   z-index:2;
+                 }
+              </style>
+              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_phase_fwd hover-shadow cursor" title="Click for zoomed view"></div>
+            </div>
+            <div class="column">
+              <style>
+                <?python
+                  with open(item.img_phase_bwd, "rb") as image_file:
+                      encoded_string = base64.b64encode(image_file.read())
+                      encoded_string = 'data:image/png;base64, ' + encoded_string
+                ?>
+                .id${item.id}_phase_bwd{
+                   background: url('${encoded_string}');
+                   background-repeat: no-repeat;
+                   background-position: 50% 50%;
+                   background-size: 85%;
+                   height: 50%;
+                   z-index:2;
+                 }
+              </style>
+              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_phase_bwd hover-shadow cursor" title="Click for zoomed view"></div>
+            </div>
+          <table style="margin-bottom:20px">
+          <tr>
+            <th>Datetime</th>
+            <th>ID<sub>AFM</sub></th>
+            <th>Tip</th>
+            <th>Surface</th>
+            <th>Scan Size</th>
+            <th>Rotation</th>
+            <th>Line time</th>
+          </tr>
+          <tr>
+            <th class="value">${item.datetime}</th>
+            <th class="value"><a href="${'file:' + item.file}" title="Open file in Gwyddion">${item.id}</a></th>
+            <th class="value">${item.tip}</th>
+            <th class="value">${item.surface}</th>
+            <th class="value">${item.size}</th>
+            <th class="value">${item.rotation}</th>
+            <th class="value">${item.line_time}</th>
+          </tr>
+          <tr>
+            <td><b>Remark </b></td><td><span>${item.remark}</span></td>
+          </tr>
+        </table>
+        </div>
+        <div py:if="type(item).__name__ is 'cv'">
+             <div class="column" style="margin-right: 20%; width:50%; ">
+               <style>
+                 .id${item.id}{}
+               </style>
+               <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, '${item.id}', 'id${item.id}')" style="position:absolute" >Like it?</button>
+               <?python
+                from bokeh.plotting import figure
+                from bokeh.embed import components
+                from bokeh.palettes import Spectral11
+                from bokeh.models import ColumnDataSource
+
+                plot = figure(plot_width = 1000,
+                              plot_height = 540,
+                              x_axis_label = 'U [V vs ' + str(item.re) + ']',
+                              y_axis_label = 'I [A]',
+                              sizing_mode = 'scale_width',
+                              tools = 'pan, wheel_zoom, box_zoom, crosshair, save, reset')
+                
+                source = ColumnDataSource(item.cvdata)
+                
+                for cycle in xrange(1, int(item.sweeps)+1):
+                    plot.circle(source = source,
+                                x = 'Cycle ' + str(cycle) + ': Ecell',
+                                y = 'Cycle ' + str(cycle) + ': Icell',
+                                size = 3,
+                                color = Spectral11[cycle],
+                                legend_label = 'Cycle ' + str(cycle))
+                
+                plot.toolbar.active_drag = "auto"
+                plot.toolbar.active_scroll = "auto"
+                plot.toolbar.active_inspect = None
+                plot.toolbar.logo = None
+                plot.background_fill_alpha = 0
+                plot.legend.location = "bottom_right"
+                plot.toolbar.active_scroll = "auto"
+                script_cv, div_cv = components(plot, wrap_script = False)
+
+              ?>
+              <script py:content="Markup(script_cv)"></script>
+              <div py:replace="Markup(div_cv)"></div>
+            </div>
+            <div id="div_table_vertical" >
+              <table id="dry_table">
+                <tr>
+                  <th>Datetime</th>
+                  <th class="value">${item.datetime}</th>
+                </tr>
+                <tr>
+                  <th>ID<sub>CV</sub></th>
+                  <th class="value"><a href="${'file:' + item.file}" title="Open file">${item.id}</a></th>
+                </tr>
+                <tr>
+                  <th>U<sub>start</sub></th>
+                  <th class="value">${item.vs}</th>
+                </tr>
+                <tr>
+                  <th>U<sub>1</sub></th>
+                  <th class="value">${item.v1}</th>
+                </tr>
+                <tr>
+                  <th>U<sub>2</sub></th>
+                  <th class="value">${item.v2}</th>
+                </tr>
+                <tr>
+                  <th>Scan Rate</th>
+                  <th class="value">${item.rate}</th>
+                </tr>
+                <tr>
+                  <th>Surface</th>
+                  <th class="value">${item.surface}</th>
+                </tr>
+                <tr>
+                  <th>Reference Electrode </th>
+                  <th class="value">${item.re}</th>
+                </tr>
+                <tr>
+                  <th>Counter Electrode </th>
+                  <th class="value">${item.ce}</th>
+                </tr>
+                <tr>
+                  <td><b>Electrolyte | Gas</b></td>
+                  <td class="value">${item.electrolyte} | ${item.gas}</td>
+                </tr>
+            </table>
+            <div class="comment">
+              <b>Remark:</b><p>${item.remark}</p>
+            </div>
+          </div>
+        </div>
+        <div py:if="type(item).__name__ is 'peis'">
+             <div class="column" style="margin-right: 20%; width:50%; ">
+               <style>
+                 .id${item.id}{}
+               </style>
+               <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, '${item.id}', 'id${item.id}')" style="position:absolute" >Like it?</button>
+               <?python
+                from bokeh.plotting import figure
+                from bokeh.embed import components
+                from bokeh.palettes import Spectral11
+                from bokeh.models import ColumnDataSource
+
+                plot = figure(plot_width = 1000,
+                              plot_height = 540,
+                              x_axis_label = 'real R [Ohm]',
+                              y_axis_label = 'imag. R [Ohm]',
+                              sizing_mode = 'scale_width',
+                              tools = 'pan, wheel_zoom, box_zoom, crosshair, save, reset')
+
+                source = ColumnDataSource(item.peisdata)
+                plot.circle(source = source,
+                            x = 're R',
+                            y = 'img R',
+                            size = 4,
+                            color=Spectral11[1])
+
+                plot.toolbar.active_drag = "auto"
+                plot.toolbar.active_scroll = "auto"
+                plot.toolbar.active_inspect = None
+                plot.toolbar.logo = None
+                plot.background_fill_alpha = 0
+                plot.toolbar.active_scroll = "auto"
+                script_peis, div_peis = components(plot, wrap_script = False)
+
+              ?>
+              <script py:content="Markup(script_peis)"></script>
+              <div py:replace="Markup(div_peis)"></div>
+            </div>
+            <div id="div_table_vertical" >
+              <table id="dry_table">
+                <tr>
+                  <th>Datetime</th>
+                  <th class="value">${item.datetime}</th>
+                </tr>
+                <tr>
+                  <th>ID<sub>PEIS</sub></th>
+                  <th class="value"><a href="${'file:' + item.file}" title="Open file">${item.id}</a></th>
+                </tr>
+                <tr>
+                  <th>E<sub>cell</sub></th>
+                  <th class="value">${item.ecell} V vs. ${item.re}</th>
+                </tr>
+                <tr>
+                  <th>f<sub>start</sub></th>
+                  <th class="value">${item.fi} ${item.fi_unit}</th>
+                </tr>
+                <tr>
+                  <th>f<sub>finish</sub></th>
+                  <th class="value">${item.ff} ${item.ff_unit}</th>
+                </tr>
+                <tr>
+                  <th>Surface</th>
+                  <th class="value">${item.surface}</th>
+                </tr>
+                <tr>
+                  <th>Reference Electrode </th>
+                  <th class="value">${item.re}</th>
+                </tr>
+                <tr>
+                  <th>Counter Electrode </th>
+                  <th class="value">${item.ce}</th>
+                </tr>
+                <tr>
+                  <td><b>Electrolyte | Gas</b></td>
+                  <td class="value">${item.electrolyte} | ${item.gas}</td>
+                </tr>
+            </table>
+            <div class="comment">
+              <b>Remark:</b><p>${item.remark}</p>
+            </div>
+          </div>
+        </div>
+        <div py:if="type(item).__name__ is 'chrono'">
+             <div class="column" style="margin-right: 20%; width:50%; ">
+               <style>
+                 .id${item.id}{}
+               </style>
+               <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, '${item.id}', 'id${item.id}')" style="position:absolute" >Like it?</button>
+               <?python
+                from bokeh.plotting import figure
+                from bokeh.embed import components
+                from bokeh.palettes import Spectral11
+                from bokeh.models import ColumnDataSource
+
+                source = ColumnDataSource(item.chronodata)
+                plot = figure(plot_width = 1000,
+                              plot_height = 540,
+                              #~x_axis_label = item.chronodata.columns[0],     #'time [s]',
+                              #~y_axis_label = item.chronodata.columns[len(item.chronodata.columns-1],    #'i [mA]',
+                              sizing_mode = 'scale_width',
+                              tools = 'pan, wheel_zoom, box_zoom, crosshair, save, reset')
+
+                plot.circle(source = source,
+                            x = 'time [s]',
+                            y = 'Icell [mA]',
+                            size = 4,
+                            color = Spectral11[1])
+
+                plot.toolbar.active_drag = "auto"
+                plot.toolbar.active_scroll = "auto"
+                plot.toolbar.active_inspect = None
+                plot.toolbar.logo = None
+                plot.background_fill_alpha = 0
+                plot.toolbar.active_scroll = "auto"
+                script_chrono, div_chrono = components(plot, wrap_script = False)
+
+              ?>
+              <script py:content="Markup(script_chrono)"></script>
+              <div py:replace="Markup(div_chrono)"></div>
+            </div>
+            <div id="div_table_vertical" >
+              <table id="dry_table">
+                <tr>
+                  <th>Datetime</th>
+                  <th class="value">${item.datetime}</th>
+                </tr>
+                <tr>
+                  <th>ID<sub>Chrono</sub></th>
+                  <th class="value"><a href="${'file:' + item.file}" title="Open file">${item.id}</a></th>
+                </tr>
+                <tr>
+                  <th>E<sub>cell</sub></th>
+                  <th class="value">${item.ecell} V vs. ${item.re}</th>
+                </tr>
+                <tr>
+                  <th>Surface</th>
+                  <th class="value">${item.surface}</th>
+                </tr>
+                <tr>
+                  <th>Reference Electrode </th>
+                  <th class="value">${item.re}</th>
+                </tr>
+                <tr>
+                  <th>Counter Electrode </th>
+                  <th class="value">${item.ce}</th>
+                </tr>
+                <tr>
+                  <td><b>Electrolyte | Gas</b></td>
+                  <td class="value">${item.electrolyte} | ${item.gas}</td>
+                </tr>
+            </table>
+            <div class="comment">
+              <b>Remark:</b><p>${item.remark}</p>
+            </div>
+          </div>
+        </div>
+        <div py:if="type(item).__name__ is 'image'">
+          <div class="column">
+            <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
+            <style>
+              <?python
+                with open(item.file, "rb") as image_file:
+                    encoded_string_img = 'data:image/png;base64, ' + base64.b64encode(image_file.read())
+              ?>
+              .id${item.id}_img{
+                 background: url('${encoded_string_img}');
+                 background-repeat: no-repeat;
+                 background-position: 50% 50%;
+                 background-size: 85%;
+                 height: 50%;
+               }
+            </style>
+            <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_img hover-shadow cursor" title="Click for zoomed view"></div>
+          </div>
+          <div id="div_table_vertical">
+            <table id="dry_table">
+              <tr>
+                <th>Datetime</th>
+                <th class="value">${item.datetime}</th>
+              </tr>
+              <tr>
+                <th>ID<sub>IMG</sub></th>
+                <th class="value"><a href="${'file:' + item.file}" title="Open file">${item.id}</a></th>
+              </tr>
+              <tr>
+                <td><b>Surface</b></td>
+                <td class="value">${item.surface}</td>
+              </tr>
+            </table>
+            <div class="comment">
+              <b>Remark:</b><p>${item.remark}</p>
+            </div>
+          </div>
+        </div>
+        <div py:if="type(item).__name__ is 'sem'">
+          <div class="column">
+            <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
+            <style>
+              <?python
+                with open(item.img, "rb") as image_file:
+                    encoded_string_img = 'data:image/png;base64, ' + base64.b64encode(image_file.read())
+              ?>
+              .id${item.id}_img{
+                 background: url('${encoded_string_img}');
+                 background-repeat: no-repeat;
+                 background-position: 50% 50%;
+                 background-size: 85%;
+                 height: 50%;
+               }
+            </style>
+            <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_img hover-shadow cursor" title="Click for zoomed view"></div>
+          </div>
+          <div id="div_table_vertical">
+            <table id="dry_table">
+              <tr>
+                <th>Datetime</th>
+                <th class="value">${item.datetime}</th>
+              </tr>
+              <tr>
+                <th>ID<sub>SEM</sub></th>
+                <th class="value"><a href="${'file:' + item.file}" title="Open file">${item.id}</a></th>
+              </tr>
+              <tr>
+                <th>Surface</th>
+                <th class="value">${item.surface}</th>
+              </tr>
+              <tr>
+                <th>Voltage</th>
+                <th class="value">${item.hv}</th>
+              </tr>
+              <tr>
+                <td><b>dwell</b></td>
+                <td class="value">${item.dwell}</td>
+              </tr>
+            </table>
+            <div class="comment">
+              <b>Remark:</b><p>${item.remark}</p>
+            </div>
+          </div>
+        </div>
+        <div py:if="type(item).__name__ is 'raman'">
+          <div class="column" style="margin-right: 20%; width:50%; ">
+               <style>
+                 .id${item.id}{}
+               </style>
+               <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, '${item.id}', 'id${item.id}')" style="position:absolute" >Like it?</button>
+               <?python
+                from bokeh.plotting import figure
+                from bokeh.embed import components
+
+                x = item.wavelength
+                y = item.intensity
+
+                plot = figure(plot_width = 1000,
+                              plot_height = 540,
+                              x_axis_label = 'Wavenumbers / cm-1',
+                              y_axis_label = 'Intensity / ab. units',
+                              sizing_mode = 'scale_width',
+                              tools = 'pan, wheel_zoom, box_zoom, crosshair, save, reset')
+                plot.toolbar.active_drag = "auto"
+                plot.toolbar.active_scroll = "auto"
+                plot.toolbar.active_inspect = None
+                plot.toolbar.logo = None
+                plot.background_fill_alpha = 0
+                plot.circle(x, y, size=2)
+                plot.toolbar.active_scroll = "auto"
+                script_raman, div_raman = components(plot, wrap_script = False)
+
+              ?>
+              <script py:content="Markup(script_raman)"></script>
+              <div py:replace="Markup(div_raman)"></div>
+            </div>
+            <div id="div_table_vertical">
+              <table id="dry_table">
+                <tr>
+                  <th>Datetime</th>
+                  <th class="value">${item.datetime}</th>
+                </tr>
+                <tr>
+                  <th>ID<sub>raman</sub></th>
+                  <th class="value"><a href="${'file:' + item.file}" title="Open file">${item.id}</a></th>
+                </tr>
+                <tr>
+                  <td><b>Surface</b></td>
+                  <td class="value">${item.surface}</td>
+                </tr>
+            </table>
+            <div class="comment">
+              <b>Remark:</b><p>${item.remark}</p>
+            </div>
+          </div>
+        </div>
+        <div py:if="type(item).__name__ is 'xps'">
+          <div class="column" style="margin-right: 20%; width:50%; ">
+               <style>
+                 .id${item.id}{}
+               </style>
+               <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, '${item.id}', 'id${item.id}')" style="position:absolute" >Like it?</button>
+               <?python
+                from bokeh.plotting import figure
+                from bokeh.embed import components
+
+                x = item.e_kin
+                y = item.intensity
+
+                plot = figure(plot_width = 1000,
+                              plot_height = 540,
+                              x_axis_label = 'Ekin / eV',
+                              y_axis_label = 'Intensity / ab. units',
+                              sizing_mode = 'scale_width',
+                              tools = 'pan, wheel_zoom, box_zoom, crosshair, save, reset')
+                plot.toolbar.active_drag = "auto"
+                plot.toolbar.active_scroll = "auto"
+                plot.toolbar.active_inspect = None
+                plot.toolbar.logo = None
+                plot.background_fill_alpha = 0
+                plot.circle(x, y, size=2)
+                plot.toolbar.active_scroll = "auto"
+                script_cv, div_cv = components(plot, wrap_script = False)
+
+              ?>
+              <script py:content="Markup(script_cv)"></script>
+              <div py:replace="Markup(div_cv)"></div>
+            </div>
+            <div id="div_table_vertical">
+              <table id="dry_table">
+                <tr>
+                  <th>Datetime</th>
+                  <th class="value">${item.datetime}</th>
+                </tr>
+                <tr>
+                  <th>ID<sub>xps</sub></th>
+                  <th class="value"><a href="${'file:' + item.file}" title="Open file">${item.id}</a></th>
+                </tr>
+                <tr>
+                  <th>Surface</th>
+                  <th class="value">${item.surface}</th>
+                </tr>
+                <tr>
+                  <th>Signal</th>
+                  <th class="value">${item.signal}</th>
+                </tr>
+                <tr>
+                  <th>E<sub>pass</sub></th>
+                  <th class="value">${item.e_pass}</th>
+                </tr>
+                <tr>
+                  <td><b>Scans</b></td>
+                  <td class="value">${item.scans}</td>
+                </tr>
+            </table>
+            <div class="comment">
+              <b>Remark:</b><p>${item.remark}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+        <div id="myModal" class="modal">
+          <span class="close cursor" onclick="closeModal()" title="Close view">x</span>
+          <div class="modal-content">
+            <div class="mySlides" py:for="img in list_img_mod">
+              <div py:if="img[2] in ['stm', 'ecstm', 'afm']" class="id${img[1]}_fwd" style="height:100%; width: 50%; float:left;"><div class="numbertext">Forward</div></div>
+              <div py:if="img[2] in ['stm', 'ecstm', 'afm']" class="id${img[1]}_bwd" style="height:100%; width: 50%; float:right;"><div class="numbertext">Backward</div></div>
+              <div py:if="img[2] in ['image', 'sem']" class="id${img[1]}_img" style="height:100%; width: 50%; margin-left: 25%;"></div>
+              <div class="caption-container">
+                <p id="caption">ID: ${img[1]}</p>
+              </div>
+            </div>
+            <a class="prev" onclick="plusSlides(-1)" title="move to previous image">&lt;</a>
+            <a class="next" onclick="plusSlides(1)" title="move to next image">&gt;</a>
+          </div>
+        </div>
+    
+    <?python
+        # workaround because this js file has a bad html style and therfore cannot be parsed by genshi
+        f_js = open('1.4.0_bokeh.min.js', 'r')
+        js = f_js.read() 
+    ?>
+    <script>
+        function openModal() {
+          document.getElementById('myModal').style.display = "block";
+        }
+        
+        function closeModal() {
+          document.getElementById('myModal').style.display = "none";
+        }
+        
+        var slideIndex = 1;
+        showSlides(slideIndex);
+        
+        
+        function plusSlides(n) {
+          showSlides(slideIndex += n);
+        }
+        
+        function currentSlide(n) {
+          showSlides(slideIndex = n);
+        }
+        
+        function showSlides(n) {
+          var i;
+          var slides = document.getElementsByClassName("mySlides");
+          var captionText = document.getElementById("caption");
+          if (n &gt; slides.length) {slideIndex = 1}
+          if (n &lt; 1) {slideIndex = slides.length}
+          for (i = 0; i &lt; slides.length; i++) {
+              slides[i].style.display = "none";
+          }
+          slides[slideIndex-1].style.display = "block";
+        }
+        
+        document.onkeydown = function(e) {
+            e = e || window.event;
+            switch(e.which || e.keyCode) {
+                case 27: //ESC
+                closeModal();
+                break;
+                
+                case 38: // up
+                plusSlides(-1);
+                break;
+                
+                case 40: // down
+                plusSlides(1);
+                break;
+                
+                case 37: // left
+                plusSlides(-1);
+                break;
+                
+                case 38: // up
+                plusSlides(-2);
+                break;
+                
+                case 39: // right
+                plusSlides(1);
+                break;
+                
+                
+                default: return; // exit this handler for other keys
+            }
+            e.preventDefault(); // prevent the default action (scroll / move caret)
+        };
+        
+        var filelink = window.location.href;
+        
+        function iLike(x, id, string) {
+            x.classList.toggle("like");
+            var x = document.getElementById(string);
+            var linksrc = filelink.concat('#id', id);
+            var link = '  <a href="'.concat(linksrc, '">', id, '</a>  ');
+            if (x.innerHTML === "Like it?") {
+                x.innerHTML = "Liked!";
+                document.getElementById("favorites").innerHTML += link;
+            } else {
+                x.innerHTML = "Like it?";
+                document.getElementById('favorites').innerHTML = document.getElementById('favorites').innerHTML.replace(link,'').trim();
+            }
+        
+        }
+        
+        
+    </script>
+  </body>
+</html>
