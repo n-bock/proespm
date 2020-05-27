@@ -13,15 +13,6 @@ import config
 from genshi.template import TemplateLoader
 
 
-def join_overlapping_path(path1, path2):
-    sm = difflib.SequenceMatcher(None, path1, path2)
-    p1i, p2i, size = sm.get_matching_blocks()[0]
-    if not p1i or not p2i: None
-    p1, p2 = (p1, p2) if p2i == 0 else (p2, p1)
-    size = sm.get_matching_blocks()[0].size
-    return p1 + p2[size:]
-
-
 def createHtmlHead(src_dir):
     """ Creates HTML header for genshi template.
     
