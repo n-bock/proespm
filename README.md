@@ -50,4 +50,4 @@ Installation for Script Mode
 
 Contact and Contribution
 -------------------------
-- Found a bug or need a feature: <nicolas.bock@tum.de>
+- Found a bug or improvement: <nicolas.bock@tum.de>
