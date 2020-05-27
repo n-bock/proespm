@@ -5,14 +5,6 @@ of labjournals. So far the following measurements can be processed: STM, ECSTM,
 AFM, SEM, CV, Chronoamperometry, XPS, Raman data and plain images. 
 
 
-Todo
------
-- change test file to nice data
-- unittest on debug (and remove test data from proespm)
-- Remove all Gwyddion bindings (req. Python 2.7)
-- Convert to Python 3
-
-
 Project status
 --------------
 This project is still under devolopment. It currently uses the Gwyddion
