@@ -42,7 +42,6 @@ class data(object):
         
         self.path = os.path.dirname(os.path.abspath(self.file))
         self.datetime = datetime.datetime.fromtimestamp(os.path.getmtime(file)).strftime('%Y-%m-%d %H:%M:%S')
-        self.o_ring = None
         self.meta = {}
         for key, value in kwargs.iteritems():
             self.varName = 'self.' + key
