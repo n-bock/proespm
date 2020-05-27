@@ -20,7 +20,7 @@ can contain several measurement informations, e.g. type (stm, ecstm, afm, cv, pe
 image or raman), day, surface, remark (see xlsx file in /tests). Each row must have an explicit ID 
 corresponding to the file name of the measurement in order to read in the 
 information properly. A **html report** can be created, which includes 
-all the processed measurement data and the corresponding labjournal informations (see report in /tests).
+all the processed measurement data and the corresponding labjournal informations.
 
 **How to change the SPM processing:**
 1) Run the desired function on some data from withing Gwyddion
