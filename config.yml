@@ -18,8 +18,8 @@ import:
       - csv                     # PHI XPS files
       - gwy                     # Park AFM files
     labjournal worksheet name: overview
-    initial directory prompt labjournal: '/media/nico/55069CF94A036905/1_labjournals/' #/home/nico/Dokumente/Code/2018-08_ECSTM-batch/tests/' #'G:/Surface-Microscopy/SM-ECSTM/Data/1_labjournals' #H:/TUM-PC/Dokumente/5_Code/proespm/tests/reference_files' 
-    initial directory prompt files: '/media/nico/55069CF94A036905/data/'  # '/home/nico/Dokumente/Code/2018-08_ECSTM-batch/tests/' #'G:/Surface-Microscopy/SM-ECSTM/Data' #H:/TUM-PC/Dokumente/5_Code/proespm/tests/reference_files/data'
+    initial directory prompt labjournal: 
+    initial directory prompt files: 
 
 
 spm:    
@@ -60,7 +60,7 @@ spm:
 export:
     create html report: Yes 
     image export modification dialog: No
-    server path: 'file://///nas.ads.mwn.de/tuch/pc1/Surface-Microscopy/SM-ECSTM'    # Create overlap with source directory
+    server path:     # Create overlap with source directory
     move html to parent and rest in subfolder: Yes
     Force overwrite excisting files: Yes
     export data type: 'txt'
