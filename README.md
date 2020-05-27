@@ -48,15 +48,6 @@ Installation for Script Mode
         pip install numpy, pandas, genshi, xlrd, bokeh, pyyaml, pint
 
 
-Build it yourself
------------------
-If you want to use this programm as standalone you cannot use the Gwyddion 
-binding and therefore you cannot process spm files and sem only as images. 
-Build it yourself with Python 2.7 after removing the spm and sem classes:
-
-    python setup.py
-
-
 Contact and Contribution
 -------------------------
 - Found a bug or need a feature: <nicolas.bock@tum.de>
