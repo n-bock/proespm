@@ -19,7 +19,7 @@ Run the *proespm.py* file with Python 2.7. The optional **xlsx-labjournal** file
 can contain several measurement informations, e.g. type (stm, ecstm, afm, cv, peis, xps
 image or raman), day, surface, remark (see xlsx file in /tests). Each row must have an explicit ID 
 corresponding to the file name of the measurement in order to read in the 
-information properly. A **html report** can be created, which includes 
+information properly. A [**html report**](https://htmlpreview.github.io/?https://github.com/n-bock/proespm/blob/master/tests/reference_files/data_report.html) can be created, which includes 
 all the processed measurement data and the corresponding labjournal informations.
 
 **How to change the SPM processing:**
@@ -42,7 +42,7 @@ Installation for Script Mode
 1.  Install [pycairo-1.8.10.win32-py2.7.msi](http://ftp.gnome.org/pub/GNOME/binaries/win32/pycairo/1.8/)
 1.  Install [pygobject-2.28.3.win32-py2.7.msi](http://ftp.gnome.org/mirror/gnome.org/binaries/win32/pygobject/2.28/)
 1.  Install [pygtk-2.24.0.win32-py2.7.msi](http://ftp.gnome.org/pub/GNOME/binaries/win32/pygtk/2.24/)
-1.  Install [Gwyddion 2.52.win32](http://gwyddion.net/download.php#stable-windows)
+1.  Install [Gwyddion 2.55.win32](http://gwyddion.net/download.php#stable-windows)
 1.  Open cmd and navigate with cd to Python27\scripts
         
         pip install numpy, pandas, genshi, xlrd, bokeh, pyyaml, pint
