@@ -16,7 +16,7 @@ def id(file):
     """ Creates ID for each measurement from data file name.
         
     For SM4 and NID files IDs will be created from the digits. For all other
-    file types the just the file ending will be stripped.
+    file types just the file ending will be stripped.
         
     Args:
         file (string): Path to the data file.
