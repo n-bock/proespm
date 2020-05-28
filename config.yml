@@ -60,7 +60,7 @@ spm:
 export:
     create html report: Yes 
     image export modification dialog: No
-    server path:     # Create overlap with source directory
+    server path: ''    # Create overlap with source directory
     move html to parent and rest in subfolder: Yes
     Force overwrite excisting files: Yes
     export data type: 'txt'
@@ -75,5 +75,5 @@ system:
     win32 gwy path hint: 'C:\\Program Files (x86)\Gwyddion'
     win32 gwyutils rel path: 'share\gwyddion\pygwy'
     linux gwyutils path: '/usr/share/gwyddion/pygwy'
-    debug modus: No
+    debug modus: Yes
 
