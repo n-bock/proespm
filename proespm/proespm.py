@@ -33,6 +33,7 @@ from spectroscopy import raman, xps
 from util import queryYesNo, printProgressBar, multipleMove
 from log import logging
 
+os.chdir(sys.path[0])
 
 def prompt():
     """ Prompts for the files, which will be processed.
@@ -101,7 +102,7 @@ def prepare(src_dir, input_fs, temp_dir):
     l.logP(8, ">>> Starting data import" )
     
     # Check if files are on network drive and if yes move to temporary folder
-    if prep.checkNetworkFile(input_fs[0]):
+    if not prep.checkNetworkFile(input_fs[0]):
         l.logP(2, ">>> Files are on a network drive")
         proc_fs = prep.moveFilesTemp(input_fs, temp_dir)
         l.logP(3, ">>> Copied files to local TEMP directory: " + temp_dir)

@@ -28,15 +28,13 @@ def FindGwyddion(path_hint, search_for):
     
     """
     
-    logP(3, ">>> Searching for '" + search_for + "' on '" + path_hint + "'")
-    
     for root, dirs, files in os.walk(path_hint):
         for name in files:
-            if name is search_for:
-                path = os.path.abspath(root)
-                logP(9, ">>> Gwyddion found!")
-                return(path)
-
+            if name == search_for:
+                return(os.path.abspath(root))
+        else:
+            sys.exit(">>> Gwyddion NOT found!")
+    
 
 def extractValue(nested_list, to_be_extracted):
     """Extract data values by match pattern.
@@ -45,6 +43,7 @@ def extractValue(nested_list, to_be_extracted):
         nested_list (list of list): e.g. [['v1', 'E1', '.*'], ['icell', 'i', '.*/.']]
         to_be_extracted (str): 'E1       0.2'
     """
+    
     output = []
     [output.append([x[0], re.search(x[2], string).group(1)]) for string in to_be_extracted for x in nested_list if x[1] in string]
     
@@ -68,7 +67,7 @@ def getPath():
 
 
 def importHelper():
-    """Adds current working directory to 'sys.path'"""
+    """Adds current working directory to 'sys.path'."""
     
     if os.getcwd() not in sys.path:
         sys.path.append(os.getcwd())
@@ -78,25 +77,37 @@ def WIN32_helper():
     """Import 'gwy' module painless for Win32."""
     
     if 'win32' in sys.platform:
-        path_gwyddion = FindGwyddion(config.WIN32_path_gwyddion_HINT, config.WIN32_SEARCH_FOR)
-        if 'path_gwyddion' is not None:
-            # only add the result to 'sys.path' IF needed
-            if sys.path.__contains__(path_gwyddion) is not True: 
-                sys.path.append(path_gwyddion)
-                GWYUTILS_PATH = os.path.join(os.path.split(path_gwyddion)[0],
-                                             config.WIN32_GWYUTILS_REL_PATH)
-                sys.path.append(GWYUTILS_PATH)
-                config.WIN32_path_gwyddion_SAR = path_gwyddion
-        else:
-            sys.exit(">>> Gwyddion NOT found!")
+        path_gwyddion = FindGwyddion(config.win32_path_gwyddion_hint, config.win32_search_for)
+        if not sys.path.__contains__(path_gwyddion): 
+            sys.path.append(path_gwyddion)
+            path_gwyutils = os.path.join(os.path.split(path_gwyddion)[0], config.win32_gwyutils_rel_path)
+            sys.path.append(path_gwyutils)
     else:
-        if sys.path.__contains__('gwyutils') is not True:
-            sys.path.append(config.LINUX_GWYUTILS_PATH)
+        sys.path.append(config.linux_gwyutils_path)
+
+
+# def WIN32_helper():
+    # """Import 'gwy' module painless for Win32."""
+    
+    # if 'win32' in sys.platform:
+        # path_gwyddion = FindGwyddion(config.win32_path_gwyddion_hint, config.win32_search_for)
+        # if 'path_gwyddion' is not None:
+            # # only add the result to 'sys.path' IF needed
+            # if not sys.path.__contains__(path_gwyddion): 
+                # sys.path.append(path_gwyddion)
+                # gwyutils_path = os.path.join(os.path.split(path_gwyddion)[0],
+                                             # config.win32_gwyutils_rel_path)
+                # sys.path.append(gwyutils_path)
+        # else:
+            # sys.exit(">>> Gwyddion NOT found!")
+    # else:
+        # if not sys.path.__contains__('gwyutils'):
+            # sys.path.append(config.linux_gwyutils_path)
 
 
 def readLines(file, lines):
     """Function to read specific lines from a text file.
-
+    
     Args:
         file (file): Input text file, which will be read.
         line (list): List of lines which will be read
