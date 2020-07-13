@@ -4,7 +4,7 @@ import:
     single file import: No      # No: select folders containing files
     labjournal available: Yes
     ask for labjournal: Yes     # No: will look in parent folder
-    fallback method: cv      # if not specified in labjournal e.g. ecstm, stm, afm, cv, raman, image
+    fallback method: image      # if not specified in labjournal e.g. ecstm, stm, afm, cv, raman, image
     allowed file types: 
       - txt                     # Renishaw Raman files
       - SM4                     # RHK STM/ECSTM files
@@ -15,11 +15,11 @@ import:
       - dat                     # E20 XPS files
       - mpt                     # Biologic Potentiostat (CV, PEIS, Chrono)
       - tif                     # SEM / SPM
-      - csv                     # PHI XPS files
+     # - csv                     # PHI XPS files
       - gwy                     # Park AFM files
     labjournal worksheet name: overview
-    initial directory prompt labjournal: 
-    initial directory prompt files: 
+    initial directory prompt labjournal: G:\Surface-Microscopy\SM-ECSTM\Data\1_labjournals
+    initial directory prompt files: G:\Surface-Microscopy\SM-ECSTM\Data
 
 
 spm:    
@@ -75,5 +75,5 @@ system:
     win32 gwy path hint: C:\Program Files (x86)\Gwyddion\bin
     win32 gwyutils rel path: share\gwyddion\pygwy
     linux gwyutils path: /usr/share/gwyddion/pygwy
-    debug modus: Yes
+    debug modus: No
 

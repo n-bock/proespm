@@ -114,7 +114,7 @@ class cv(ec):
             file (str): Path to file which will be imported.
         """
         
-        self.lines = util.readLines(file, range(91))
+        self.lines = util.readLines(file, range(96))
         self.extract_par = [['self.vs', 'Start', 'Start\s(\S*.\S)'],
                             ['self.v1', 'V1', 'V1\s(\S*.\S)'],
                             ['self.v2', 'V2', 'V2\s(\S*.\S)'],
@@ -123,7 +123,7 @@ class cv(ec):
         for x in util.extractValue(self.extract_par, self.lines.values()):
             exec(x[0] + '= ureg("' + x[1].replace(',', '.') + '")')
         
-        self.data = np.loadtxt(file, usecols = (0,1,2), skiprows = 91)
+        self.data = np.loadtxt(file, usecols = (0,1,2), skiprows = 96)
         self.ecell = pandas.DataFrame({'Cycle 1: Ecell': self.data[:, 1].tolist()})
         self.cvdata = pandas.concat([self.cvdata, self.ecell], axis = 1)
         self.icell = pandas.DataFrame({'Cycle 1: Icell': self.data[:, 2].tolist()})
