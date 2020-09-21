@@ -46,7 +46,7 @@ def prompt():
     
     if config.debug_modus:
         src_dir = join(dirname(dirname(abspath(__file__))), 'tests/reference_files/data')
-        input_fs = [join(src_dir, 'rhk/data0272.SM4'),
+        input_fs = [join(src_dir, 'rhk/data1272.SM4'),
                     join(src_dir, 'rhk/data0271.SM4'),
                     join(src_dir, 'easyscan/Image00037.nid'),
                     join(src_dir, 'afm/200218_001.gwy'),
@@ -181,8 +181,13 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
         
         # AFM specific functions
         if type(item).__name__ is 'afm':
-            item.savePhaseFwdImage(proc_dir)
-            item.savePhaseBwdImage(proc_dir)
+            if 'item.type' in locals() and item.type is not 'Dynamic Force':
+                item.savePhaseBwdImage(proc_dir)
+                item.savePhaseFwdImage(proc_dir)
+            else:
+                pass
+            
+            
         
         # ECSTM specific functions
         if type(item).__name__ is 'ecstm':

@@ -23,7 +23,7 @@ def id(file):
     """
     
     if file.endswith('SM4'):
-        id = int(re.search('.*(\d{3})\.', file).group(1))
+        id = int(re.search('.*(\d{4})\.', file).group(1))
     elif file.endswith('nid'):
         id = int(re.search('.*(\d{4})\..{3}$', file).group(1))
     else:
