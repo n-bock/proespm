@@ -126,7 +126,7 @@ def grabLabjournal(path_labj):
         sys.exit('No labjournal was found!')
     
     cols = pandas.read_csv(labj_file, nrows=1).columns
-    labjournal_pd = pandas.read_excel(labj_file, sheet_name=config.labj_ws_name, usecols=cols)
+    labjournal_pd = pandas.read_excel(labj_file, sheet_name=config.labj_ws_name)
     
     return(labjournal_pd, labj_file)
 

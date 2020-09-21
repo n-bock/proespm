@@ -64,7 +64,8 @@ class spm(data):
         
         pattern = {'self.size': ['IMAGE CONTROL::Scan:Size::Scan Control::Scan size', 'Image size'],
                    'self.rotation': ['IMAGE CONTROL::Scan:Size::Scan Control::Scan Rotation', 'Rotation'],
-                   'self.line_time': ['IMAGE CONTROL::Scan:Size::Scan Control::Line time', 'Time/Line']}
+                   'self.line_time': ['IMAGE CONTROL::Scan:Size::Scan Control::Line time', 'Time/Line'],
+                   'self.type': ['Op. mode', 'Image mode']}
         for k, pat_list in pattern.iteritems():
             for pat in pat_list:
                 try:
