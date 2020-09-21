@@ -474,7 +474,69 @@
           </tr>
         </table>
         </div>
-        <div py:if="type(item).__name__ is 'afm'">
+		        <div py:if="type(item).__name__ is 'afm'">
+            <div class="column">
+              <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
+              <style>
+                <?python
+                  with open(item.img_topo_fwd, "rb") as image_file:
+                      encoded_string = base64.b64encode(image_file.read())
+                      encoded_string = 'data:image/png;base64, ' + encoded_string
+                ?>
+                .id${item.id}_fwd{
+                   background: url('${encoded_string}');
+                   background-repeat: no-repeat;
+                   background-position: 50% 50%;
+                   background-size: 85%;
+                   height: 50%;
+                 }
+              </style>
+              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_fwd hover-shadow cursor" title="Click for zoomed view"></div>
+            </div>
+            <div class="column">
+              <style>
+                <?python
+                  with open(item.img_topo_bwd, "rb") as image_file:
+                      encoded_string = base64.b64encode(image_file.read())
+                      encoded_string = 'data:image/png;base64, ' + encoded_string
+                ?>
+                .id${item.id}_bwd{
+                   background: url('${encoded_string}');
+                   background-repeat: no-repeat;
+                   background-position: 50% 50%;
+                   background-size: 85%;
+                   height: 50%;
+                   z-index:2;
+                 }
+              </style>
+              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_bwd hover-shadow cursor" title="Click for zoomed view"></div>
+            </div>
+            
+          <table style="margin-bottom:20px">
+          <tr>
+            <th>Datetime</th>
+            <th>ID<sub>AFM</sub></th>
+            <th>Tip</th>
+            <th>Surface</th>
+            <th>Scan Size</th>
+            <th>Rotation</th>
+            <th>Line time</th>
+          </tr>
+          <tr>
+            <th class="value">${item.datetime}</th>
+            <th class="value"><a href="${'file:' + item.file}" title="Open file in Gwyddion">${item.id}</a></th>
+            <th class="value">${item.tip}</th>
+            <th class="value">${item.surface}</th>
+            <th class="value">${item.size}</th>
+            <th class="value">${item.rotation}</th>
+            <th class="value">${item.line_time}</th>
+          </tr>
+          <tr>
+            <td><b>Remark </b></td><td><span>${item.remark}</span></td>
+          </tr>
+        </table>
+        </div>
+        <div py:if="type(item).__name__ is 'afm' and 'item.type' in locals() and item.type is not 'Dynamic Force'">
             <div class="column">
               <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
               <style>
