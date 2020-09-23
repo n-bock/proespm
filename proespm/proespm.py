@@ -47,8 +47,8 @@ def prompt():
         src_dir = join(dirname(dirname(abspath(__file__))), 'tests/reference_files/data')
         input_fs = [join(src_dir, 'rhk/data1272.SM4'),
                     join(src_dir, 'rhk/data0271.SM4'),
-                    join(src_dir, 'easyscan/Image00037.nid'),
-                    join(src_dir, 'afm/200218_001.gwy'),
+                    #join(src_dir, 'easyscan/Image00037.nid'),
+                    #join(src_dir, 'afm/200218_001.gwy'),
                     join(src_dir, 'xps_e20/448.dat'),
                     join(src_dir, 'cv_ec4/CV_162437_ 1.txt'),
                     join(src_dir, 'cv_ec4/CV_162509_ 2.txt'),
@@ -58,7 +58,6 @@ def prompt():
                     join(src_dir, 'peis_biologic/a__01_PEIS_C02.mpt'),
                     join(src_dir, 'chrono_biologic/11_02_CA_C02.mpt'),
                     join(src_dir, 'xps_phi/xps_phi.csv'),
-                    join(src_dir, 'sem/fei_sem.tif'),
                     join(src_dir, 'image/50x2.bmp')
                     ]
     elif config.is_single_f:

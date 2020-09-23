@@ -30,7 +30,7 @@ Installation for Script Mode
 **Linux**
 
     sudo apt-get install python, pip
-    pip --install numpy, genshi, pandas, xlrd, bokeh, pyyaml, pint
+    pip --install numpy, genshi, pandas, xlrd, bokeh, pyyaml, pint, rhksm4, xarray
 
 
 Contact and Contribution
