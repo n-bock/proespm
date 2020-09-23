@@ -250,7 +250,7 @@
             list_img_mod = []
             i = 1
             for item in list_classes:
-                if type(item).__name__ in ['ecstm', 'stm', 'image', 'sem', 'afm']:
+                if type(item).__name__ in ['ecstm', 'stm', 'image', 'afm']:
                     list_img_mod.append([i, item.id, type(item).__name__])
                     i = i + 1
           ?>
@@ -474,7 +474,7 @@
           </tr>
         </table>
         </div>
-		        <div py:if="type(item).__name__ is 'afm'">
+                <div py:if="type(item).__name__ is 'afm'">
             <div class="column">
               <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
               <style>
@@ -917,52 +917,6 @@
             </div>
           </div>
         </div>
-        <div py:if="type(item).__name__ is 'sem'">
-          <div class="column">
-            <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
-            <style>
-              <?python
-                with open(item.img, "rb") as image_file:
-                    encoded_string_img = 'data:image/png;base64, ' + base64.b64encode(image_file.read())
-              ?>
-              .id${item.id}_img{
-                 background: url('${encoded_string_img}');
-                 background-repeat: no-repeat;
-                 background-position: 50% 50%;
-                 background-size: 85%;
-                 height: 50%;
-               }
-            </style>
-            <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_img hover-shadow cursor" title="Click for zoomed view"></div>
-          </div>
-          <div id="div_table_vertical">
-            <table id="dry_table">
-              <tr>
-                <th>Datetime</th>
-                <th class="value">${item.datetime}</th>
-              </tr>
-              <tr>
-                <th>ID<sub>SEM</sub></th>
-                <th class="value"><a href="${'file:' + item.file}" title="Open file">${item.id}</a></th>
-              </tr>
-              <tr>
-                <th>Surface</th>
-                <th class="value">${item.surface}</th>
-              </tr>
-              <tr>
-                <th>Voltage</th>
-                <th class="value">${item.hv}</th>
-              </tr>
-              <tr>
-                <td><b>dwell</b></td>
-                <td class="value">${item.dwell}</td>
-              </tr>
-            </table>
-            <div class="comment">
-              <b>Remark:</b><p>${item.remark}</p>
-            </div>
-          </div>
-        </div>
         <div py:if="type(item).__name__ is 'raman'">
           <div class="column" style="margin-right: 20%; width:50%; ">
                <style>
@@ -1086,7 +1040,7 @@
             <div class="mySlides" py:for="img in list_img_mod">
               <div py:if="img[2] in ['stm', 'ecstm', 'afm']" class="id${img[1]}_fwd" style="height:100%; width: 50%; float:left;"><div class="numbertext">Forward</div></div>
               <div py:if="img[2] in ['stm', 'ecstm', 'afm']" class="id${img[1]}_bwd" style="height:100%; width: 50%; float:right;"><div class="numbertext">Backward</div></div>
-              <div py:if="img[2] in ['image', 'sem']" class="id${img[1]}_img" style="height:100%; width: 50%; margin-left: 25%;"></div>
+              <div py:if="img[2] in ['image']" class="id${img[1]}_img" style="height:100%; width: 50%; margin-left: 25%;"></div>
               <div class="caption-container">
                 <p id="caption">ID: ${img[1]}</p>
               </div>

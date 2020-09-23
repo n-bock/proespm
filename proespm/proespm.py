@@ -27,7 +27,6 @@ import warnings
 from os.path import dirname, abspath, join
 from data import id, image
 from spm import ecstm, stm, afm
-from sem import sem
 from ec import ec, cv, peis, chrono
 from spectroscopy import raman, xps
 from util import queryYesNo, printProgressBar, multipleMove
@@ -186,8 +185,7 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
                 item.savePhaseFwdImage(proc_dir)
             else:
                 pass
-            
-            
+        
         
         # ECSTM specific functions
         if type(item).__name__ is 'ecstm':
@@ -207,9 +205,6 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
                 # it to the html report
                 is_append = False
         
-        # SEM specific functions
-        if type(item).__name__ is 'sem':
-            item.saveImage(proc_dir)
         
         if is_append:
             proc_items.append(item)
