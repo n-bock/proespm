@@ -6,22 +6,13 @@ Part of proespm: Scanning probe microscopy data.
 See LICENSE or http://www.gnu.org/licenses/gpl-3.0.html
 """
 
-from util import importHelper, WIN32_helper
-
-importHelper()
-
-if 'path_gwyddion' not in locals():
-    WIN32_helper()
-
-import gwy
-import gwyutils
-import gwyddion
 import config
 import shutil
 import re
 import os
 import xarray
 import rhksm4
+import spiepy
 import numpy as np
 import matplotlib.pyplot as plt
 from pint import UnitRegistry
@@ -65,6 +56,8 @@ class spm(data):
             self.importSm4(file)
         elif file endswith 'gwy':
             pass
+        else:
+            print('File format not supported')
         
     
     def importSm4(self, file):
@@ -73,12 +66,40 @@ class spm(data):
         Args:
             file (str): Path to file which will be imported.
         """
+        
         return(rhksm4.to_dataset(file))
     
     
+    def level(self, channel_name):
+        """Function which levels the SPM image by substraction of a plane.
+        
+        Args:
+            file (str): Path to file which will be imported.
+        """
+        
+        self.flat, _ = spiepy.flatten_xy(self.spm_data[channel_name].values)
+        self.spm_data[channel_name + '_flat'] = (['y', 'x'], self.flat)
+        
+        
+        self.flat_fwd, _ = spiepy.flatten_xy(self.spm_data['Topography_Forward'].values)
+        self.flat_bwd, _ = spiepy.flatten_xy(self.spm_data['Topography_Backward'].values)
+        self.spm_data['topo_fwd_flat'] = (['y', 'x'], self.flat_fwd)
+        self.spm_data['topo_bwd_flat'] = (['y', 'x'], self.flat_bwd)
+    
+    
+    def plot(self):
+        
+        plt.imshow(flatten[1], cmap = spiepy.NANOMAP, origin = 'lower')
+        plt.show()
 
 
-import matplotlib.pyplot as plt
+mask = spiepy.locate_steps(flatten[1], 4)
+palette = spiepy.NANOMAP
+palette.set_bad('#00ff00', 1.0)
+plt.imshow(plot_image, cmap = palette, origin = 'lower')
+plt.show()
+
+
 
 plt.imshow(self.spm_data['Topography_Forward'].data)
 plt.show()
