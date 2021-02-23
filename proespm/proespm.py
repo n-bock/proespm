@@ -23,7 +23,6 @@ import html
 import prep
 import tempfile
 import datetime
-import warnings
 from os.path import dirname, abspath, join
 from data import id, image
 from spm import ecstm, stm, afm
@@ -60,7 +59,8 @@ def prompt():
                     join(src_dir, 'chrono_biologic/11_02_CA_C02.mpt'),
                     join(src_dir, 'xps_phi/xps_phi.csv'),
                     join(src_dir, 'sem/fei_sem.tif'),
-                    join(src_dir, 'image/50x2.bmp')
+                    join(src_dir, 'image/50x2.bmp'),
+                    join(src_dir, 'mul/GrRu_RT.mul')
                     ]
     elif config.is_single_f:
         input_fs = prep.promptFiles()
@@ -83,7 +83,7 @@ def prompt():
     
     l.logP(4, ">>> Source directory: " + src_dir)
     
-    return(src_dir, input_fs, labjournal)
+    return src_dir, input_fs, labjournal
 
 
 def prepare(src_dir, input_fs, temp_dir):
@@ -116,9 +116,9 @@ def prepare(src_dir, input_fs, temp_dir):
     l.logP(4, ">>> Creating userconfig.log in " + src_dir)
     prep.copyUserConfig(src_dir)
     l.logP(0, "")
-    proc_fs = sorted(proc_fs, reverse = False) 
+    proc_fs = sorted(proc_fs, reverse=False) 
     
-    return(proc_dir, proc_fs)
+    return proc_dir, proc_fs
 
 
 def main(src_dir, proc_dir, proc_fs, labjournal):
@@ -137,7 +137,7 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
     
     for i, dat in enumerate(proc_fs):
         if config.log_level < 5:
-            printProgressBar(i+1, len(proc_fs), prefix = 'Progress:', suffix = 'complete', length = 50)
+            printProgressBar(i+1, len(proc_fs), prefix='Progress:', suffix='complete', length=50)
         
         is_append = True
         labjournal_error = False
@@ -184,10 +184,6 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
             if 'item.type' in locals() and item.type is not 'Dynamic Force':
                 item.savePhaseBwdImage(proc_dir)
                 item.savePhaseFwdImage(proc_dir)
-            else:
-                pass
-            
-            
         
         # ECSTM specific functions
         if type(item).__name__ is 'ecstm':
@@ -222,10 +218,9 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
     l.logP(8, "")
     l.logP(8, ">>> Finished data processing ")
     
-    # Create HTML report
     if config.is_html_out:
         l.logP(2, ">>> Create HTML report.")
-        sorted_items = sorted(proc_items, key = lambda x: x.datetime, reverse = False)
+        sorted_items = sorted(proc_items, key=lambda x: x.datetime, reverse=False)
         html.createHtml(src_dir, proc_dir, sorted_items)
 
 
@@ -241,11 +236,11 @@ def cleanup(src_dir, proc_dir):
     
     if config.hierarchy:
         l.logP(9, ">>> Move data to final destination.")
-        if not multipleMove(proc_dir, src_dir, ['ec.txt', '0'], hierarchy = 'sub', subfolder_name = '_data'):
+        if not multipleMove(proc_dir, src_dir, ['ec.txt', '0'], hierarchy='sub', subfolder_name='_data'):
             l.logP(10, ">>> No data files were not moved.")
-        if not multipleMove(proc_dir, src_dir, ['png'], hierarchy = 'sub', subfolder_name = '_png'):
+        if not multipleMove(proc_dir, src_dir, ['png'], hierarchy='sub', subfolder_name='_png'):
             l.logP(10, ">>> No images files were not moved.")
-        if not multipleMove(proc_dir, src_dir, ['html'], hierarchy = 'parent'):
+        if not multipleMove(proc_dir, src_dir, ['html'], hierarchy='parent'):
             l.logP(10, ">>> No HTML report was moved.")
     elif is_network_file:
         l.logP(9, ">>> Move data and remove temporary folder")
@@ -255,7 +250,7 @@ def cleanup(src_dir, proc_dir):
 
 
 if __name__ == '__main__':
-    temp_dir = tempfile.mkdtemp(prefix = 'python_', suffix = '_temp')
+    temp_dir = tempfile.mkdtemp(prefix='python_', suffix='_temp')
     l = logging()
     
     try:

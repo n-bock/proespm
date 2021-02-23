@@ -16,10 +16,7 @@ if 'path_gwyddion' not in locals():
 import gwy
 import gwyddion
 import config
-import shutil
-import re
 import os
-import numpy as np
 from data import data
 
 
