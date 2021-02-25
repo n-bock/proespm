@@ -61,7 +61,7 @@ class spm(data):
         """
         
         pattern = {'self.size': ['IMAGE CONTROL::Scan:Size::Scan Control::Scan size', 'Image size'],
-                   'self.rotation': ['IMAGE CONTROL::Scan:Size::Scan Control::Scan Rotation', 'Rotation'],
+                   'self.rotation': ['IMAGE CONTROL::Scan:Size::Scan Control::Scan Rotation', 'Rotation', 'Tilt'],
                    'self.line_time': ['IMAGE CONTROL::Scan:Size::Scan Control::Line time', 'Time/Line'],
                    'self.type': ['Op. mode', 'Image mode']}
         for k, pat_list in pattern.iteritems():
@@ -114,63 +114,52 @@ class spm(data):
         return self.ch_ids
     
     
-    def returnDataChTitle(self):
+    def returnDataChTitles(self):
         """Returns data channel titel"""
         
         self.ch = gwy.gwy_app_data_browser_get_data_ids(self.container)
         return [self.container['/' + str(i) + '/data/title'] for i in self.ch]
     
     
-    def returnTopoCh(self):
-        """Returns topography channels"""
-        
-        self.topo_pat = ["Z", "Topo", "(\d*)"]
-        self.topo_ch = []
-        for ch in self.returnDataChTitle():
-            # ~ for pat in self.topo_pat:
-                # ~ if re.search(pat, ch):
-                    # ~ self.topo_ch.append(ch) 
-            self.topo_ch = [ch for pat in self.topo_pat if re.search(pat, ch)]
-        print(self.topo_ch)
-        return self.topo_ch
-    
-    
-    def returnMatchCh(self, pat_list):
-        """ Finds the matching data channel from channel list. 
+    def returnMatchCh(self, pattern, channels):
+        """Returns topography channels
         
         Args:
-            pat_list: Pattern list, which identifies the desired channel.
+            pattern: Pattern list, which identifies the desired channel.
+            channels: List of channels.
         
         Returns:
-            ch (list): Channel id.
+            ch (list): Channel ids.
         """
         
-        for ch in self.returnTopoCh():
-            for pat in pat_list:
-                if re.search(pat, ch):
-                    return gwy.gwy_app_data_browser_find_data_by_title(self.container, ch)
-            
-            # ~ self.gen = (ch for pat in pat_list if re.match(pat, self.returnDataChTitle(ch)))
-            # ~ return [ch for pat in pat_list if re.search(pat, self.returnDataChTitle(ch))]
-            # ~ for pat in self.gen:
-                # ~ return ch
+        for pat in pattern:
+            self.topo_ch = [ch for ch in channels if re.search(pat, ch)]
+            if len(self.topo_ch) > 0:
+                print(self.topo_ch)
+                break
+        
+        return [gwy.gwy_app_data_browser_find_data_by_title(self.container, ch) for ch in self.topo_ch]
     
     
     def returnTopoFwdCh(self):
         """Returns tophography forward channel"""
         
-        return self.returnMatchCh(['^.*[F||f]orward.*$', 
-                                   '^.*[R||r]ight.*$', 
-                                   '^.*fwd.*$',
-                                   '(\d*)'])
+        self.ch_list = self.returnDataChTitles() 
+        
+        return self.returnMatchCh(['.*[Topo||Z].*[F||f]orward', 
+                                   '.*[Topo||Z].*[R||r]ight', 
+                                   '.*[Topo||Z].*fwd',
+                                   '(\d*)'], self.ch_list)
     
     
     def returnTopoBwdCh(self):
         """Returns topography backwards channel"""
         
-        return self.returnMatchCh(['^.*[B||b]ackward.*$', 
-                                   '^.*[L||l]eft.*$', 
-                                   '^.*bwd.*$'])
+        self.ch_list = self.returnDataChTitles() 
+        
+        return self.returnMatchCh(['.*[Topo||Z].*[B||b]ackward.*$', 
+                                   '.*[Topo||Z].*[L||l]eft.*$', 
+                                   '.*[Topo||Z].*bwd.*$'], self.ch_list)
     
     
     def returnFileName(self, data):
@@ -230,15 +219,15 @@ class spm(data):
         Args:
             data_ch_id (int): Channel of the container should be processed.
         """
-        
-        gwy.gwy_app_data_browser_select_data_field(self.container, data_ch_id)
-        
-        self.run_gwy_func = {gwy.RUN_IMMEDIATE: config.run_gwy_immediate_func}
-        for k, values in self.run_gwy_func.iteritems():
-            [gwy.gwy_process_func_run(v, self.container, k) for v in values]
-        
-        self.match_ch_topo = '/' + str(data_ch_id) + '/base/range-type'
-        self.container[self.match_ch_topo] = 2
+        for ch in data_ch_id:
+            gwy.gwy_app_data_browser_select_data_field(self.container, ch)
+            
+            self.run_gwy_func = {gwy.RUN_IMMEDIATE: config.run_gwy_immediate_func}
+            for k, values in self.run_gwy_func.iteritems():
+                [gwy.gwy_process_func_run(v, self.container, k) for v in values]
+            
+            self.match_ch_topo = '/' + str(ch) + '/base/range-type'
+            self.container[self.match_ch_topo] = 2
     
     
     def processTopoFwd(self):
@@ -246,7 +235,6 @@ class spm(data):
         
         if self.topo_fwd_ch:
             for ch in self.topo_fwd_ch:
-                print(ch)
                 self.processTopo(ch)
     
     
