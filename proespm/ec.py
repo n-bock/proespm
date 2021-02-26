@@ -65,7 +65,7 @@ class ec(data):
         """
         
         self.ec_data_file = os.path.join(path, str(self.id) + "_ec." + config.dat_type_out)
-        self.cvdata.to_csv(self.ec_data_file, index = False)
+        self.cvdata.to_csv(self.ec_data_file, index=False)
 
 
 class cv(ec):
@@ -123,11 +123,11 @@ class cv(ec):
         for x in util.extractValue(self.extract_par, self.lines.values()):
             exec(x[0] + '= ureg("' + x[1].replace(',', '.') + '")')
         
-        self.data = np.loadtxt(file, usecols = (0,1,2), skiprows = 96)
+        self.data = np.loadtxt(file, usecols=(0,1,2), skiprows=96)
         self.ecell = pandas.DataFrame({'Cycle 1: Ecell': self.data[:, 1].tolist()})
-        self.cvdata = pandas.concat([self.cvdata, self.ecell], axis = 1)
+        self.cvdata = pandas.concat([self.cvdata, self.ecell], axis=1)
         self.icell = pandas.DataFrame({'Cycle 1: Icell': self.data[:, 2].tolist()})
-        self.cvdata = pandas.concat([self.cvdata, self.icell], axis = 1)
+        self.cvdata = pandas.concat([self.cvdata, self.icell], axis=1)
     
     
     def importLabview(self, file):
@@ -137,7 +137,7 @@ class cv(ec):
             file (str): Path to file which will be imported.
         """
         
-        self.data = np.loadtxt(file, usecols = (0, 1, 2), skiprows = 22)
+        self.data = np.loadtxt(file, usecols=(0, 1, 2), skiprows=22)
         self.ecell_list = self.data[:, 1].tolist()
         self.icell_list = self.data[:, 2].tolist()
         self.vs = self.ecell_list[0] * ureg('volt')
@@ -151,9 +151,9 @@ class cv(ec):
         self.rate = 2 * (abs(self.v1) + abs(self.v2)) / self.total_time
         
         self.ecell = pandas.DataFrame({'Cycle 1: Ecell': self.ecell_list})
-        self.cvdata = pandas.concat([self.cvdata, self.ecell], axis = 1)
+        self.cvdata = pandas.concat([self.cvdata, self.ecell], axis=1)
         self.icell = pandas.DataFrame({'Cycle 1: Icell': self.icell_list})
-        self.cvdata = pandas.concat([self.cvdata, self.icell], axis = 1)
+        self.cvdata = pandas.concat([self.cvdata, self.icell], axis=1)
     
     
     def importBiologic(self, file):
@@ -176,16 +176,19 @@ class cv(ec):
                 exec(x[0] + '= ureg("' + x[1] + '")')
             
             
-            self.file_trimmed = codecs.open(file, encoding = 'cp1252')
-            self.data = np.loadtxt(self.file_trimmed, usecols = (7,8,9), skiprows = int(self.skiprows), delimiter = '\t')
+            self.file_trimmed = codecs.open(file, encoding='cp1252')
+            self.data = np.loadtxt(self.file_trimmed, 
+                                   usecols=(7,8,9), 
+                                   skiprows=int(self.skiprows), 
+                                   delimiter='\t')
             
             # Biologic files contain all sweeps of a CV in one file
             self.sweeps = int(max(self.data[:,2]))
             for cycle in range(1, self.sweeps + 1):
                 self.ecell = pandas.DataFrame({'Cycle '+ str(cycle) + ': Ecell': self.data[np.where(self.data[:, 2] == cycle), 0].tolist()[0]})
-                self.cvdata = pandas.concat([self.cvdata, self.ecell], axis = 1)
+                self.cvdata = pandas.concat([self.cvdata, self.ecell], axis=1)
                 self.icell = pandas.DataFrame({'Cycle '+ str(cycle) + ': Icell': self.data[np.where(self.data[:, 2] == cycle), 1].tolist()[0]})
-                self.cvdata = pandas.concat([self.cvdata, self.icell], axis = 1)
+                self.cvdata = pandas.concat([self.cvdata, self.icell], axis=1)
     
     
     def importFile(self, file):
@@ -243,13 +246,13 @@ class peis(ec):
             for x in util.extractValue(self.extract_par, self.lines.values()):
                 exec(x[0] + '= str("' + x[1] + '")')
             
-            self.file_trimmed = codecs.open(file, encoding = 'cp1252')
-            self.data = np.loadtxt(self.file_trimmed, usecols = (0,1,2), 
-                                   skiprows = int(self.skiprows), delimiter = '\t')
+            self.file_trimmed = codecs.open(file, encoding='cp1252')
+            self.data = np.loadtxt(self.file_trimmed, usecols=(0,1,2), 
+                                   skiprows=int(self.skiprows), delimiter='\t')
             self.rer = pandas.DataFrame({'re R': self.data[:, 1].tolist()})
             self.imgr = pandas.DataFrame({'img R': self.data[:, 2].tolist()})
-            self.peisdata = pandas.concat([self.peisdata, self.rer], axis = 1)
-            self.peisdata = pandas.concat([self.peisdata, self.imgr], axis = 1)
+            self.peisdata = pandas.concat([self.peisdata, self.rer], axis=1)
+            self.peisdata = pandas.concat([self.peisdata, self.imgr], axis=1)
     
     
 class chrono(ec):
@@ -278,11 +281,11 @@ class chrono(ec):
             for x in util.extractValue(self.extract_par, self.lines.values()):
                 exec(x[0] + '= str("' + x[1] + '")')
             
-            self.file_trimmed = codecs.open(file, encoding = 'cp1252')
-            self.data = np.loadtxt(self.file_trimmed, usecols = (7,10), 
-                                   skiprows = int(self.skiprows), delimiter = '\t')
+            self.file_trimmed = codecs.open(file, encoding='cp1252')
+            self.data = np.loadtxt(self.file_trimmed, usecols=(7,10), 
+                                   skiprows = int(self.skiprows), delimiter='\t')
             self.time = pandas.DataFrame({'time [s]': self.data[:, 0].tolist()})
             self.icell = pandas.DataFrame({'Icell [mA]': self.data[:, 1].tolist()})
-            self.chronodata = pandas.concat([self.chronodata, self.time], axis = 1)
-            self.chronodata = pandas.concat([self.chronodata, self.icell], axis = 1)
+            self.chronodata = pandas.concat([self.chronodata, self.time], axis=1)
+            self.chronodata = pandas.concat([self.chronodata, self.icell], axis=1)
 

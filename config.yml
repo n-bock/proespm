@@ -17,6 +17,7 @@ import:
       - tif                     # SEM / SPM
       - csv                     # PHI XPS files
       - gwy                     # Park AFM files
+      - mul                     # Specs STM files
     labjournal worksheet name: overview
     initial directory prompt labjournal: G:\Surface-Microscopy\SM-ECSTM\Data\1_labjournals
     initial directory prompt files: G:\Surface-Microscopy\SM-ECSTM\Data

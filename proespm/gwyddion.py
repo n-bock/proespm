@@ -21,7 +21,7 @@ import config
 def getMetaIDs(container):
     """Returns the IDs where meta data is stored within a Gwyddion file."""
     
-    return(list(filter(lambda x: 'Container' in type(container[x]).__name__, container.keys())))
+    return list(filter(lambda x: 'Container' in type(container[x]).__name__, container.keys()))
 
 
 
