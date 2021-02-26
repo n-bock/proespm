@@ -8,7 +8,6 @@ See LICENSE or http://www.gnu.org/licenses/gpl-3.0.html
 
 import os
 import re
-import datetime
 import config
 from genshi.template import TemplateLoader
 
@@ -53,7 +52,7 @@ def createHtmlHead(src_dir):
                       ['https://gitlab.lrz.de/PC1-Heiz-Surface-Microscopy/ECSTM-Image-Processing',
                       'Fork code from Gitlab', 'Fork the code!']]
     
-    return(head_links)
+    return head_links
 
 
 def createHtml(src_dir, proc_dir, list_classes):
@@ -66,15 +65,16 @@ def createHtml(src_dir, proc_dir, list_classes):
     """
     
     templates_dir = os.getcwd()
-    loader = TemplateLoader(templates_dir, auto_reload = True)
+    loader = TemplateLoader(templates_dir, auto_reload=False)
     tmpl = loader.load('template.html')
     
     file_name = os.path.basename(os.path.normpath(src_dir)) + '_report.html'
     file_path = os.path.join(proc_dir, file_name)
     
-    stream = tmpl.generate(title = file_name,
-                           src_dir = src_dir,
-                           list_classes = list_classes)
+    stream = tmpl.generate(title=file_name,
+                           src_dir=src_dir,
+                           list_classes=list_classes)
+    
     
     with open(file_path, 'wb') as f:
         for output in stream.serialize('html'):

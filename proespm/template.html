@@ -9,8 +9,6 @@
   
   import base64
   import html
-  import numpy as np
-  import pandas
 ?>
 
 <html lang="en-US" xmlns:py="http://genshi.edgewall.org/">
@@ -247,12 +245,7 @@
         <p id="favorites">Favorites:  </p>
       </div>
           <?python
-            list_img_mod = []
-            i = 1
-            for item in list_classes:
-                if type(item).__name__ in ['ecstm', 'stm', 'image', 'sem', 'afm']:
-                    list_img_mod.append([i, item.id, type(item).__name__])
-                    i = i + 1
+            list_img_mod = [[i, item.id, type(item).__name__] for i, item in enumerate(list_classes, 1) if type(item).__name__ in ['ecstm', 'stm', 'image', 'sem', 'afm']]
           ?>
       <div class="row" py:for="item in list_classes">
         <div py:if="type(item).__name__ is 'stm'">
@@ -260,8 +253,8 @@
                   <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
                   <style>
                     <?python
-                      with open(item.img_topo_fwd, "rb") as image_file:
-                          encoded_string_fwd = 'data:image/png;base64, ' + base64.b64encode(image_file.read())
+                      with open(item.img_topo_fwd, "rb") as img_file:
+                          encoded_string_fwd = 'data:image/png;base64, ' + base64.b64encode(img_file.read())
                     ?>
                     .id${item.id}_fwd{
                        background: url('${encoded_string_fwd}');
@@ -276,8 +269,8 @@
                 <div class="column">
                   <style>
                     <?python
-                      with open(item.img_topo_bwd, "rb") as image_file:
-                          encoded_bwd = base64.b64encode(image_file.read())
+                      with open(item.img_topo_bwd, "rb") as img_file:
+                          encoded_bwd = base64.b64encode(img_file.read())
                           encoded_string_bwd = 'data:image/png;base64, ' + encoded_bwd
                     ?>
                     .id${item.id}_bwd{
@@ -340,8 +333,8 @@
               <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
               <style>
                 <?python
-                  with open(item.img_topo_fwd, "rb") as image_file:
-                      encoded_string = base64.b64encode(image_file.read())
+                  with open(item.img_topo_fwd, "rb") as img_file:
+                      encoded_string = base64.b64encode(img_file.read())
                       encoded_string = 'data:image/png;base64, ' + encoded_string
                 ?>
                 .id${item.id}_fwd{
@@ -357,8 +350,8 @@
             <div class="column">
               <style>
                 <?python
-                  with open(item.img_topo_bwd, "rb") as image_file:
-                      encoded_string = base64.b64encode(image_file.read())
+                  with open(item.img_topo_bwd, "rb") as img_file:
+                      encoded_string = base64.b64encode(img_file.read())
                       encoded_string = 'data:image/png;base64, ' + encoded_string
                 ?>
                 .id${item.id}_bwd{
@@ -474,13 +467,13 @@
           </tr>
         </table>
         </div>
-		        <div py:if="type(item).__name__ is 'afm'">
+                <div py:if="type(item).__name__ is 'afm'">
             <div class="column">
               <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
               <style>
                 <?python
-                  with open(item.img_topo_fwd, "rb") as image_file:
-                      encoded_string = base64.b64encode(image_file.read())
+                  with open(item.img_topo_fwd, "rb") as img_file:
+                      encoded_string = base64.b64encode(img_file.read())
                       encoded_string = 'data:image/png;base64, ' + encoded_string
                 ?>
                 .id${item.id}_fwd{
@@ -496,8 +489,8 @@
             <div class="column">
               <style>
                 <?python
-                  with open(item.img_topo_bwd, "rb") as image_file:
-                      encoded_string = base64.b64encode(image_file.read())
+                  with open(item.img_topo_bwd, "rb") as img_file:
+                      encoded_string = base64.b64encode(img_file.read())
                       encoded_string = 'data:image/png;base64, ' + encoded_string
                 ?>
                 .id${item.id}_bwd{
@@ -541,8 +534,8 @@
               <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
               <style>
                 <?python
-                  with open(item.img_topo_fwd, "rb") as image_file:
-                      encoded_string = base64.b64encode(image_file.read())
+                  with open(item.img_topo_fwd, "rb") as img_file:
+                      encoded_string = base64.b64encode(img_file.read())
                       encoded_string = 'data:image/png;base64, ' + encoded_string
                 ?>
                 .id${item.id}_fwd{
@@ -558,8 +551,8 @@
             <div class="column">
               <style>
                 <?python
-                  with open(item.img_topo_bwd, "rb") as image_file:
-                      encoded_string = base64.b64encode(image_file.read())
+                  with open(item.img_topo_bwd, "rb") as img_file:
+                      encoded_string = base64.b64encode(img_file.read())
                       encoded_string = 'data:image/png;base64, ' + encoded_string
                 ?>
                 .id${item.id}_bwd{
@@ -576,8 +569,8 @@
             <div class="column">
               <style>
                 <?python
-                  with open(item.img_phase_fwd, "rb") as image_file:
-                      encoded_string = base64.b64encode(image_file.read())
+                  with open(item.img_phase_fwd, "rb") as img_file:
+                      encoded_string = base64.b64encode(img_file.read())
                       encoded_string = 'data:image/png;base64, ' + encoded_string
                 ?>
                 .id${item.id}_phase_fwd{
@@ -594,8 +587,8 @@
             <div class="column">
               <style>
                 <?python
-                  with open(item.img_phase_bwd, "rb") as image_file:
-                      encoded_string = base64.b64encode(image_file.read())
+                  with open(item.img_phase_bwd, "rb") as img_file:
+                      encoded_string = base64.b64encode(img_file.read())
                       encoded_string = 'data:image/png;base64, ' + encoded_string
                 ?>
                 .id${item.id}_phase_bwd{
@@ -884,8 +877,8 @@
             <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
             <style>
               <?python
-                with open(item.file, "rb") as image_file:
-                    encoded_string_img = 'data:image/png;base64, ' + base64.b64encode(image_file.read())
+                with open(item.file, "rb") as img_file:
+                    encoded_string_img = 'data:image/png;base64, ' + base64.b64encode(img_file.read())
               ?>
               .id${item.id}_img{
                  background: url('${encoded_string_img}');
@@ -922,8 +915,8 @@
             <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
             <style>
               <?python
-                with open(item.img, "rb") as image_file:
-                    encoded_string_img = 'data:image/png;base64, ' + base64.b64encode(image_file.read())
+                with open(item.img, "rb") as img_file:
+                    encoded_string_img = 'data:image/png;base64, ' + base64.b64encode(img_file.read())
               ?>
               .id${item.id}_img{
                  background: url('${encoded_string_img}');
@@ -989,7 +982,7 @@
                 plot.background_fill_alpha = 0
                 plot.circle(x, y, size=2)
                 plot.toolbar.active_scroll = "auto"
-                script_raman, div_raman = components(plot, wrap_script = False)
+                script_raman, div_raman = components(plot, wrap_script=False)
 
               ?>
               <script py:content="Markup(script_raman)"></script>
@@ -1041,7 +1034,7 @@
                 plot.background_fill_alpha = 0
                 plot.circle(x, y, size=2)
                 plot.toolbar.active_scroll = "auto"
-                script_cv, div_cv = components(plot, wrap_script = False)
+                script_cv, div_cv = components(plot, wrap_script=False)
 
               ?>
               <script py:content="Markup(script_cv)"></script>
@@ -1096,18 +1089,13 @@
           </div>
         </div>
     
-    <?python
-        # workaround because this js file has a bad html style and therfore cannot be parsed by genshi
-        f_js = open('1.4.0_bokeh.min.js', 'r')
-        js = f_js.read() 
-    ?>
     <script>
         function openModal() {
           document.getElementById('myModal').style.display = "block";
         }
         
         function closeModal() {
-          document.getElementById('myModal').style.display = "none";
+          document.getElementById('myModal').style.display="none";
         }
         
         var slideIndex = 1;
@@ -1183,7 +1171,6 @@
             }
         
         }
-        
         
     </script>
   </body>
