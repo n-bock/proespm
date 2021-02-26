@@ -164,7 +164,7 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
                 raise(error)
         else:
             try:
-                exec("item = %s(dat, **add_arg)" % (add_arg['type']))
+                exec("item = %s(dat, **add_arg)" % add_arg['type'])
                 l.logP(10, ">>> Data with labjournal loaded: " + str(data_id))
             except(IndexError) as error:
                 l.logP(4, '>>> Failed to import ' + dat + ' with labjournal information')
@@ -213,7 +213,6 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
         # Workaround of Gwyddion bug: C RAM allocation fails
         if type(item).__name__ in ['stm', 'ecstm']:
             item.flushMemory()
-        
     
     l.logP(8, "")
     l.logP(8, ">>> Finished data processing ")

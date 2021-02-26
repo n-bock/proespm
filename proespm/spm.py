@@ -135,7 +135,6 @@ class spm(data):
         for pat in pattern:
             self.topo_ch = [ch for ch in channels if re.search(pat, ch)]
             if len(self.topo_ch) > 0:
-                print(self.topo_ch)
                 break
         
         return [gwy.gwy_app_data_browser_find_data_by_title(self.container, ch) for ch in self.topo_ch]
@@ -146,9 +145,9 @@ class spm(data):
         
         self.ch_list = self.returnDataChTitles() 
         
-        return self.returnMatchCh(['.*[Topo||Z].*[F||f]orward', 
-                                   '.*[Topo||Z].*[R||r]ight', 
-                                   '.*[Topo||Z].*fwd',
+        return self.returnMatchCh(['^Topo|Z.*[Ff]orward.*', 
+                                   '^Topo|Z.*[Rr]ight.*', 
+                                   '^Topo|Z.*[Ff]wd.*',
                                    '(\d*)'], self.ch_list)
     
     
@@ -157,9 +156,9 @@ class spm(data):
         
         self.ch_list = self.returnDataChTitles() 
         
-        return self.returnMatchCh(['.*[Topo||Z].*[B||b]ackward.*$', 
-                                   '.*[Topo||Z].*[L||l]eft.*$', 
-                                   '.*[Topo||Z].*bwd.*$'], self.ch_list)
+        return self.returnMatchCh(['^Topo|Z.*[Bb]ackward.*$', 
+                                   '^Topo|Z.*[Ll]eft.*$', 
+                                   '^Topo|Z.*[Bb]wd.*$'], self.ch_list)
     
     
     def returnFileName(self, data):
