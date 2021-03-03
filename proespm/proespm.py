@@ -32,6 +32,7 @@ from log import logging
 
 os.chdir(sys.path[0])
 
+
 def prompt():
     """ Prompts for the files, which will be processed.
 
@@ -42,24 +43,27 @@ def prompt():
     """
 
     if config.debug_modus:
-        src_dir = join(dirname(dirname(abspath(__file__))), 'tests/reference_files/data')
-        input_fs = [join(src_dir, 'rhk/data1272.SM4'),
-                    join(src_dir, 'rhk/data0271.SM4'),
-                    join(src_dir, 'easyscan/Image00037.nid'),
-                    join(src_dir, 'afm/200218_001.gwy'),
-                    join(src_dir, 'xps_e20/448.dat'),
-                    join(src_dir, 'cv_ec4/CV_162437_ 1.txt'),
-                    join(src_dir, 'cv_ec4/CV_162509_ 2.txt'),
-                    join(src_dir, 'cv_labview/test_001.lvm'),
-                    join(src_dir, 'raman/MK19_autoclave.txt'),
-                    join(src_dir, 'cv_biologic/a__02_CV_C02.mpt'),
-                    join(src_dir, 'peis_biologic/a__01_PEIS_C02.mpt'),
-                    join(src_dir, 'chrono_biologic/11_02_CA_C02.mpt'),
-                    join(src_dir, 'xps_phi/xps_phi.csv'),
-                    join(src_dir, 'sem/fei_sem.tif'),
-                    join(src_dir, 'image/50x2.bmp'),
-                    join(src_dir, 'mul/GrRu_RT.mul')
-                   ]
+        src_dir = join(
+            dirname(dirname(abspath(__file__))), "tests/reference_files/data"
+        )
+        input_fs = [
+            join(src_dir, "rhk/data1272.SM4"),
+            join(src_dir, "rhk/data0271.SM4"),
+            join(src_dir, "easyscan/Image00037.nid"),
+            join(src_dir, "afm/200218_001.gwy"),
+            join(src_dir, "xps_e20/448.dat"),
+            join(src_dir, "cv_ec4/CV_162437_ 1.txt"),
+            join(src_dir, "cv_ec4/CV_162509_ 2.txt"),
+            join(src_dir, "cv_labview/test_001.lvm"),
+            join(src_dir, "raman/MK19_autoclave.txt"),
+            join(src_dir, "cv_biologic/a__02_CV_C02.mpt"),
+            join(src_dir, "peis_biologic/a__01_PEIS_C02.mpt"),
+            join(src_dir, "chrono_biologic/11_02_CA_C02.mpt"),
+            join(src_dir, "xps_phi/xps_phi.csv"),
+            join(src_dir, "sem/fei_sem.tif"),
+            join(src_dir, "image/50x2.bmp"),
+            join(src_dir, "mul/GrRu_RT.mul"),
+        ]
     elif config.is_single_f:
         input_fs = prep.promptFiles()
         src_dir = os.path.dirname(input_fs[0])
@@ -73,7 +77,9 @@ def prompt():
         labjournal, path_labj = prep.prompt_labjournal()
         l.logP(8, ">>> Imported labjournal from " + path_labj)
     elif config.debug_modus:
-        labjournal, path_labj = prep.grab_labjournal(os.path.abspath(os.path.join(src_dir, os.pardir)))
+        labjournal, path_labj = prep.grab_labjournal(
+            os.path.abspath(os.path.join(src_dir, os.pardir))
+        )
         l.logP(8, ">>> Imported labjournal from " + path_labj)
     else:
         labjournal = ""
@@ -106,7 +112,7 @@ def prepare(src_dir, input_fs, temp_dir):
         l.logP(3, ">>> Copied files to local TEMP directory: " + temp_dir)
     else:
         l.logP(2, ">>> Files are stored locally")
-        proc_fs = input_fs # use the input files directly
+        proc_fs = input_fs  # use the input files directly
 
     proc_dir = os.path.dirname(proc_fs[0])
     l.logP(4, ">>> Processing directory: " + proc_dir)
@@ -134,7 +140,9 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
 
     for i, dat in enumerate(proc_fs):
         if config.log_level < 5:
-            progress_bar(i+1, len(proc_fs), prefix='Progress:', suffix='complete', length=50)
+            progress_bar(
+                i + 1, len(proc_fs), prefix="Progress:", suffix="complete", length=50
+            )
 
         is_append = True
         labjournal_error = False
@@ -144,9 +152,9 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
             # contain str values only, but also int; The pandas.read_excel
             # function optional conversion does not work properly. The old
             # expression: add_arg = labjournal[labjournal['ID'] == data_id]
-            for x in labjournal['ID']:
+            for x in labjournal["ID"]:
                 if str(x) == str(data_id):
-                    add_arg = labjournal[labjournal['ID'] == x]
+                    add_arg = labjournal[labjournal["ID"] == x]
                     add_arg = add_arg.iloc[0].to_dict()
                     break
             else:
@@ -161,14 +169,16 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
                 raise error
         else:
             try:
-                exec("item = %s(dat, **add_arg)" % add_arg['type'].capitalize())
+                exec("item = %s(dat, **add_arg)" % add_arg["type"].capitalize())
                 l.logP(10, ">>> Data with labjournal loaded: " + str(data_id))
             except IndexError as error:
-                l.logP(4, '>>> Failed to import ' + dat + ' with labjournal information')
+                l.logP(
+                    4, ">>> Failed to import " + dat + " with labjournal information"
+                )
                 raise error
 
         # STM specific functions
-        if type(item).__name__ in ['Stm', 'Ecstm', 'Afm']:
+        if type(item).__name__ in ["Stm", "Ecstm", "Afm"]:
             item.process_topo_fwd()
             item.save_topo_fwd_image(proc_dir)
             item.save_topo_fwd_data(proc_dir)
@@ -177,38 +187,38 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
             item.save_topo_bwd_data(proc_dir)
 
         # AFM specific functions
-        if type(item).__name__ in ['Afm']:
-            if 'item.type' in locals() and item.type is not 'Dynamic Force':
+        if type(item).__name__ in ["Afm"]:
+            if "item.type" in locals() and item.type is not "Dynamic Force":
                 item.save_phase_bwd_image(proc_dir)
                 item.save_phase_fwd_image(proc_dir)
 
         # ECSTM specific functions
-        if type(item).__name__ in ['Ecstm']:
+        if type(item).__name__ in ["Ecstm"]:
             item.save_ec_data(proc_dir)
             item.save_ic_data(proc_dir)
             item.save_u_tun_data(proc_dir)
 
         # CV specific functions
-        if type(item).__name__ in ['Cv']:
+        if type(item).__name__ in ["Cv"]:
             item.save_ec(proc_dir)
-            if not item.m_id.endswith('1') and item.m_file.endswith('.txt'):
+            if not item.m_id.endswith("1") and item.m_file.endswith(".txt"):
                 x = len(proc_items) - 1
                 proc_items[x].append_cycle(item.data, item.m_id, item.remark)
-                l.logP(4, '>>> CV files ' + proc_items[x].m_id + ' are combined.')
+                l.logP(4, ">>> CV files " + proc_items[x].m_id + " are combined.")
 
                 # As data has been appended to previous item, do not add
                 # it to the html report
                 is_append = False
 
         # SEM specific functions
-        if type(item).__name__ in ['Sem']:
+        if type(item).__name__ in ["Sem"]:
             item.save_image(proc_dir)
 
         if is_append:
             proc_items.append(item)
 
         # Workaround of Gwyddion bug: C RAM allocation fails
-        if type(item).__name__ in ['Stm', 'Ecstm', 'Afm']:
+        if type(item).__name__ in ["Stm", "Ecstm", "Afm"]:
             item.flush_memory()
 
     l.logP(8, "")
@@ -232,21 +242,25 @@ def cleanup(src_dir, proc_dir):
 
     if config.hierarchy:
         l.logP(9, ">>> Move data to final destination.")
-        if not multiple_move(proc_dir, src_dir, ['ec.txt', '0'], hierarchy='sub', subfolder_name='_data'):
+        if not multiple_move(
+            proc_dir, src_dir, ["ec.txt", "0"], hierarchy="sub", subfolder_name="_data"
+        ):
             l.logP(10, ">>> No data files were not moved.")
-        if not multiple_move(proc_dir, src_dir, ['png'], hierarchy='sub', subfolder_name='_png'):
+        if not multiple_move(
+            proc_dir, src_dir, ["png"], hierarchy="sub", subfolder_name="_png"
+        ):
             l.logP(10, ">>> No images files were not moved.")
-        if not multiple_move(proc_dir, src_dir, ['html'], hierarchy='parent'):
+        if not multiple_move(proc_dir, src_dir, ["html"], hierarchy="parent"):
             l.logP(10, ">>> No HTML report was moved.")
     elif is_network_file:
         l.logP(9, ">>> Move data and remove temporary folder")
-        multiple_move(proc_dir, src_dir, ['png', '0', 'ec.txt', 'html'])
+        multiple_move(proc_dir, src_dir, ["png", "0", "ec.txt", "html"])
 
     l.logP(0, ">>>                  DONE                   <<<")
 
 
-if __name__ == '__main__':
-    temp_dir = tempfile.mkdtemp(prefix='python_', suffix='_temp')
+if __name__ == "__main__":
+    temp_dir = tempfile.mkdtemp(prefix="python_", suffix="_temp")
     l = logging()
 
     try:

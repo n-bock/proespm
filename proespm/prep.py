@@ -26,17 +26,22 @@ def prompt_folder():
         input_files (list): Full path to the files in a list.
     """
 
-    while True and 'dummy_var' not in locals():
+    while True and "dummy_var" not in locals():
         try:
             input_files = []
             root = Tkinter.Tk()
-            folder = tkFileDialog.askdirectory(initialdir=config.dialog_files['initialdir'])
+            folder = tkFileDialog.askdirectory(
+                initialdir=config.dialog_files["initialdir"]
+            )
             root.destroy()
 
             for p, dirs, files in os.walk(folder, topdown=True):
-                dirs[:] = [d for d in dirs if not d.startswith('_')]
+                dirs[:] = [d for d in dirs if not d.startswith("_")]
                 for f in files:
-                    if f.endswith(tuple(config.allowed_file_types)) and p.split('/')[len(p.split('/'))-1][0] is not '_':
+                    if (
+                        f.endswith(tuple(config.allowed_file_types))
+                        and p.split("/")[len(p.split("/")) - 1][0] is not "_"
+                    ):
                         input_files.append(os.path.join(p, f))
 
             if len(input_files) == 0:
@@ -45,8 +50,8 @@ def prompt_folder():
             return input_files, folder
 
         except IndexError:
-            if not query_yes_no('You have not picked any folder. Retry?'):
-                sys.exit('No folder selected.')
+            if not query_yes_no("You have not picked any folder. Retry?"):
+                sys.exit("No folder selected.")
 
 
 def prompt_files():
@@ -56,11 +61,11 @@ def prompt_files():
         input_files (list): Full path to the files in a list.
     """
 
-    while True and 'dummy_var' not in locals():
+    while True and "dummy_var" not in locals():
         try:
             input_files = []
             root = Tkinter.Tk()
-            list_of_files = tkFileDialog.askopenfiles(mode='r', **config.dialog_files)
+            list_of_files = tkFileDialog.askopenfiles(mode="r", **config.dialog_files)
             root.destroy()
 
             for file in list_of_files:
@@ -72,8 +77,8 @@ def prompt_files():
             dummy_var = 0
 
         except IndexError:
-            if not query_yes_no('You have not picked any files. Retry?'):
-                sys.exit('No files selected.')
+            if not query_yes_no("You have not picked any files. Retry?"):
+                sys.exit("No files selected.")
 
     return input_files
 
@@ -86,20 +91,23 @@ def prompt_labjournal():
         path_labj (str): Full path to the labjournal.
     """
 
-    while True and 'labjournal' not in locals():
+    while True and "labjournal" not in locals():
         try:
             root = Tkinter.Tk()
-            path_labj = tkFileDialog.askopenfiles(mode='rb',
-                                                  **config.dialog_labj)
+            path_labj = tkFileDialog.askopenfiles(mode="rb", **config.dialog_labj)
             root.destroy()
-            labj = pandas.read_excel(path_labj[0],
-                                     sheet_name=config.labj_ws_name,
-                                     dtypes=str,
-                                     converters={'ID': str})
+            labj = pandas.read_excel(
+                path_labj[0],
+                sheet_name=config.labj_ws_name,
+                dtypes=str,
+                converters={"ID": str},
+            )
 
         except IndexError:
-            if not query_yes_no('You have not picked any files. Retry?'):
-                sys.exit('No Labjournal specified! You maybe want to change your config.')
+            if not query_yes_no("You have not picked any files. Retry?"):
+                sys.exit(
+                    "No Labjournal specified! You maybe want to change your config."
+                )
 
     return labj, path_labj[0].name
 
@@ -115,13 +123,13 @@ def grab_labjournal(path_labj):
         path_labjournal (str): Full path to the labjournal.
     """
 
-    xls_files = (f for f in os.listdir(path_labj) if f.endswith('.xlsx'))
+    xls_files = (f for f in os.listdir(path_labj) if f.endswith(".xlsx"))
 
     for f in xls_files:
         labj_file = os.path.join(path_labj, f)
         break
     else:
-        sys.exit('No labjournal was found!')
+        sys.exit("No labjournal was found!")
 
     labj = pandas.read_excel(labj_file, sheet_name=config.labj_ws_name)
 
@@ -180,13 +188,13 @@ def copy_user_config(src_dir):
         src_dir (str): Path to source directory.
     """
 
-    config_path = os.path.join(os.path.split(sys.path[0])[0], 'config.yml')
+    config_path = os.path.join(os.path.split(sys.path[0])[0], "config.yml")
 
     with open(config_path, "r") as f:
         log_f = f.read()
 
-    with open(os.path.join(src_dir, '_config.log'), "a") as f:
-        f.writelines("\n\n#[" + time.strftime('%Y-%M-%d %X') + "]" + "\n\n" + log_f)
+    with open(os.path.join(src_dir, "_config.log"), "a") as f:
+        f.writelines("\n\n#[" + time.strftime("%Y-%M-%d %X") + "]" + "\n\n" + log_f)
 
 
 def par_file_name(data):
@@ -199,7 +207,6 @@ def par_file_name(data):
         orig_fs_name (list):
         proc_fs_name (list):
     """
-
 
     par_file_data = {}
     orig_fs_name = []
@@ -216,13 +223,14 @@ def par_file_name(data):
 
         # REGEX match for e.g. m2_ori.tb0
         if fnmatch.fnmatch(line_data, match_pattern):
-            data_ch_orig_file_name = par_file_data[line+8]
-            data_ch_orig_file_name = re.search('.*(m\d+_ori\.t[b||f][0||1]).*',
-                                               data_ch_orig_file_name).group(1)
+            data_ch_orig_file_name = par_file_data[line + 8]
+            data_ch_orig_file_name = re.search(
+                ".*(m\d+_ori\.t[b||f][0||1]).*", data_ch_orig_file_name
+            ).group(1)
             orig_fs_name.append(data_ch_orig_file_name)
 
             # replace "m<whatever>" with "g<same_whatever_as_before>"
-            proc_fs_name.append(re.sub('m(.*)', r"g\1", data_ch_orig_file_name))
+            proc_fs_name.append(re.sub("m(.*)", r"g\1", data_ch_orig_file_name))
 
     return orig_fs_name, proc_fs_name
 
@@ -247,9 +255,7 @@ def stm_file_name(data):
     temp = os.path.basename(data)
 
     for pat in range(0, len(config.pat_out), 2):
-        temp = re.sub(config.pat_out[pat],
-                      config.pat_out[pat + 1],
-                      temp)
+        temp = re.sub(config.pat_out[pat], config.pat_out[pat + 1], temp)
 
         if temp != os.path.basename(data):
             break

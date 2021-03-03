@@ -21,42 +21,40 @@ def m_id(m_file):
         file (string): Path to the data file.
     """
 
-    if m_file.endswith('SM4'):
-        x = int(re.search('.*(\d{4})\.', m_file).group(1))
-    elif m_file.endswith('nid'):
-        x = int(re.search('.*(\d{4})\..{3}$', m_file).group(1))
+    if m_file.endswith("SM4"):
+        x = int(re.search(".*(\d{4})\.", m_file).group(1))
+    elif m_file.endswith("nid"):
+        x = int(re.search(".*(\d{4})\..{3}$", m_file).group(1))
     else:
-        x = re.search('.*(\/|\\\)(.*)\.\S{3}', m_file).group(2)
+        x = re.search(".*(\/|\\\)(.*)\.\S{3}", m_file).group(2)
 
     return str(x)
-
 
 
 class Data(object):
     """Represents any data. As optional arguments surface, remarks etc. is useful!"""
 
     def __init__(self, m_file, **kwargs):
-        self.remark = 'nan'
+        self.remark = "nan"
         self.m_file = m_file
         self.m_id = m_id(self.m_file)
         self.path = os.path.dirname(os.path.abspath(self.m_file))
-        self.datetime = datetime.datetime.fromtimestamp(os.path.getmtime(self.m_file)).strftime('%Y-%m-%d %H:%M:%S')
+        self.datetime = datetime.datetime.fromtimestamp(
+            os.path.getmtime(self.m_file)
+        ).strftime("%Y-%m-%d %H:%M:%S")
         self.meta = {}
         for key, value in kwargs.iteritems():
-            self.var_name = 'self.' + key
+            self.var_name = "self." + key
             exec("%s = '%s'" % (self.var_name, value))
             self.meta[key] = value
-
 
     def __str__(self):
         return self.m_id
 
-
     def return_path(self):
         """Return path to data file."""
 
-        return 'file:///' + '/'.join(self.m_file.split('/')[1:])
-
+        return "file:///" + "/".join(self.m_file.split("/")[1:])
 
 
 class Image(Data):
@@ -65,4 +63,3 @@ class Image(Data):
     def __init__(self, m_file, **kwargs):
         Data.__init__(self, m_file, **kwargs)
         self.surface = None
-

@@ -10,7 +10,7 @@ from util import import_helper, win32_helper
 
 import_helper()
 
-if 'path_gwyddion' not in locals():
+if "path_gwyddion" not in locals():
     win32_helper()
 
 import gwy
@@ -34,10 +34,11 @@ class Sem(Data):
         Data.__init__(self, m_file, **kwargs)
         self.container = gwy.gwy_file_load(self.m_file, gwy.RUN_NONINTERACTIVE)
         gwy.gwy_app_data_browser_add(self.container)
-        self.channel_id = gwy.gwy_app_data_browser_find_data_by_title(self.container, '*SE*')[0]
+        self.channel_id = gwy.gwy_app_data_browser_find_data_by_title(
+            self.container, "*SE*"
+        )[0]
         gwy.gwy_app_data_browser_select_data_field(self.container, self.channel_id)
         self.extract_meta(gwyddion.get_meta_ids(self.container)[0])
-
 
     def extract_meta(self, meta_id):
         """Extract Meta data of SEM file.
@@ -46,17 +47,18 @@ class Sem(Data):
             meta_id (int): Gwyddion ID where meta data is stored.
         """
 
-        pattern = {'self.hv': ['EBeam::HV'],
-                   'self.dwell': ['EScan::Dwell'],
-                   'self.frame_time': ['EScan::FrameTime'],
-                   'self.frame_size': ['EScan::HorFieldsize']}
+        pattern = {
+            "self.hv": ["EBeam::HV"],
+            "self.dwell": ["EScan::Dwell"],
+            "self.frame_time": ["EScan::FrameTime"],
+            "self.frame_size": ["EScan::HorFieldsize"],
+        }
         for k, pat_list in pattern.iteritems():
             for pat in pat_list:
                 try:
                     exec("{} = self.container[{}]['{}']".format(k, meta_id, pat))
                 except KeyError:
                     pass
-
 
     def save_image(self, path):
         """Saves SEM data to image file.
@@ -65,8 +67,7 @@ class Sem(Data):
             path (str): Path where image will be stored.
         """
 
-        self.img = os.path.join(path, str(self.m_id) + '.' + config.img_type_out)
-        self.match_ch_topo = '/' + str(self.channel_id) + '/base/range-type'
+        self.img = os.path.join(path, str(self.m_id) + "." + config.img_type_out)
+        self.match_ch_topo = "/" + str(self.channel_id) + "/base/range-type"
         self.container[self.match_ch_topo] = 2
         gwyddion.save_image_file(self.container, self.img)
-
