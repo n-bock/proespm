@@ -1,0 +1,7 @@
+numpy==1.16.2
+Genshi==0.7.3
+pandas==0.24.2
+xlrd==1.2.0
+bokeh==1.4.0
+PyYAML==5.3.1
+Pint==0.9
