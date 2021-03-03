@@ -238,25 +238,25 @@
       <h2 style="text-align:center; font-family:Helvetica" py:content="title"></h2>
       <div class="general_information row">
         <ul>
-          <li py:for="link in html.createHtmlHead(src_dir)">
+          <li py:for="link in html.create_html_head(src_dir)">
             <a href="${link[0]}" title="${link[1]}">${link[2]}</a>
           </li>
         </ul>
         <p id="favorites">Favorites:  </p>
       </div>
           <?python
-            list_img_mod = [[i, item.id, type(item).__name__] for i, item in enumerate(list_classes, 1) if type(item).__name__ in ['ecstm', 'stm', 'image', 'sem', 'afm']]
+            list_img_mod = [[i, item.m_id, type(item).__name__] for i, item in enumerate(list_classes, 1) if type(item).__name__ in ['Ecstm', 'Stm', 'Image', 'Sem', 'Afm']]
           ?>
       <div class="row" py:for="item in list_classes">
-        <div py:if="type(item).__name__ is 'stm'">
+        <div py:if="type(item).__name__ is 'Stm'">
                 <div class="column">
-                  <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
+                  <button id = "id${item.m_id}" class="button" type="button" onclick="iLike(this, ${item.m_id}, 'id${item.m_id}')" style="position:absolute" >Like it?</button>
                   <style>
                     <?python
                       with open(item.img_topo_fwd, "rb") as img_file:
                           encoded_string_fwd = 'data:image/png;base64, ' + base64.b64encode(img_file.read())
                     ?>
-                    .id${item.id}_fwd{
+                    .id${item.m_id}_fwd{
                        background: url('${encoded_string_fwd}');
                        background-repeat: no-repeat;
                        background-position: 50% 50%;
@@ -264,7 +264,7 @@
                        height: 50%;
                      }
                   </style>
-                  <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_fwd hover-shadow cursor" title="Click for zoomed view"></div>
+                  <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.m_id][0]})" class="id${item.m_id}_fwd hover-shadow cursor" title="Click for zoomed view"></div>
                 </div>
                 <div class="column">
                   <style>
@@ -273,7 +273,7 @@
                           encoded_bwd = base64.b64encode(img_file.read())
                           encoded_string_bwd = 'data:image/png;base64, ' + encoded_bwd
                     ?>
-                    .id${item.id}_bwd{
+                    .id${item.m_id}_bwd{
                        background: url('${encoded_string_bwd}');
                        background-repeat: no-repeat;
                        background-position: 50% 50%;
@@ -281,7 +281,7 @@
                        height: 50%;
                      }
                   </style>
-                  <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_bwd hover-shadow cursor" title="Click for zoomed view"></div>
+                  <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.m_id][0]})" class="id${item.m_id}_bwd hover-shadow cursor" title="Click for zoomed view"></div>
                 </div>
             <div id="div_table_vertical">
               <table id="dry_table">
@@ -291,7 +291,7 @@
                 </tr>
                 <tr>
                   <th>ID<sub>STM</sub></th>
-                  <th class="value"><a href="${'file:' + item.file}" title="Open file in Gwyddion">${item.id}</a></th>
+                  <th class="value"><a href="${'file:' + item.m_file}" title="Open file in Gwyddion">${item.m_id}</a></th>
                 </tr>
                 <tr>
                   <th>I<sub>tun</sub></th>
@@ -328,16 +328,16 @@
             </div>
           </div>
         </div>
-        <div py:if="type(item).__name__ is 'ecstm'">
+        <div py:if="type(item).__name__ is 'Ecstm'">
             <div class="column">
-              <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
+              <button id = "id${item.m_id}" class="button" type="button" onclick="iLike(this, ${item.m_id}, 'id${item.m_id}')" style="position:absolute" >Like it?</button>
               <style>
                 <?python
                   with open(item.img_topo_fwd, "rb") as img_file:
                       encoded_string = base64.b64encode(img_file.read())
                       encoded_string = 'data:image/png;base64, ' + encoded_string
                 ?>
-                .id${item.id}_fwd{
+                .id${item.m_id}_fwd{
                    background: url('${encoded_string}');
                    background-repeat: no-repeat;
                    background-position: 50% 50%;
@@ -345,7 +345,7 @@
                    height: 50%;
                  }
               </style>
-              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_fwd hover-shadow cursor" title="Click for zoomed view"></div>
+              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.m_id][0]})" class="id${item.m_id}_fwd hover-shadow cursor" title="Click for zoomed view"></div>
             </div>
             <div class="column">
               <style>
@@ -354,7 +354,7 @@
                       encoded_string = base64.b64encode(img_file.read())
                       encoded_string = 'data:image/png;base64, ' + encoded_string
                 ?>
-                .id${item.id}_bwd{
+                .id${item.m_id}_bwd{
                    background: url('${encoded_string}');
                    background-repeat: no-repeat;
                    background-position: 50% 50%;
@@ -363,7 +363,7 @@
                    z-index:2;
                  }
               </style>
-              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_bwd hover-shadow cursor" title="Click for zoomed view"></div>
+              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.m_id][0]})" class="id${item.m_id}_bwd hover-shadow cursor" title="Click for zoomed view"></div>
             </div>
           <div>
             <div class="column" style="padding-left:8px;">
@@ -450,7 +450,7 @@
           </tr>
           <tr>
             <th class="value">${item.datetime}</th>
-            <th class="value"><a href="${'file:' + item.file}" title="Open file in Gwyddion">${item.id}</a></th>
+            <th class="value"><a href="${'file:' + item.m_file}" title="Open file in Gwyddion">${item.m_id}</a></th>
             <th class="value">${item.tip}</th>
             <th class="value">${item.surface}</th>
             <th class="value">${item.size}</th>
@@ -467,16 +467,16 @@
           </tr>
         </table>
         </div>
-                <div py:if="type(item).__name__ is 'afm'">
+                <div py:if="type(item).__name__ is 'Afm'">
             <div class="column">
-              <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
+              <button id = "id${item.m_id}" class="button" type="button" onclick="iLike(this, ${item.m_id}, 'id${item.m_id}')" style="position:absolute" >Like it?</button>
               <style>
                 <?python
                   with open(item.img_topo_fwd, "rb") as img_file:
                       encoded_string = base64.b64encode(img_file.read())
                       encoded_string = 'data:image/png;base64, ' + encoded_string
                 ?>
-                .id${item.id}_fwd{
+                .id${item.m_id}_fwd{
                    background: url('${encoded_string}');
                    background-repeat: no-repeat;
                    background-position: 50% 50%;
@@ -484,7 +484,7 @@
                    height: 50%;
                  }
               </style>
-              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_fwd hover-shadow cursor" title="Click for zoomed view"></div>
+              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.m_id][0]})" class="id${item.m_id}_fwd hover-shadow cursor" title="Click for zoomed view"></div>
             </div>
             <div class="column">
               <style>
@@ -493,7 +493,7 @@
                       encoded_string = base64.b64encode(img_file.read())
                       encoded_string = 'data:image/png;base64, ' + encoded_string
                 ?>
-                .id${item.id}_bwd{
+                .id${item.m_id}_bwd{
                    background: url('${encoded_string}');
                    background-repeat: no-repeat;
                    background-position: 50% 50%;
@@ -502,7 +502,7 @@
                    z-index:2;
                  }
               </style>
-              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_bwd hover-shadow cursor" title="Click for zoomed view"></div>
+              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.m_id][0]})" class="id${item.m_id}_bwd hover-shadow cursor" title="Click for zoomed view"></div>
             </div>
             
           <table style="margin-bottom:20px">
@@ -517,7 +517,7 @@
           </tr>
           <tr>
             <th class="value">${item.datetime}</th>
-            <th class="value"><a href="${'file:' + item.file}" title="Open file in Gwyddion">${item.id}</a></th>
+            <th class="value"><a href="${'file:' + item.m_file}" title="Open file in Gwyddion">${item.m_id}</a></th>
             <th class="value">${item.tip}</th>
             <th class="value">${item.surface}</th>
             <th class="value">${item.size}</th>
@@ -531,14 +531,14 @@
         </div>
         <div py:if="type(item).__name__ is 'afm' and 'item.type' in locals() and item.type is not 'Dynamic Force'">
             <div class="column">
-              <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
+              <button id = "id${item.m_id}" class="button" type="button" onclick="iLike(this, ${item.m_id}, 'id${item.m_id}')" style="position:absolute" >Like it?</button>
               <style>
                 <?python
                   with open(item.img_topo_fwd, "rb") as img_file:
                       encoded_string = base64.b64encode(img_file.read())
                       encoded_string = 'data:image/png;base64, ' + encoded_string
                 ?>
-                .id${item.id}_fwd{
+                .id${item.m_id}_fwd{
                    background: url('${encoded_string}');
                    background-repeat: no-repeat;
                    background-position: 50% 50%;
@@ -546,7 +546,7 @@
                    height: 50%;
                  }
               </style>
-              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_fwd hover-shadow cursor" title="Click for zoomed view"></div>
+              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.m_id][0]})" class="id${item.m_id}_fwd hover-shadow cursor" title="Click for zoomed view"></div>
             </div>
             <div class="column">
               <style>
@@ -555,7 +555,7 @@
                       encoded_string = base64.b64encode(img_file.read())
                       encoded_string = 'data:image/png;base64, ' + encoded_string
                 ?>
-                .id${item.id}_bwd{
+                .id${item.m_id}_bwd{
                    background: url('${encoded_string}');
                    background-repeat: no-repeat;
                    background-position: 50% 50%;
@@ -564,7 +564,7 @@
                    z-index:2;
                  }
               </style>
-              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_bwd hover-shadow cursor" title="Click for zoomed view"></div>
+              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.m_id][0]})" class="id${item.m_id}_bwd hover-shadow cursor" title="Click for zoomed view"></div>
             </div>
             <div class="column">
               <style>
@@ -573,7 +573,7 @@
                       encoded_string = base64.b64encode(img_file.read())
                       encoded_string = 'data:image/png;base64, ' + encoded_string
                 ?>
-                .id${item.id}_phase_fwd{
+                .id${item.m_id}_phase_fwd{
                    background: url('${encoded_string}');
                    background-repeat: no-repeat;
                    background-position: 50% 50%;
@@ -582,7 +582,7 @@
                    z-index:2;
                  }
               </style>
-              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_phase_fwd hover-shadow cursor" title="Click for zoomed view"></div>
+              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.m_id][0]})" class="id${item.m_id}_phase_fwd hover-shadow cursor" title="Click for zoomed view"></div>
             </div>
             <div class="column">
               <style>
@@ -591,7 +591,7 @@
                       encoded_string = base64.b64encode(img_file.read())
                       encoded_string = 'data:image/png;base64, ' + encoded_string
                 ?>
-                .id${item.id}_phase_bwd{
+                .id${item.m_id}_phase_bwd{
                    background: url('${encoded_string}');
                    background-repeat: no-repeat;
                    background-position: 50% 50%;
@@ -600,7 +600,7 @@
                    z-index:2;
                  }
               </style>
-              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_phase_bwd hover-shadow cursor" title="Click for zoomed view"></div>
+              <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.m_id][0]})" class="id${item.m_id}_phase_bwd hover-shadow cursor" title="Click for zoomed view"></div>
             </div>
           <table style="margin-bottom:20px">
           <tr>
@@ -614,7 +614,7 @@
           </tr>
           <tr>
             <th class="value">${item.datetime}</th>
-            <th class="value"><a href="${'file:' + item.file}" title="Open file in Gwyddion">${item.id}</a></th>
+            <th class="value"><a href="${'file:' + item.m_file}" title="Open file in Gwyddion">${item.m_id}</a></th>
             <th class="value">${item.tip}</th>
             <th class="value">${item.surface}</th>
             <th class="value">${item.size}</th>
@@ -626,12 +626,12 @@
           </tr>
         </table>
         </div>
-        <div py:if="type(item).__name__ is 'cv'">
+        <div py:if="type(item).__name__ is 'Cv'">
              <div class="column" style="margin-right: 20%; width:50%; ">
                <style>
-                 .id${item.id}{}
+                 .id${item.m_id}{}
                </style>
-               <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, '${item.id}', 'id${item.id}')" style="position:absolute" >Like it?</button>
+               <button id = "id${item.m_id}" class="button" type="button" onclick="iLike(this, '${item.m_id}', 'id${item.m_id}')" style="position:absolute" >Like it?</button>
                <?python
                 from bokeh.plotting import figure
                 from bokeh.embed import components
@@ -676,7 +676,7 @@
                 </tr>
                 <tr>
                   <th>ID<sub>CV</sub></th>
-                  <th class="value"><a href="${'file:' + item.file}" title="Open file">${item.id}</a></th>
+                  <th class="value"><a href="${'file:' + item.m_file}" title="Open file">${item.m_id}</a></th>
                 </tr>
                 <tr>
                   <th>U<sub>start</sub></th>
@@ -716,12 +716,12 @@
             </div>
           </div>
         </div>
-        <div py:if="type(item).__name__ is 'peis'">
+        <div py:if="type(item).__name__ is 'Peis'">
              <div class="column" style="margin-right: 20%; width:50%; ">
                <style>
-                 .id${item.id}{}
+                 .id${item.m_id}{}
                </style>
-               <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, '${item.id}', 'id${item.id}')" style="position:absolute" >Like it?</button>
+               <button id = "id${item.m_id}" class="button" type="button" onclick="iLike(this, '${item.m_id}', 'id${item.m_id}')" style="position:absolute" >Like it?</button>
                <?python
                 from bokeh.plotting import figure
                 from bokeh.embed import components
@@ -762,7 +762,7 @@
                 </tr>
                 <tr>
                   <th>ID<sub>PEIS</sub></th>
-                  <th class="value"><a href="${'file:' + item.file}" title="Open file">${item.id}</a></th>
+                  <th class="value"><a href="${'file:' + item.m_file}" title="Open file">${item.m_id}</a></th>
                 </tr>
                 <tr>
                   <th>E<sub>cell</sub></th>
@@ -798,12 +798,12 @@
             </div>
           </div>
         </div>
-        <div py:if="type(item).__name__ is 'chrono'">
+        <div py:if="type(item).__name__ is 'Chrono'">
              <div class="column" style="margin-right: 20%; width:50%; ">
                <style>
-                 .id${item.id}{}
+                 .id${item.m_id}{}
                </style>
-               <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, '${item.id}', 'id${item.id}')" style="position:absolute" >Like it?</button>
+               <button id = "id${item.m_id}" class="button" type="button" onclick="iLike(this, '${item.m_id}', 'id${item.m_id}')" style="position:absolute" >Like it?</button>
                <?python
                 from bokeh.plotting import figure
                 from bokeh.embed import components
@@ -844,7 +844,7 @@
                 </tr>
                 <tr>
                   <th>ID<sub>Chrono</sub></th>
-                  <th class="value"><a href="${'file:' + item.file}" title="Open file">${item.id}</a></th>
+                  <th class="value"><a href="${'file:' + item.m_file}" title="Open file">${item.m_id}</a></th>
                 </tr>
                 <tr>
                   <th>E<sub>cell</sub></th>
@@ -872,15 +872,15 @@
             </div>
           </div>
         </div>
-        <div py:if="type(item).__name__ is 'image'">
+        <div py:if="type(item).__name__ is 'Image'">
           <div class="column">
-            <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
+            <button id = "id${item.m_id}" class="button" type="button" onclick="iLike(this, ${item.m_id}, 'id${item.m_id}')" style="position:absolute" >Like it?</button>
             <style>
               <?python
-                with open(item.file, "rb") as img_file:
+                with open(item.m_file, "rb") as img_file:
                     encoded_string_img = 'data:image/png;base64, ' + base64.b64encode(img_file.read())
               ?>
-              .id${item.id}_img{
+              .id${item.m_id}_img{
                  background: url('${encoded_string_img}');
                  background-repeat: no-repeat;
                  background-position: 50% 50%;
@@ -888,7 +888,7 @@
                  height: 50%;
                }
             </style>
-            <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_img hover-shadow cursor" title="Click for zoomed view"></div>
+            <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.m_id][0]})" class="id${item.m_id}_img hover-shadow cursor" title="Click for zoomed view"></div>
           </div>
           <div id="div_table_vertical">
             <table id="dry_table">
@@ -898,7 +898,7 @@
               </tr>
               <tr>
                 <th>ID<sub>IMG</sub></th>
-                <th class="value"><a href="${'file:' + item.file}" title="Open file">${item.id}</a></th>
+                <th class="value"><a href="${'file:' + item.m_file}" title="Open file">${item.m_id}</a></th>
               </tr>
               <tr>
                 <td><b>Surface</b></td>
@@ -910,15 +910,15 @@
             </div>
           </div>
         </div>
-        <div py:if="type(item).__name__ is 'sem'">
+        <div py:if="type(item).__name__ is 'Sem'">
           <div class="column">
-            <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, ${item.id}, 'id${item.id}')" style="position:absolute" >Like it?</button>
+            <button id = "id${item.m_id}" class="button" type="button" onclick="iLike(this, ${item.m_id}, 'id${item.m_id}')" style="position:absolute" >Like it?</button>
             <style>
               <?python
                 with open(item.img, "rb") as img_file:
                     encoded_string_img = 'data:image/png;base64, ' + base64.b64encode(img_file.read())
               ?>
-              .id${item.id}_img{
+              .id${item.m_id}_img{
                  background: url('${encoded_string_img}');
                  background-repeat: no-repeat;
                  background-position: 50% 50%;
@@ -926,7 +926,7 @@
                  height: 50%;
                }
             </style>
-            <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.id][0]})" class="id${item.id}_img hover-shadow cursor" title="Click for zoomed view"></div>
+            <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.m_id][0]})" class="id${item.m_id}_img hover-shadow cursor" title="Click for zoomed view"></div>
           </div>
           <div id="div_table_vertical">
             <table id="dry_table">
@@ -936,7 +936,7 @@
               </tr>
               <tr>
                 <th>ID<sub>SEM</sub></th>
-                <th class="value"><a href="${'file:' + item.file}" title="Open file">${item.id}</a></th>
+                <th class="value"><a href="${'file:' + item.m_file}" title="Open file">${item.m_id}</a></th>
               </tr>
               <tr>
                 <th>Surface</th>
@@ -956,12 +956,12 @@
             </div>
           </div>
         </div>
-        <div py:if="type(item).__name__ is 'raman'">
+        <div py:if="type(item).__name__ is 'Raman'">
           <div class="column" style="margin-right: 20%; width:50%; ">
                <style>
-                 .id${item.id}{}
+                 .id${item.m_id}{}
                </style>
-               <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, '${item.id}', 'id${item.id}')" style="position:absolute" >Like it?</button>
+               <button id = "id${item.m_id}" class="button" type="button" onclick="iLike(this, '${item.m_id}', 'id${item.m_id}')" style="position:absolute" >Like it?</button>
                <?python
                 from bokeh.plotting import figure
                 from bokeh.embed import components
@@ -996,7 +996,7 @@
                 </tr>
                 <tr>
                   <th>ID<sub>raman</sub></th>
-                  <th class="value"><a href="${'file:' + item.file}" title="Open file">${item.id}</a></th>
+                  <th class="value"><a href="${'file:' + item.m_file}" title="Open file">${item.m_id}</a></th>
                 </tr>
                 <tr>
                   <td><b>Surface</b></td>
@@ -1008,12 +1008,12 @@
             </div>
           </div>
         </div>
-        <div py:if="type(item).__name__ is 'xps'">
+        <div py:if="type(item).__name__ is 'Xps'">
           <div class="column" style="margin-right: 20%; width:50%; ">
                <style>
-                 .id${item.id}{}
+                 .id${item.m_id}{}
                </style>
-               <button id = "id${item.id}" class="button" type="button" onclick="iLike(this, '${item.id}', 'id${item.id}')" style="position:absolute" >Like it?</button>
+               <button id = "id${item.m_id}" class="button" type="button" onclick="iLike(this, '${item.m_id}', 'id${item.m_id}')" style="position:absolute" >Like it?</button>
                <?python
                 from bokeh.plotting import figure
                 from bokeh.embed import components
@@ -1048,7 +1048,7 @@
                 </tr>
                 <tr>
                   <th>ID<sub>xps</sub></th>
-                  <th class="value"><a href="${'file:' + item.file}" title="Open file">${item.id}</a></th>
+                  <th class="value"><a href="${'file:' + item.m_file}" title="Open file">${item.m_id}</a></th>
                 </tr>
                 <tr>
                   <th>Surface</th>
@@ -1077,9 +1077,9 @@
           <span class="close cursor" onclick="closeModal()" title="Close view">x</span>
           <div class="modal-content">
             <div class="mySlides" py:for="img in list_img_mod">
-              <div py:if="img[2] in ['stm', 'ecstm', 'afm']" class="id${img[1]}_fwd" style="height:100%; width: 50%; float:left;"><div class="numbertext">Forward</div></div>
-              <div py:if="img[2] in ['stm', 'ecstm', 'afm']" class="id${img[1]}_bwd" style="height:100%; width: 50%; float:right;"><div class="numbertext">Backward</div></div>
-              <div py:if="img[2] in ['image', 'sem']" class="id${img[1]}_img" style="height:100%; width: 50%; margin-left: 25%;"></div>
+              <div py:if="img[2] in ['Stm', 'Ecstm', 'Afm']" class="id${img[1]}_fwd" style="height:100%; width: 50%; float:left;"><div class="numbertext">Forward</div></div>
+              <div py:if="img[2] in ['Stm', 'Ecstm', 'Afm']" class="id${img[1]}_bwd" style="height:100%; width: 50%; float:right;"><div class="numbertext">Backward</div></div>
+              <div py:if="img[2] in ['Image', 'Sem']" class="id${img[1]}_img" style="height:100%; width: 50%; margin-left: 25%;"></div>
               <div class="caption-container">
                 <p id="caption">ID: ${img[1]}</p>
               </div>

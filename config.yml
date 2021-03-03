@@ -4,7 +4,7 @@ import:
     single file import: No      # No: select folders containing files
     labjournal available: Yes
     ask for labjournal: Yes     # No: will look in parent folder
-    fallback method: image      # if not specified in labjournal e.g. ecstm, stm, afm, cv, raman, image
+    fallback method: Image      # if not specified in labjournal e.g. ecstm, stm, afm, cv, raman, image
     allowed file types: 
       - txt                     # Renishaw Raman files
       - SM4                     # RHK STM/ECSTM files

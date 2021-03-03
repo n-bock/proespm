@@ -2,7 +2,7 @@
 
 Part of proespm: Import of the yml configuration.
 
-(C) Copyright Nicolas Bock, licensed under GPL v3 
+(C) Copyright Nicolas Bock, licensed under GPL v3
 See LICENSE or http://www.gnu.org/licenses/gpl-3.0.html
 """
 
@@ -10,19 +10,21 @@ import os
 import sys
 import yaml
 
-config = yaml.safe_load(open(os.path.abspath(os.path.join(os.path.join(sys.path[0], os.pardir), 'config.yml'))))
+config_file = os.path.abspath(os.path.join(os.path.join(sys.path[0], os.pardir), 'config.yml'))
+with open(config_file) as f:
+    config = yaml.safe_load(f)
 
 is_single_f = config['import']['single file import']
 is_labj = config['import']['labjournal available']
 is_labj_prompt = config['import']['ask for labjournal']
-type = config['import']['fallback method']
+m_type = config['import']['fallback method']
 allowed_file_types = config['import']['allowed file types']
 labj_ws_name = config['import']['labjournal worksheet name']
 
 dialog_labj = {'title': 'Open labjournal',
                'initialdir': config['import']['initial directory prompt labjournal'],
                'filetypes': [('Excel after 2010 ', '.xlsx')]}
-               
+
 dialog_files = {'title': 'Open file(s)',
                 'initialdir': config['import']['initial directory prompt files'],
                 'filetypes': [('All files', '.*')]}

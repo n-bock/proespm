@@ -2,16 +2,16 @@
 
 Part of proespm: Scanning probe microscopy data.
 
-(C) Copyright Nicolas Bock, licensed under GPL v3 
+(C) Copyright Nicolas Bock, licensed under GPL v3
 See LICENSE or http://www.gnu.org/licenses/gpl-3.0.html
 """
 
-from util import importHelper, WIN32_helper
+from util import import_helper, win32_helper
 
-importHelper()
+import_helper()
 
 if 'path_gwyddion' not in locals():
-    WIN32_helper()
+    win32_helper()
 
 import gwy
 import gwyutils
@@ -21,45 +21,45 @@ import shutil
 import re
 import os
 import numpy as np
-from data import data
-from ec import ec
+from data import Data
+from ec import Ec
 
 
 
-class spm(data):
+class Spm(Data):
     """Represents any SPM data which can be handled with Gwyddion software.
-    
+
     The file format should be supported by the Gwyddion software.
     opt. arguments (str): tip, electrolyte, we, ce, re
-    
+
     Args:
         file (str): Path to ecstm file.
     """
-    
-    def __init__(self, file, **kwargs):
+
+    def __init__(self, m_file, **kwargs):
         self.surface = None
         self.tip = None
-        data.__init__(self, file, **kwargs)
-        self.setSettings()
-        self.container = gwy.gwy_file_load(self.file, gwy.RUN_NONINTERACTIVE)
+        Data.__init__(self, m_file, **kwargs)
+        self.set_settings()
+        self.container = gwy.gwy_file_load(self.m_file, gwy.RUN_NONINTERACTIVE)
         gwy.gwy_app_data_browser_add(self.container)
         self.img_topo_fwd = None
         self.img_topo_bwd = None
-        self.topo_fwd_ch = self.returnTopoFwdCh()
-        self.topo_bwd_ch = self.returnTopoBwdCh()
+        self.topo_fwd_ch = self.return_topo_fwd_ch()
+        self.topo_bwd_ch = self.return_topo_bwd_ch()
         self.size = None
         self.rotation = None
         self.line_time = None
-        self.extractMeta(gwyddion.getMetaIDs(self.container)[0])
-    
-    
-    def extractMeta(self, meta_id):
+        self.extract_meta(gwyddion.get_meta_ids(self.container)[0])
+
+
+    def extract_meta(self, meta_id):
         """ Extracts all the meta data from the gwyddion container.
-        
+
         Args:
             meta_id: Id where the meta data can be found.
         """
-        
+
         pattern = {'self.size': ['IMAGE CONTROL::Scan:Size::Scan Control::Scan size', 'Image size'],
                    'self.rotation': ['IMAGE CONTROL::Scan:Size::Scan Control::Scan Rotation', 'Rotation', 'Tilt'],
                    'self.line_time': ['IMAGE CONTROL::Scan:Size::Scan Control::Line time', 'Time/Line'],
@@ -68,13 +68,13 @@ class spm(data):
             for pat in pat_list:
                 try:
                     exec("{} = self.container[{}]['{}']".format(k, meta_id, pat))
-                except(KeyError):
+                except KeyError:
                     pass
-    
-    
-    def setSettings(self):
+
+
+    def set_settings(self):
         """Sets the setting which are supplied by the user editable config file."""
-        
+
         self.settings = gwy.gwy_app_settings_get()
         self.settings['/module/linematch/direction'] = int(gwy.ORIENTATION_HORIZONTAL)
         self.settings['/module/linematch/do_extract'] = config.do_extract
@@ -93,434 +93,435 @@ class spm(data):
         self.settings['/module/scale/proportional'] = config.proportional   
         self.settings['/module/scale/aspectratio'] = config.aspectratio
         self.settings['/module/asciiexport/add-comment'] = config.add_comment
-    
-    
-    def findChannel(self, match_list):
+
+
+    def find_channel(self, match_list):
         """Finds the right data channel within a Gwyddion container.
-        
+
         Args:
             container: Gwyddion container with several data channels.
             match_list (list): Names which will be searched. e.g. topography
-        
+
         Returns:
             chn_ids (list): List of channel IDs.
         """
-        
+
         self.ch_ids = []
         for self._data_title in match_list:
             self._match_ch = gwy.gwy_app_data_browser_find_data_by_title(self.container, self._data_title)
             self.ch_ids.extend(self._match_ch)
-        
+
         return self.ch_ids
-    
-    
-    def returnDataChTitles(self):
+
+
+    def return_data_ch_titles(self):
         """Returns data channel titel"""
-        
+
         self.ch = gwy.gwy_app_data_browser_get_data_ids(self.container)
         return [self.container['/' + str(i) + '/data/title'] for i in self.ch]
-    
-    
-    def returnMatchCh(self, pattern, channels):
+
+
+    def return_match_ch(self, pattern, channels):
         """Returns topography channels
-        
+
         Args:
             pattern: Pattern list, which identifies the desired channel.
             channels: List of channels.
-        
+
         Returns:
             ch (list): Channel ids.
         """
-        
+
         for pat in pattern:
             self.topo_ch = [ch for ch in channels if re.search(pat, ch)]
             if len(self.topo_ch) > 0:
                 break
-        
+
         return [gwy.gwy_app_data_browser_find_data_by_title(self.container, ch) for ch in self.topo_ch]
-    
-    
-    def returnTopoFwdCh(self):
+
+
+    def return_topo_fwd_ch(self):
         """Returns tophography forward channel"""
-        
-        self.ch_list = self.returnDataChTitles() 
-        
-        return self.returnMatchCh(['^Topo|Z.*[Ff]orward.*', 
-                                   '^Topo|Z.*[Rr]ight.*', 
-                                   '^Topo|Z.*[Ff]wd.*',
-                                   '(\d*)'], self.ch_list)
-    
-    
-    def returnTopoBwdCh(self):
+
+        self.ch_list = self.return_data_ch_titles()
+
+        return self.return_match_ch(['^Topo|Z.*[Ff]orward.*', 
+                                     '^Topo|Z.*[Rr]ight.*', 
+                                     '^Topo|Z.*[Ff]wd.*',
+                                     '(\d*)'], self.ch_list)
+
+
+    def return_topo_bwd_ch(self):
         """Returns topography backwards channel"""
-        
-        self.ch_list = self.returnDataChTitles() 
-        
-        return self.returnMatchCh(['^Topo|Z.*[Bb]ackward.*$', 
-                                   '^Topo|Z.*[Ll]eft.*$', 
-                                   '^Topo|Z.*[Bb]wd.*$'], self.ch_list)
-    
-    
-    def returnFileName(self, data):
+
+        self.ch_list = self.return_data_ch_titles() 
+
+        return self.return_match_ch(['^Topo|Z.*[Bb]ackward.*$', 
+                                     '^Topo|Z.*[Ll]eft.*$', 
+                                     '^Topo|Z.*[Bb]wd.*$'], self.ch_list)
+
+
+    def return_file_name(self, data):
         """Returns the file name Igor friendly.
-        
-        This is needed to make the SPM data functional with the IGOR 
+
+        This is needed to make the SPM data functional with the IGOR
         image processing addon.
-        
+
         "blahblah12345.xzy" --> "g1234_ori.t" - t: topo
         "BLAH111_123456.BLA" --> "g123456_ori.t" - t: topo
-        
+
         Args:
             data (str): Path to file.
         """
-        
+
         self.name = os.path.basename(data)
-        
+
         self.pat_out = ['^[a-z,A-Z]*.(\d{1,6})\..{3}$', r'g\1_ori.t',
                         '^[a-z,A-Z]*\d*_(\d{1,6})\..{3}$', r'g\1_ori.t']
         for pat in range(0, len(self.pat_out), 2):
-            self.name = re.sub(self.pat_out[pat], 
-                          self.pat_out[pat + 1], 
-                          self.name)     # (0,1), (2,3), (4,5) ...
+            self.name = re.sub(self.pat_out[pat],
+                               self.pat_out[pat + 1], 
+                               self.name)     # (0,1), (2,3), (4,5) ...
             # a pattern match has occured (should only ever be ONE)
-            if os.path.basename(data) != self.name: 
+            if os.path.basename(data) != self.name:
                 break
-        
+
         return self.name
-    
-    
-    def convertNP(self, channel_id):
-        """Converts a Gwyddion container to a Numpy array. 
-        
+
+
+    def convert_np(self, channel_id):
+        """Converts a Gwyddion container to a Numpy array.
+
         Args:
             channel_id (int): ID of channel which will be converted.
-        
+
         Returns:
             np_array (array): Numpy array of container channel.
         """
-        
+
         # Makes a data field (channel) current/active in the data browser.
         gwy.gwy_app_data_browser_select_data_field(self.container, channel_id)
         self.key = gwy.gwy_app_get_data_key_for_id(channel_id)
         self.name = gwy.gwy_name_from_key(self.key)
-        
+
         return gwyutils.data_field_data_as_array(self.container[self.name])
-    
-    
-    def processTopo(self, data_ch_id):
-        """Processes the data with Gwyddion Python module. 
-        
-        Gwyddion topography processing functions: see config file. 
-        Before saving the image, the colorrange needs adjustment. The 
-        colorrange settings are stored in the container for each spm 
+
+
+    def process_topo(self, data_ch_id):
+        """Processes the data with Gwyddion Python module.
+
+        Gwyddion topography processing functions: see config file.
+        Before saving the image, the colorrange needs adjustment. The
+        colorrange settings are stored in the container for each spm
         file. (see online gwyfile-format)
-        
+
         Args:
             data_ch_id (int): Channel of the container should be processed.
         """
         for ch in data_ch_id:
             gwy.gwy_app_data_browser_select_data_field(self.container, ch)
-            
+
             self.run_gwy_func = {gwy.RUN_IMMEDIATE: config.run_gwy_immediate_func}
             for k, values in self.run_gwy_func.iteritems():
                 [gwy.gwy_process_func_run(v, self.container, k) for v in values]
-            
+
             self.match_ch_topo = '/' + str(ch) + '/base/range-type'
             self.container[self.match_ch_topo] = 2
-    
-    
-    def processTopoFwd(self):
+
+
+    def process_topo_fwd(self):
         """Process forward topography"""
-        
+
         if self.topo_fwd_ch:
             for ch in self.topo_fwd_ch:
-                self.processTopo(ch)
-    
-    
-    def processTopoBwd(self):
+                self.process_topo(ch)
+
+
+    def process_topo_bwd(self):
         """Process backward topography"""
-        
+
         if self.topo_bwd_ch:
-            self.processTopo(self.topo_bwd_ch[0])
-    
-    
-    def saveTopoFwdImage(self, path):
+            self.process_topo(self.topo_bwd_ch[0])
+
+
+    def save_topo_fwd_image(self, path):
         """Save forward topography image file.
-        
+
         Args:
             path (str): File path where the file should be save.
         """
-        
+
         if bool(re.search('\d', self.ch_list[0])):
             for ch in self.topo_fwd_ch:
                 gwy.gwy_app_data_browser_select_data_field(self.container, ch[0])
-                self.img_topo_fwd = os.path.join(path, str(self.id) + '_' + str(ch[0]) + '_tf.' + config.img_type_out)
-                gwyddion.saveImageFile(self.container, self.img_topo_fwd)
+                self.img_topo_fwd = os.path.join(path, str(self.m_id) + '_' + str(ch[0]) + '_tf.' + config.img_type_out)
+                gwyddion.save_image_file(self.container, self.img_topo_fwd)
         else:
-            self.img_topo_fwd = os.path.join(path, str(self.id) + '_tf.' + config.img_type_out)
-            gwyddion.saveImageFile(self.container, self.img_topo_fwd)
-    
-    
-    def saveTopoBwdImage(self, path):
+            self.img_topo_fwd = os.path.join(path, str(self.m_id) + '_tf.' + config.img_type_out)
+            gwyddion.save_image_file(self.container, self.img_topo_fwd)
+
+
+    def save_topo_bwd_image(self, path):
         """Save backward topography image file.
-        
+
         Args:
             path (str): File path where the file should be save.
         """
-        
-        self.img_topo_bwd = os.path.join(path, str(self.id) + '_tb.' + config.img_type_out)
-        gwyddion.saveImageFile(self.container, self.img_topo_bwd)
-    
-    
-    def saveTopoFwdData(self, path):
+
+        self.img_topo_bwd = os.path.join(path, str(self.m_id) + '_tb.' + config.img_type_out)
+        gwyddion.save_image_file(self.container, self.img_topo_bwd)
+
+
+    def save_topo_fwd_data(self, path):
         """Save forward topography data file.
-        
+
         Args:
             path (str): File path where the file should be save.
         """
-        
-        self.dat_topo_fwd = os.path.join(path, str(self.id) + '_fwd.' + config.dat_type_out)
+
+        self.dat_topo_fwd = os.path.join(path, str(self.m_id) + '_fwd.' + config.dat_type_out)
         gwy.gwy_file_save(self.container, self.dat_topo_fwd, gwy.RUN_NONINTERACTIVE)
-        
+
         if config.dat_type_igor:
-            self.file_igor = os.path.join(path, 'g' + str(self.id) + '_ori.tf0')
+            self.file_igor = os.path.join(path, 'g' + str(self.m_id) + '_ori.tf0')
             shutil.move(self.dat_topo_fwd, self.file_igor)
-    
-    
-    def saveTopoBwdData(self, path):
+
+
+    def save_topo_bwd_data(self, path):
         """Save backward topography data file.
-        
+
         Args:
             path (str): File path where the file should be save.
         """
-        
-        self.dat_topo_bwd = os.path.join(path, str(self.id) + '_bwd.' + config.dat_type_out)
+
+        self.dat_topo_bwd = os.path.join(path, str(self.m_id) + '_bwd.' + config.dat_type_out)
         gwy.gwy_file_save(self.container, self.dat_topo_bwd, gwy.RUN_NONINTERACTIVE)
-        
+
         if config.dat_type_igor:
-            self.file_igor = os.path.join(path, 'g' + str(self.id) + '_ori.tb0')
+            self.file_igor = os.path.join(path, 'g' + str(self.m_id) + '_ori.tb0')
             shutil.move(self.dat_topo_bwd, self.file_igor)
-    
-    
-    def spmPixelSize(self):
+
+
+    def spm_pixel_size(self):
         """Returns the Image Size of the spm file in pixels."""
-        
+
         self.key = gwy.gwy_app_get_data_key_for_id(0)
         self.name = gwy.gwy_name_from_key(self.key)
         self.data_tmp = gwyutils.data_field_data_as_array(self.container[self.name])
-        
+
         return np.shape(self.data_tmp)
-    
-    
-    def flushMemory(self):
-        """Deletes all the data channels in a Gwyddion container. 
-        
-        This is needed as the memory will fill up quickly and a C memory 
+
+
+    def flush_memory(self):
+        """Deletes all the data channels in a Gwyddion container.
+
+        This is needed as the memory will fill up quickly and a C memory
         error will occur.
         """
-        
+
         for data_ch_id in gwy.gwy_app_data_browser_get_data_ids(self.container):
             self.key = gwy.gwy_app_get_data_key_for_id(data_ch_id)
             self.container.remove(self.key)
 
 
 
-class stm(spm):
-    """Represents any stm data. Compared to spm data it also stores 
+class Stm(Spm):
+    """Represents any stm data. Compared to spm data it also stores
        tunnel current and tunnel voltage"""
-    
-    def __init__(self, file, **kwargs):
-        spm.__init__(self, file, **kwargs)
-        self.i_tun = self.iTunMean()
-        self.u_tun = self.uTunMean()
-    
-    
-    def uTunLine(self):
+
+    def __init__(self, m_file, **kwargs):
+        Spm.__init__(self, m_file, **kwargs)
+        self.i_tun = self.return_i_tun_mean()
+        self.u_tun = self.return_u_tun_mean()
+
+
+    def u_tun_line(self):
         """Returns the average tunnel voltage value for each stm line.
-        
+
         So the 512x512 np array is getting averaged to 512x1,
-        it's resolution is determined by the line time of the 
+        it's resolution is determined by the line time of the
         stm image (50 - 300 ms). This could be improved in future by
         combination of forward and backward image data.
         """
-        
-        self._utun_ch_ids = spm.findChannel(self, ["*Utun*"])
+
+        self._utun_ch_ids = Spm.find_channel(self, ["*Utun*"])
         if len(self._utun_ch_ids) > 0:
-            self.u_tun_array = self.convertNP(self._utun_ch_ids[0])
+            self.u_tun_array = self.convert_np(self._utun_ch_ids[0])
             return np.average(self.u_tun_array, axis=0)
-    
-    
-    def uTunMean(self):
+
+
+    def return_u_tun_mean(self):
         """Returns the average tunnel voltage of one stm image."""
-        
-        if self.uTunLine() is not None:
-            return np.mean(self.uTunLine())
+
+        if self.u_tun_line() is not None:
+            return np.mean(self.u_tun_line())
         else:
-            self.meta_id = gwyddion.getMetaIDs(self.container)[0]
+            self.meta_id = gwyddion.get_meta_ids(self.container)[0]
             try:
                 self.u_tun_string = self.container[self.meta_id]['Tip voltage']
                 return re.sub('[^\d.]+', '', self.u_tun_string.replace(',', '.'))
-            except(KeyError):  
+            except KeyError:
                 return None
-    
-    
-    def saveUTunData(self, path):
+
+
+    def save_u_tun_data(self, path):
         """Save the tunnel voltage data to a file."""
-        
-        self.dat_utun_file = os.path.join(path, str(self.id) + "_utun." + config.dat_type_out)
-        np.savetxt(self.dat_utun_file, stm.uTunLine(self), delimiter = ';')
-        
+
+        self.dat_utun_file = os.path.join(path, str(self.m_id) + "_utun." + config.dat_type_out)
+        np.savetxt(self.dat_utun_file, Stm.u_tun_line(self), delimiter=';')
+
         if config.dat_type_igor:
-            self.file_utun_igor = os.path.join(path, 'g' + str(self.id) + '_ori.ut0')
+            self.file_utun_igor = os.path.join(path, 'g' + str(self.m_id) + '_ori.ut0')
             shutil.move(self.dat_utun_file, self.file_utun_igor)
-    
-    
-    def iTun(self):
+
+
+    def return_i_tun(self):
         """Numpy array of all tunnel current values in the stm image."""
-        
-        self._itun_ch_ids = spm.findChannel(self, ["*Current*"])
-        
+
+        self._itun_ch_ids = Spm.find_channel(self, ["*Current*"])
+
         if len(self._itun_ch_ids) is not 0:
-            return self.convertNP(self._itun_ch_ids[0])
+            return self.convert_np(self._itun_ch_ids[0])
         else:
             return np.full((512, 512), 0)
-    
-    
-    def iTunMean(self):
+
+
+    def return_i_tun_mean(self):
         """Return averaged tunnel current."""
-        
-        return np.mean(self.iTun())
-    
-    
-    def iTunDev(self):
+
+        return np.mean(self.return_i_tun())
+
+
+    def i_tun_dev(self):
         """Return standard deviation of tunnel current."""
-        
+
         return np.std(self.i_tun)
 
 
 
-class ecstm(stm, ec):
+class Ecstm(Stm, Ec):
     """Ecstm measurement data."""
-    
-    def __init__(self, file, **kwargs):
-        stm.__init__(self, file, **kwargs)
-        ec.__init__(self, file, **kwargs)
-        self._ecell_ch_id = spm.findChannel(self, ["*VEC*"])
-        self._icell_ch_id = spm.findChannel(self, ["*IEC*"] )
-        self.icell = self.iCellData()
+
+    def __init__(self, m_file, **kwargs):
+        Stm.__init__(self, m_file, **kwargs)
+        Ec.__init__(self, m_file, **kwargs)
+        self._ecell_ch_id = Spm.find_channel(self, ["*VEC*"])
+        self._icell_ch_id = Spm.find_channel(self, ["*IEC*"])
+        self.icell = self.i_cell_data()
         self.file_ec_igor = None
         self.file_ic_igor = None
-    
-    
-    def returnEcellChannel(self):
+
+
+    def return_e_cell_ch(self):
         """Return cell potential channel."""
-        
-        return self.returnDataChTitle(self._ecell_ch_id)
-    
-    
-    def returnIcellChannel(self):
+
+        return self.return_data_ch_title(self._ecell_ch_id)
+
+
+    def return_i_cell_ch(self):
         """Return cell current channel."""
-        
-        return self.returnDataChTitle(self._icell_ch_id)
-    
-    
-    def eCellData(self):
+
+        return self.return_data_ch_title(self._icell_ch_id)
+
+
+    def e_cell_data(self):
         """Electrochemical cell potential data.
-        
+
         So the 512x512 np array is getting averaged to 512x1,
-        it's resolution is determined by the line time of the 
+        it's resolution is determined by the line time of the
         stm image (50 - 300 ms). This could be improved in future by
         combination of forward and backward image data.
         """
-        
+
         if len(self._ecell_ch_id) > 0:
-            self.e_cell_data = self.convertNP(self._ecell_ch_id[0])
+            self.e_cell_data = self.convert_np(self._ecell_ch_id[0])
             return np.average(self.e_cell_data, axis=0).tolist()
         else:
             return None
-    
-    
-    def iCellData(self):
+
+
+    def i_cell_data(self):
         """Electrochemical cell current data.
-        
+
         So the 512x512 np array is getting averaged to 512x1,
-        it's resolution is determined by the line time of the 
+        it's resolution is determined by the line time of the
         stm image (50 - 300 ms). This could be improved in future by
         combination of forward and backward image data.
         """
-        
+
         if len(self._icell_ch_id) > 0:
-            self.i_cell_data = self.convertNP(self._icell_ch_id[0])
+            self.i_cell_data = self.convert_np(self._icell_ch_id[0])
             return np.average(self.i_cell_data, axis=0).tolist()
         else:
             return None
-    
-    
-    def saveEcData(self, path):
-        """Save electrochemical cell potential to data file."""
-        
-        self.ec_data_file = os.path.join(path, str(self.id) + "_ec" + "." + config.dat_type_out)
-        np.savetxt(self.ec_data_file, ecstm.eCellData(self), delimiter=';')
-        
-        if config.dat_type_igor:
-            self.file_ec_igor = os.path.join(path, 'g' + str(self.id) + '_ori.ec0')
-            shutil.move(self.ec_data_file, self.file_ec_igor)
-    
-    
-    def saveIcData(self, path):
-        """Save electrochemical cell current to data file."""
-        
-        self.ic_data_file = os.path.join(path, str(self.id) + "_ic" + "." + config.dat_type_out)
-        np.savetxt(self.ic_data_file, self.icell, delimiter=';')
-        
-        if config.dat_type_igor:
-            self.file_ic_igor = os.path.join(path, 'g' + str(self.id) + '_ori.ic0')
-            shutil.move(self.ic_data_file, self.file_ic_igor)
-    
 
-class afm(spm):
+
+    def save_ec_data(self, path):
+        """Save electrochemical cell potential to data file."""
+
+        self.ec_data_file = os.path.join(path, str(self.m_id) + "_ec" + "." + config.dat_type_out)
+        np.savetxt(self.ec_data_file, Ecstm.e_cell_data(self), delimiter=';')
+
+        if config.dat_type_igor:
+            self.file_ec_igor = os.path.join(path, 'g' + str(self.m_id) + '_ori.ec0')
+            shutil.move(self.ec_data_file, self.file_ec_igor)
+
+
+    def save_ic_data(self, path):
+        """Save electrochemical cell current to data file."""
+
+        self.ic_data_file = os.path.join(path, str(self.m_id) + "_ic" + "." + config.dat_type_out)
+        np.savetxt(self.ic_data_file, self.icell, delimiter=';')
+
+        if config.dat_type_igor:
+            self.file_ic_igor = os.path.join(path, 'g' + str(self.m_id) + '_ori.ic0')
+            shutil.move(self.ic_data_file, self.file_ic_igor)
+
+
+class Afm(Spm):
     """Atomic force mircoscopy."""
     
-    def __init__(self, file, **kwargs):
-        spm.__init__(self, file, **kwargs)
-    
-    
-    def returnPhaseCh(self):
+    def __init__(self, m_file, **kwargs):
+        Spm.__init__(self, m_file, **kwargs)
+
+
+    def return_phase_ch(self):
         """Return phase channel."""
-        
-        return self.findChannel(["*Phase*"])
-    
-    
-    def returnPhaseFwdCh(self):
+
+        return self.find_channel(["*Phase*"])
+
+
+    def return_phase_fwd_ch(self):
         """Return forward phase channel."""
+
         self.pat_fwd = ['^.*[F||f]orward.*$', '^.*[R||r]ight.*$', '.*fwd.*']
-        for ch in self.returnPhaseCh():
-            self.gen = (ch for pat in self.pat_fwd if re.match(pat, self.returnDataChTitle(ch)))
+        for ch in self.return_phase_ch():
+            self.gen = (ch for pat in self.pat_fwd if re.match(pat, self.return_data_ch_title(ch)))
             for pat in self.gen:
                 return ch
-    
-    
-    def returnPhaseBwdCh(self):
+
+
+    def return_phase_bwd_ch(self):
         """Return backward phase channel."""
-        
+
         self.pat_bwd = ['^.*[B||b]ackward.*$', '^.*[L||l]eft.*$', '.*bwd.*']
         for ch in self.returnPhaseCh():
-            self.gen = (ch for pat in self.pat_fwd if re.match(pat, self.returnDataChTitle(ch)))
+            self.gen = (ch for pat in self.pat_fwd if re.match(pat, self.return_data_ch_title(ch)))
             for pat in self.gen:
                 return ch
-    
-    
-    def savePhaseFwdImage(self, path):
+
+
+    def save_phase_fwd_image(self, path):
         """Save forward phase to image file."""
-        
-        gwy.gwy_app_data_browser_select_data_field(self.container, self.returnPhaseFwdCh())
-        self.img_phase_fwd = os.path.join(path, str(self.id) + '_pf.' + config.img_type_out)
-        gwyddion.saveImageFile(self.container, self.img_phase_fwd)
-    
-    
-    def savePhaseBwdImage(self, path):
+
+        gwy.gwy_app_data_browser_select_data_field(self.container, self.return_phase_fwd_ch())
+        self.img_phase_fwd = os.path.join(path, str(self.m_id) + '_pf.' + config.img_type_out)
+        gwyddion.save_image_file(self.container, self.img_phase_fwd)
+
+
+    def save_phase_bwd_image(self, path):
         """Save backward phase to image file."""
-        
-        gwy.gwy_app_data_browser_select_data_field(self.container, self.returnPhaseBwdCh())
-        self.img_phase_bwd = os.path.join(path, str(self.id) + '_pb.' + config.img_type_out)
-        gwyddion.saveImageFile(self.container, self.img_phase_bwd)
+
+        gwy.gwy_app_data_browser_select_data_field(self.container, self.return_phase_bwd_ch())
+        self.img_phase_bwd = os.path.join(path, str(self.m_id) + '_pb.' + config.img_type_out)
+        gwyddion.save_image_file(self.container, self.img_phase_bwd)
