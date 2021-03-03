@@ -1,6 +1,7 @@
 proespm - Image and Data Processing
 ====================================
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/n-bock/proespm/master.svg)](https://results.pre-commit.ci/latest/github/n-bock/proespm/master)
+[![Pylint](https://github.com/n-bock/proespm/actions/workflows/pylint.yml/badge.svg)](https://github.com/n-bock/proespm/actions/workflows/pylint.yml)
 
 Processing of electrochemical, spectral and imaging files with optional import
 of labjournals. So far the following measurements can be processed: STM, ECSTM,
@@ -28,7 +29,7 @@ Installation for Script Mode
 **Linux**
 
     sudo apt-get install gwyddion, python2.7, pip
-    pip2 --install numpy, genshi, pandas, xlrd, bokeh, pyyaml, pint
+    pip install -r requirements.txt
 
 **Windows**
 1) Use standard settings when asked
@@ -39,7 +40,7 @@ Installation for Script Mode
 1) Install [Gwyddion 2.55.win32](http://gwyddion.net/download.php#stable-windows)
 1) Open cmd and navigate with cd to Python27\scripts
 
-        pip install numpy, pandas, genshi, xlrd, bokeh, pyyaml, pint
+    pip install -r requirements.txt
 
 
 Contact and Contribution
