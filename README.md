@@ -4,7 +4,7 @@ proespm - Image and Data Processing
 
 Processing of electrochemical, spectral and imaging files with optional import
 of labjournals. So far the following measurements can be processed: STM, ECSTM,
-AFM, SEM, CV, Chronoamperometry, XPS, Raman data and plain images.
+AFM, SEM, CV, Chronoamperometry, XPS, Raman data, and Optical Microscope images.
 
 Usage as Script
 ----------------
