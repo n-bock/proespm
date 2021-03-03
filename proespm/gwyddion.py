@@ -10,7 +10,7 @@ from util import import_helper, win32_helper
 
 import_helper()
 
-if 'path_gwyddion' not in locals():
+if "path_gwyddion" not in locals():
     win32_helper()
 
 import gwy
@@ -21,8 +21,9 @@ import config
 def get_meta_ids(container):
     """Returns the IDs where meta data is stored within a Gwyddion file."""
 
-    return list(filter(lambda x: 'Container' in type(container[x]).__name__, container.keys()))
-
+    return list(
+        filter(lambda x: "Container" in type(container[x]).__name__, container.keys())
+    )
 
 
 def save_image_file(container, save_file):

@@ -3,10 +3,10 @@
 
   Part of proespm: HTML template.
 
-  (C) Copyright Nicolas Bock, licensed under GPL v3 
+  (C) Copyright Nicolas Bock, licensed under GPL v3
   See LICENSE or http://www.gnu.org/licenses/gpl-3.0.html
   """
-  
+
   import base64
   import html
 ?>
@@ -504,7 +504,7 @@
               </style>
               <div onclick="openModal();currentSlide(${[x[0] for x in list_img_mod if x[1] == item.m_id][0]})" class="id${item.m_id}_bwd hover-shadow cursor" title="Click for zoomed view"></div>
             </div>
-            
+
           <table style="margin-bottom:20px">
           <tr>
             <th>Datetime</th>
@@ -644,9 +644,9 @@
                               y_axis_label = 'I [A]',
                               sizing_mode = 'scale_width',
                               tools = 'pan, wheel_zoom, box_zoom, crosshair, save, reset')
-                
+
                 source = ColumnDataSource(item.cvdata)
-                
+
                 for cycle in xrange(1, int(item.sweeps)+1):
                     plot.circle(source = source,
                                 x = 'Cycle ' + str(cycle) + ': Ecell',
@@ -654,7 +654,7 @@
                                 size = 3,
                                 color = Spectral11[cycle],
                                 legend_label = 'Cycle ' + str(cycle))
-                
+
                 plot.toolbar.active_drag = "auto"
                 plot.toolbar.active_scroll = "auto"
                 plot.toolbar.active_inspect = None
@@ -1088,28 +1088,28 @@
             <a class="next" onclick="plusSlides(1)" title="move to next image">&gt;</a>
           </div>
         </div>
-    
+
     <script>
         function openModal() {
           document.getElementById('myModal').style.display = "block";
         }
-        
+
         function closeModal() {
           document.getElementById('myModal').style.display="none";
         }
-        
+
         var slideIndex = 1;
         showSlides(slideIndex);
-        
-        
+
+
         function plusSlides(n) {
           showSlides(slideIndex += n);
         }
-        
+
         function currentSlide(n) {
           showSlides(slideIndex = n);
         }
-        
+
         function showSlides(n) {
           var i;
           var slides = document.getElementsByClassName("mySlides");
@@ -1121,42 +1121,42 @@
           }
           slides[slideIndex-1].style.display = "block";
         }
-        
+
         document.onkeydown = function(e) {
             e = e || window.event;
             switch(e.which || e.keyCode) {
                 case 27: //ESC
                 closeModal();
                 break;
-                
+
                 case 38: // up
                 plusSlides(-1);
                 break;
-                
+
                 case 40: // down
                 plusSlides(1);
                 break;
-                
+
                 case 37: // left
                 plusSlides(-1);
                 break;
-                
+
                 case 38: // up
                 plusSlides(-2);
                 break;
-                
+
                 case 39: // right
                 plusSlides(1);
                 break;
-                
-                
+
+
                 default: return; // exit this handler for other keys
             }
             e.preventDefault(); // prevent the default action (scroll / move caret)
         };
-        
+
         var filelink = window.location.href;
-        
+
         function iLike(x, id, string) {
             x.classList.toggle("like");
             var x = document.getElementById(string);
@@ -1169,9 +1169,9 @@
                 x.innerHTML = "Like it?";
                 document.getElementById('favorites').innerHTML = document.getElementById('favorites').innerHTML.replace(link,'').trim();
             }
-        
+
         }
-        
+
     </script>
   </body>
 </html>

@@ -2,7 +2,7 @@
 
 Part of proespm: Helper functions.
 
-(C) Copyright Nicolas Bock, licensed under GPL v3 
+(C) Copyright Nicolas Bock, licensed under GPL v3
 See LICENSE or http://www.gnu.org/licenses/gpl-3.0.html
 """
 
@@ -42,26 +42,35 @@ def extract_value(nested_list, to_be_extracted):
     """
 
     output = []
-    [output.append([x[0], re.search(x[2], string).group(1)]) for string in to_be_extracted for x in nested_list if x[1] in string]
+    [
+        output.append([x[0], re.search(x[2], string).group(1)])
+        for string in to_be_extracted
+        for x in nested_list
+        if x[1] in string
+    ]
 
     return output
 
 
 def import_helper():
     """Adds current working directory to 'sys.path'."""
-    
+
     if os.getcwd() not in sys.path:
         sys.path.append(os.getcwd())
 
 
 def win32_helper():
     """Import 'gwy' module painless for Win32."""
-    
-    if 'win32' in sys.platform:
-        path_gwyddion = find_gwyddion(config.win32_path_gwyddion_hint, config.win32_search_for)
-        if not sys.path.__contains__(path_gwyddion): 
+
+    if "win32" in sys.platform:
+        path_gwyddion = find_gwyddion(
+            config.win32_path_gwyddion_hint, config.win32_search_for
+        )
+        if not sys.path.__contains__(path_gwyddion):
             sys.path.append(path_gwyddion)
-            path_gwyutils = os.path.join(os.path.split(path_gwyddion)[0], config.win32_gwyutils_rel_path)
+            path_gwyutils = os.path.join(
+                os.path.split(path_gwyddion)[0], config.win32_gwyutils_rel_path
+            )
             sys.path.append(path_gwyutils)
     else:
         sys.path.append(config.linux_gwyutils_path)
@@ -77,7 +86,7 @@ def read_lines(m_file, lines):
 
     output = {}
     print(m_file)
-    with open(m_file) as f: 
+    with open(m_file) as f:
         for i, line in enumerate(f):
             for j in lines:
                 if i == j:
@@ -87,7 +96,9 @@ def read_lines(m_file, lines):
     return output
 
 
-def progress_bar(iteration, total, prefix='', suffix='', decimals=1, length=100, fill='|'):
+def progress_bar(
+    iteration, total, prefix="", suffix="", decimals=1, length=100, fill="|"
+):
     """Call in a loop to create terminal progress bar
 
     Copyright by Cris Luengo and Greenstick (stackoverflow)
@@ -104,8 +115,8 @@ def progress_bar(iteration, total, prefix='', suffix='', decimals=1, length=100,
 
     percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
     filled_length = int(length * iteration // total)
-    bar = fill * filled_length + '-' * (length - filled_length)
-    print('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end='\r')
+    bar = fill * filled_length + "-" * (length - filled_length)
+    print("\r%s |%s| %s%% %s" % (prefix, bar, percent, suffix), end="\r")
     # Print New Line on Complete
     if iteration == total:
         print()
@@ -122,7 +133,7 @@ def is_file_type(file_name, file_type):
         bool: True for s (filetype is the asked one), False otherwise.
     """
 
-    return re.search('.*\.(.*)$', file_name).group(1) == file_type
+    return re.search(".*\.(.*)$", file_name).group(1) == file_type
 
 
 def query_yes_no(question, default="yes"):
@@ -138,8 +149,7 @@ def query_yes_no(question, default="yes"):
     Copyright http://code.activestate.com/recipes/577058/
     """
 
-    valid = {"yes": True, "y": True, "ye": True,
-             "no": False, "n": False}
+    valid = {"yes": True, "y": True, "ye": True, "no": False, "n": False}
     if default is None:
         prompt = " [y/n] "
     elif default == "yes":
@@ -152,16 +162,15 @@ def query_yes_no(question, default="yes"):
     while True:
         sys.stdout.write(question + prompt)
         choice = raw_input().lower()
-        if default is not None and choice == '':
+        if default is not None and choice == "":
             return valid[default]
         elif choice in valid:
             return valid[choice]
         else:
-            sys.stdout.write("Please respond with 'yes' or 'no' "
-                             "(or 'y' or 'n').\n")
+            sys.stdout.write("Please respond with 'yes' or 'no' " "(or 'y' or 'n').\n")
 
 
-def multiple_move(source, destination, filetypes, hierarchy='', subfolder_name='sub'):
+def multiple_move(source, destination, filetypes, hierarchy="", subfolder_name="sub"):
     """Moves all files of a certain type to specified destination folder.
 
     It can optionaly take a hierarchy. You will be prompted and asked if you want
@@ -180,7 +189,7 @@ def multiple_move(source, destination, filetypes, hierarchy='', subfolder_name='
     s = False
     for filetype in filetypes:
         list_dir = (x for x in os.listdir(source) if x.endswith(filetype))
-        if hierarchy == 'sub':
+        if hierarchy == "sub":
             sub_destination = os.path.join(destination, subfolder_name)
             if not os.path.exists(sub_destination):
                 os.makedirs(sub_destination)
@@ -190,14 +199,21 @@ def multiple_move(source, destination, filetypes, hierarchy='', subfolder_name='
                     shutil.move(os.path.join(source, item), sub_destination)
                     s = True
                 except shutil.Error:
-                    if s or config.force_override or query_yes_no(filetype + ' already exist. Overwrite all?'):
-                        shutil.move(os.path.join(source, item), os.path.join(sub_destination, os.path.basename(item)))
+                    if (
+                        s
+                        or config.force_override
+                        or query_yes_no(filetype + " already exist. Overwrite all?")
+                    ):
+                        shutil.move(
+                            os.path.join(source, item),
+                            os.path.join(sub_destination, os.path.basename(item)),
+                        )
                         s = True
                     else:
                         s = False
                         break
 
-        elif hierarchy == 'parent':
+        elif hierarchy == "parent":
             parent_destination = os.path.split(destination)[0]
 
             for item in list_dir:
@@ -205,8 +221,14 @@ def multiple_move(source, destination, filetypes, hierarchy='', subfolder_name='
                     shutil.move(os.path.join(source, item), parent_destination)
                     s = True
                 except shutil.Error:
-                    if s or config.force_override or query_yes_no(filetype + ' already exist. Overwrite all?'):
-                        dst_filename = os.path.join(parent_destination, os.path.basename(item))
+                    if (
+                        s
+                        or config.force_override
+                        or query_yes_no(filetype + " already exist. Overwrite all?")
+                    ):
+                        dst_filename = os.path.join(
+                            parent_destination, os.path.basename(item)
+                        )
                         shutil.move(os.path.join(source, item), dst_filename)
                         s = True
                     else:
@@ -217,12 +239,18 @@ def multiple_move(source, destination, filetypes, hierarchy='', subfolder_name='
                 try:
                     shutil.move(os.path.join(source, item), destination)
                 except shutil.Error:
-                    if s or config.force_override or query_yes_no(filetype + ' already exist. Overwrite all?'):
-                        shutil.move(os.path.join(source, item), os.path.join(destination, os.path.basename(item)))
+                    if (
+                        s
+                        or config.force_override
+                        or query_yes_no(filetype + " already exist. Overwrite all?")
+                    ):
+                        shutil.move(
+                            os.path.join(source, item),
+                            os.path.join(destination, os.path.basename(item)),
+                        )
                         s = True
                     else:
                         s = False
                         break
 
     return s
-

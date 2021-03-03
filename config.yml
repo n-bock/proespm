@@ -5,7 +5,7 @@ import:
     labjournal available: Yes
     ask for labjournal: Yes     # No: will look in parent folder
     fallback method: Image      # if not specified in labjournal e.g. ecstm, stm, afm, cv, raman, image
-    allowed file types: 
+    allowed file types:
       - txt                     # Renishaw Raman files
       - SM4                     # RHK STM/ECSTM files
       - nid                     # Nanosurf STM/AFM files
@@ -23,13 +23,13 @@ import:
     initial directory prompt files: G:\Surface-Microscopy\SM-ECSTM\Data
 
 
-spm:    
+spm:
     # Functions and parameters to run on the spm data
     immediate functions:
         - level
         - align_rows
         - fix_zero
-    
+
     # Use "view log" within Gwyddion for parameters:
     align rows:
         max degree: 3
@@ -37,29 +37,29 @@ spm:
         do plot: No
         method: 0
         masking: 2
-    
+
     median background:
         radius: 9
         do extract: No
-    
+
     rotate:
         angle: 0
         create mask: No
         interp: 2
         resize: 1
         show grid: No
-    
+
     scale:
         interp: 2
         proportional: 1
         aspectratio: 1
-    
+
     asciiexport:
         add comment: Yes
 
 
 export:
-    create html report: Yes 
+    create html report: Yes
     image export modification dialog: No
     server path: file://///nas.ads.mwn.de/tuch/pc1/Surface-Microscopy/SM-ECSTM    # Create overlap with source directory
     move html to parent and rest in subfolder: Yes
@@ -77,4 +77,3 @@ system:
     win32 gwyutils rel path: share\gwyddion\pygwy
     linux gwyutils path: /usr/share/gwyddion/pygwy
     debug modus: No
-
