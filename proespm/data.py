@@ -12,7 +12,7 @@ import datetime
 
 
 def m_id(m_file):
-    """ Creates ID for each measurement from data file name.
+    """Creates ID for each measurement from data file name.
 
     For SM4 and NID files IDs will be created from the digits. For all other
     file types just the file ending will be stripped.

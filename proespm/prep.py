@@ -20,7 +20,7 @@ from util import query_yes_no
 
 
 def prompt_folder():
-    """ Prompt for folder in which the data is stored.
+    """Prompt for folder in which the data is stored.
 
     Returns:
         input_files (list): Full path to the files in a list.
@@ -55,7 +55,7 @@ def prompt_folder():
 
 
 def prompt_files():
-    """ Prompt for the data with Tkinter GUI.
+    """Prompt for the data with Tkinter GUI.
 
     Returns:
         input_files (list): Full path to the files in a list.
@@ -84,7 +84,7 @@ def prompt_files():
 
 
 def prompt_labjournal():
-    """ Prompt for Labjournal with Tkinter GUI.
+    """Prompt for Labjournal with Tkinter GUI.
 
     Returns:
         labj (Pandas DF): Labjournal imported from xlsx file.
@@ -113,7 +113,7 @@ def prompt_labjournal():
 
 
 def grab_labjournal(path_labj):
-    """ Grabs the labjournal from the given path
+    """Grabs the labjournal from the given path
 
     Args:
         path_labjournal (str): Path to the folder, where the labjournal is.
@@ -137,7 +137,7 @@ def grab_labjournal(path_labj):
 
 
 def check_network_file(input_file):
-    """ Check if files are on a network drive.
+    """Check if files are on a network drive.
 
     Paths starting with double backflash or "[F-Z]:/*" are most likely
     network share.
@@ -156,7 +156,7 @@ def check_network_file(input_file):
 
 
 def move_files_temp(input_files, temp_dir):
-    """ Move files to a new created temporary folder on local drive.
+    """Move files to a new created temporary folder on local drive.
 
     The function will first check, if there is temporary location on the OS.
     A folder 'python_xyz' will be created, where the files are moved to. The
@@ -182,7 +182,7 @@ def move_files_temp(input_files, temp_dir):
 
 
 def copy_user_config(src_dir):
-    """ Moves the UserConfig file along with the with processed data.
+    """Moves the UserConfig file along with the with processed data.
 
     Args:
         src_dir (str): Path to source directory.
@@ -198,7 +198,7 @@ def copy_user_config(src_dir):
 
 
 def par_file_name(data):
-    """ Creates filename for Omicron par files.
+    """Creates filename for Omicron par files.
 
     Args:
         data (str): path to file which should be read.
@@ -236,7 +236,7 @@ def par_file_name(data):
 
 
 def stm_file_name(data):
-    """ Creates filename for spm files.
+    """Creates filename for spm files.
 
     Output file renaming for non-SCALA files: re.sub(FROM, TO, var).
 

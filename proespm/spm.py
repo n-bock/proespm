@@ -52,7 +52,7 @@ class Spm(Data):
         self.extract_meta(gwyddion.get_meta_ids(self.container)[0])
 
     def extract_meta(self, meta_id):
-        """ Extracts all the meta data from the gwyddion container.
+        """Extracts all the meta data from the gwyddion container.
 
         Args:
             meta_id: Id where the meta data can be found.
@@ -345,7 +345,7 @@ class Spm(Data):
 
 class Stm(Spm):
     """Represents any stm data. Compared to spm data it also stores
-       tunnel current and tunnel voltage"""
+    tunnel current and tunnel voltage"""
 
     def __init__(self, m_file, **kwargs):
         Spm.__init__(self, m_file, **kwargs)
