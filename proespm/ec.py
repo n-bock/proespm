@@ -98,7 +98,7 @@ class Cv(Ec):
 
         self.m_id = self.m_id + "; " + id_new
         self.remark = self.remark + "; " + remark
-        self.sweeps = int(re.search("\d\_(.*\d)$", id_new).group(1).strip(" "))
+        self.sweeps = int(re.search(r"\d\_(.*\d)$", id_new).group(1).strip(" "))
         self.cycle = "Cycle " + str(self.sweeps)
         self.ecell_new = pandas.DataFrame({self.cycle + ": Ecell": data[:, 1].tolist()})
         self.cvdata = pandas.concat([self.cvdata, self.ecell_new], axis=1)
@@ -114,10 +114,10 @@ class Cv(Ec):
 
         self.lines = util.read_lines(m_file, range(96))
         self.extract_par = [
-            ["self.vs", "Start", "Start\s(\S*.\S)"],
-            ["self.v1", "V1", "V1\s(\S*.\S)"],
-            ["self.v2", "V2", "V2\s(\S*.\S)"],
-            ["self.rate", "Rate", "Rate\s(\S*.\S)"],
+            [r"self.vs", r"Start", r"Start\s(\S*.\S)"],
+            [r"self.v1", r"V1", r"V1\s(\S*.\S)"],
+            [r"self.v2", r"V2", r"V2\s(\S*.\S)"],
+            [r"self.rate", r"Rate", r"Rate\s(\S*.\S)"],
         ]
 
         for x in util.extract_value(self.extract_par, self.lines.values()):
@@ -164,12 +164,12 @@ class Cv(Ec):
         self.lines = util.read_lines(m_file, range(53))
         if "Cyclic Voltammetry" in self.lines[3]:
             self.extract_par = [
-                ["self.vs", "Ei", "Ei\s\(V\)\s*(\S*)"],
-                ["self.v1", "E1", "E1\s\(V\)\s*(\S*)"],
-                ["self.v2", "E2", "E2\s\(V\)\s*(\S*)"],
-                ["self.rate", "dE/dt  ", "dt\s*(\S*)"],
-                ["self.sweeps", "nc cycles", "cycles\s*(\S*)"],
-                ["self.skiprows", "Nb header lines", "lines\s:\s*(\d*)\s*"],
+                [r"self.vs", r"Ei", r"Ei\s\(V\)\s*(\S*)"],
+                [r"self.v1", r"E1", r"E1\s\(V\)\s*(\S*)"],
+                [r"self.v2", r"E2", r"E2\s\(V\)\s*(\S*)"],
+                [r"self.rate", r"dE/dt  ", r"dt\s*(\S*)"],
+                [r"self.sweeps", r"nc cycles", r"cycles\s*(\S*)"],
+                [r"self.skiprows", r"Nb header lines", r"lines\s:\s*(\d*)\s*"],
             ]
 
             for x in util.extract_value(self.extract_par, self.lines.values()):
@@ -250,13 +250,13 @@ class Peis(Ec):
         self.lines = util.read_lines(m_file, range(83))
         if "Potentio Electrochemical Impedance Spectroscopy" in self.lines[3]:
             self.extract_par = [
-                ["self.ecell", "E (V)", "E\s\(V\)\s*(\S*)"],
-                ["self.fi", "fi                  ", "^fi\s*(\S*)"],
-                ["self.fi_unit", "unit fi", "\sfi\s*(\S*)"],
-                ["self.ff", "ff                  ", "^ff\s*(\S*)"],
-                ["self.ff_unit", "unit ff", "\sff\s*(\S*)"],
-                ["self.amplitude", "Va", "\(mV\)\s*(\S*)"],
-                ["self.skiprows", "Nb header lines", "lines\s:\s*(\d*)\s*"],
+                [r"self.ecell", r"E (V)", r"E\s\(V\)\s*(\S*)"],
+                [r"self.fi", r"fi                  ", r"^fi\s*(\S*)"],
+                [r"self.fi_unit", r"unit fi", r"\sfi\s*(\S*)"],
+                [r"self.ff", r"ff                  ", r"^ff\s*(\S*)"],
+                [r"self.ff_unit", r"unit ff", r"\sff\s*(\S*)"],
+                [r"self.amplitude", r"Va", r"\(mV\)\s*(\S*)"],
+                [r"self.skiprows", r"Nb header lines", r"lines\s:\s*(\d*)\s*"],
             ]
 
             for x in util.extract_value(self.extract_par, self.lines.values()):
@@ -295,8 +295,8 @@ class Chrono(Ec):
         self.lines = util.read_lines(m_file, range(57))
         if "Chrono" in self.lines[3]:
             self.extract_par = [
-                ["self.ecell", "Ei", "Ei\s\(V\)\s*(\S*)"],
-                ["self.skiprows", "Nb header lines", "lines\s:\s*(\d*)\s*"],
+                [r"self.ecell", r"Ei", r"Ei\s\(V\)\s*(\S*)"],
+                [r"self.skiprows", r"Nb header lines", r"lines\s:\s*(\d*)\s*"],
             ]
 
             for x in util.extract_value(self.extract_par, self.lines.values()):
