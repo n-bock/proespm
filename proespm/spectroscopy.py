@@ -27,7 +27,7 @@ class Raman(Spectroscopy):
         self.import_file(self.m_file)
 
     def import_raman(self, m_file):
-        """ Import Renishaw Raman data.
+        """Import Renishaw Raman data.
 
         Args:
             file (str): Full path to the data file.
@@ -38,7 +38,7 @@ class Raman(Spectroscopy):
         self.intensity = self.data[:, 1].tolist()
 
     def import_file(self, m_file):
-        """ Decide which import function to apply.
+        """Decide which import function to apply.
 
         Args:
             file (str): Full path to the data file.
@@ -65,10 +65,10 @@ class Xps(Spectroscopy):
         self.import_file(m_file)
 
     def import_e20_xps(self, m_file):
-        """ Import xps data from Agilent VEE.
+        """Import xps data from Agilent VEE.
 
-            Args:
-                file (str): Full path to the data file.
+        Args:
+            file (str): Full path to the data file.
         """
 
         self.data = np.loadtxt(m_file, usecols=(0, 1), delimiter=",")
@@ -76,10 +76,10 @@ class Xps(Spectroscopy):
         self.intensity = self.data[:, 1].tolist()
 
     def import_phi_xps(self, m_file):
-        """ Import xps data from PHI xps setups.
+        """Import xps data from PHI xps setups.
 
-            Args:
-                file (str): Full path to the data file.
+        Args:
+            file (str): Full path to the data file.
         """
 
         self.data = np.loadtxt(m_file, usecols=(0, 1), delimiter=",", skiprows=4)
@@ -87,7 +87,7 @@ class Xps(Spectroscopy):
         self.intensity = self.data[:, 1].tolist()
 
     def import_file(self, m_file):
-        """ Decide which import function to apply.
+        """Decide which import function to apply.
 
         Args:
             file (str): Full path to the data file.
@@ -102,7 +102,7 @@ class Xps(Spectroscopy):
             self.import_phi_xps(m_file)
 
     def correct_work_function(self, offset):
-        """ Adds corrected XPS data by work function of sample.
+        """Adds corrected XPS data by work function of sample.
 
         Args:
             offset (float): Work function of sample in [eV].

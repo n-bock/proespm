@@ -22,11 +22,11 @@ ureg = UnitRegistry()
 class Ec(Data):
     """Represents any electrochemical conditions.
 
-     As optional parameters surface (str), remark (str), electrolyte (str),
-     pH (float), currentRange (int), re (str), ce (str) etc. can be given.
-     For further details see or adjust template.html which will end up in
-     the html report.
-     """
+    As optional parameters surface (str), remark (str), electrolyte (str),
+    pH (float), currentRange (int), re (str), ce (str) etc. can be given.
+    For further details see or adjust template.html which will end up in
+    the html report.
+    """
 
     def __init__(self, m_file, **kwargs):
         self.electrolyte = None

@@ -34,7 +34,7 @@ os.chdir(sys.path[0])
 
 
 def prompt():
-    """ Prompts for the files, which will be processed.
+    """Prompts for the files, which will be processed.
 
     Returns:
         input_fs (list): List of all files (full path) selected by the user.
@@ -91,7 +91,7 @@ def prompt():
 
 
 def prepare(src_dir, input_fs, temp_dir):
-    """ Preparation of all the files for the actual data manipulation.
+    """Preparation of all the files for the actual data manipulation.
 
     Args:
         src_dir (str): Source directory.
@@ -125,7 +125,7 @@ def prepare(src_dir, input_fs, temp_dir):
 
 
 def main(src_dir, proc_dir, proc_fs, labjournal):
-    """ Main loop which batch process the files, which are imported via the
+    """Main loop which batch process the files, which are imported via the
     GUI file dialog.
 
     Args:
@@ -231,7 +231,7 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
 
 
 def cleanup(src_dir, proc_dir):
-    """ The cleanup procedure after the data manipulation.
+    """The cleanup procedure after the data manipulation.
 
     Args:
         src_dir (str): Path to the original folder of the files.

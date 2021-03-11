@@ -13,7 +13,7 @@ from genshi.template import TemplateLoader
 
 
 def create_html_head(src_dir):
-    """ Creates HTML header for genshi template.
+    """Creates HTML header for genshi template.
 
     Dictionary which can be processed by genshi to create HTML a
     navigation bar.
