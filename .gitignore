@@ -1,5 +1,7 @@
 # Data files
 *.log
+*.png
+*.txt
 tests/reference_files/data/_data/
 tests/reference_files/data/_png/
 tests/reference_files/data_report.html

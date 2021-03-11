@@ -14,7 +14,6 @@ if "path_gwyddion" not in locals():
     win32_helper()
 
 import gwy
-import gwyutils
 import config
 
 

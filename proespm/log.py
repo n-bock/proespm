@@ -17,9 +17,9 @@ class logging(object):
 
     def __init__(self):
         self.logs = []
-        self.logP(8, "Log started")
+        self.log_p(8, "Log started")
 
-    def logP(self, log_priority, text=""):
+    def log_p(self, log_priority, text=""):
         """Write a certain information in a log file and also print locally.
 
         Each information can be assign a priority which desides if the
@@ -35,14 +35,14 @@ class logging(object):
                 self.log_line = "\n"
                 self.logs.append(self.log_line)
                 print("")
-                self.flushDelay()
+                self.flush_delay()
             else:
                 self.log_line = "[" + time.strftime("%Y-%M-%d %X") + "]" + ": " + text
                 self.logs.append(self.log_line)
                 print(self.log_line)
-                self.flushDelay()
+                self.flush_delay()
 
-    def saveLog(self, log_file_path, log_f_name):
+    def save_log(self, log_file_path, log_f_name):
         """Function to write all log informations in a log file.
 
         Args:
@@ -56,12 +56,8 @@ class logging(object):
                     "[" + time.strftime("%Y-%M-%d %X") + "]" + ": " + self.line + "\n"
                 )
 
-    def flushDelay(self):
-        """Flush the Python terminal buffer.
-
-        This is doine with a certain waiting time (default 10 ms),
-        this avoids synchronization problems.
-        """
+    def flush_delay(self):
+        """Flush the Python terminal buffer. """
 
         sys.stdout.flush()
         time.sleep(0.01)

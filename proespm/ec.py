@@ -13,8 +13,8 @@ import pandas
 import codecs
 import numpy as np
 import util
-from pint import UnitRegistry
 from data import Data
+from pint import UnitRegistry
 
 ureg = UnitRegistry()
 
@@ -32,7 +32,7 @@ class Ec(Data):
         self.electrolyte = None
         self.gas = None
         self.surface = None
-        self.pH = None
+        self.ph = None
         self.re = ""
         self.ce = None
         self.we = None
@@ -52,7 +52,7 @@ class Ec(Data):
             cor (int): Value current will be divided by.
         """
 
-        self.jcell = icell.div(cor)
+        self.jcell = self.icell.div(cor)
         self.cvdata = pandas.concat([self.cvdata, self.jcell], axis=1)
 
     def save_ec(self, path):
@@ -283,9 +283,9 @@ class Chrono(Ec):
         self.time = pandas.DataFrame()
         self.icell = pandas.DataFrame()
         self.chronodata = pandas.DataFrame()
-        self.importBiologic(m_file)
+        self.import_biologic(m_file)
 
-    def importBiologic(self, m_file):
+    def import_biologic(self, m_file):
         """Function to import CA mpt files from Biologic potentiostats.
 
         Args:

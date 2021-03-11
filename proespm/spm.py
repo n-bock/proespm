@@ -15,12 +15,12 @@ if "path_gwyddion" not in locals():
 
 import gwy
 import gwyutils
-import gwyddion
 import config
 import shutil
 import re
 import os
 import numpy as np
+import gwyddion
 from data import Data
 from ec import Ec
 
@@ -142,7 +142,7 @@ class Spm(Data):
 
         for pat in pattern:
             self.topo_ch = [ch for ch in channels if re.search(pat, ch)]
-            if len(self.topo_ch) > 0:
+            if not self.topo_ch:
                 break
 
         return [
@@ -362,7 +362,7 @@ class Stm(Spm):
         """
 
         self._utun_ch_ids = Spm.find_channel(self, ["*Utun*"])
-        if len(self._utun_ch_ids) > 0:
+        if not self._utun_ch_ids:
             self.u_tun_array = self.convert_np(self._utun_ch_ids[0])
             return np.average(self.u_tun_array, axis=0)
 
@@ -443,7 +443,7 @@ class Ecstm(Stm, Ec):
         combination of forward and backward image data.
         """
 
-        if len(self._ecell_ch_id) > 0:
+        if not self._ecell_ch_id:
             self.e_cell_data = self.convert_np(self._ecell_ch_id[0])
             return np.average(self.e_cell_data, axis=0).tolist()
         else:
@@ -458,7 +458,7 @@ class Ecstm(Stm, Ec):
         combination of forward and backward image data.
         """
 
-        if len(self._icell_ch_id) > 0:
+        if not self._icell_ch_id:
             self.i_cell_data = self.convert_np(self._icell_ch_id[0])
             return np.average(self.i_cell_data, axis=0).tolist()
         else:

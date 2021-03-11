@@ -44,7 +44,7 @@ def prompt_folder():
                     ):
                         input_files.append(os.path.join(p, f))
 
-            if len(input_files) == 0:
+            if not input_files:
                 raise IndexError
 
             return input_files, folder
@@ -68,10 +68,10 @@ def prompt_files():
             list_of_files = tkFileDialog.askopenfiles(mode="r", **config.dialog_files)
             root.destroy()
 
-            for file in list_of_files:
-                input_files.append(file.name)
+            for f in list_of_files:
+                input_files.append(f.name)
 
-            if len(input_files) == 0:
+            if not input_files:
                 raise IndexError
 
             dummy_var = 0
@@ -149,7 +149,7 @@ def check_network_file(input_file):
         is_network_file (bool): True or False if the file is on network drive
     """
 
-    for reg in ["//*", "[F-Z]:/*", "*media*"]:
+    for reg in [r"//*", r"[F-Z]:/*", "*media*"]:
         if fnmatch.fnmatch(input_file, reg):
             return True
     return False
@@ -225,12 +225,12 @@ def par_file_name(data):
         if fnmatch.fnmatch(line_data, match_pattern):
             data_ch_orig_file_name = par_file_data[line + 8]
             data_ch_orig_file_name = re.search(
-                ".*(m\d+_ori\.t[b||f][0||1]).*", data_ch_orig_file_name
+                r".*(m\d+_ori\.t[b||f][0||1]).*", data_ch_orig_file_name
             ).group(1)
             orig_fs_name.append(data_ch_orig_file_name)
 
             # replace "m<whatever>" with "g<same_whatever_as_before>"
-            proc_fs_name.append(re.sub("m(.*)", r"g\1", data_ch_orig_file_name))
+            proc_fs_name.append(re.sub(r"m(.*)", r"g\1", data_ch_orig_file_name))
 
     return orig_fs_name, proc_fs_name
 

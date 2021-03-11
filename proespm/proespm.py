@@ -62,7 +62,7 @@ def prompt():
             join(src_dir, "xps_phi/xps_phi.csv"),
             join(src_dir, "sem/fei_sem.tif"),
             join(src_dir, "image/50x2.bmp"),
-            join(src_dir, "mul/GrRu_RT.mul"),
+            # ~ join(src_dir, "mul/GrRu_RT.mul"),
         ]
     elif config.is_single_f:
         input_fs = prep.promptFiles()
@@ -72,20 +72,20 @@ def prompt():
 
     if config.is_labj and not config.is_labj_prompt and not config.debug_modus:
         labjournal, path_labj = prep.grab_labjournal(os.path.split(src_dir)[0])
-        l.logP(8, ">>> Imported labjournal from " + path_labj)
+        l.log_p(8, ">>> Imported labjournal from " + path_labj)
     elif config.is_labj and config.is_labj_prompt and not config.debug_modus:
         labjournal, path_labj = prep.prompt_labjournal()
-        l.logP(8, ">>> Imported labjournal from " + path_labj)
+        l.log_p(8, ">>> Imported labjournal from " + path_labj)
     elif config.debug_modus:
         labjournal, path_labj = prep.grab_labjournal(
             os.path.abspath(os.path.join(src_dir, os.pardir))
         )
-        l.logP(8, ">>> Imported labjournal from " + path_labj)
+        l.log_p(8, ">>> Imported labjournal from " + path_labj)
     else:
         labjournal = ""
         path_labj = ""
 
-    l.logP(4, ">>> Source directory: " + src_dir)
+    l.log_p(4, ">>> Source directory: " + src_dir)
 
     return src_dir, input_fs, labjournal
 
@@ -103,22 +103,22 @@ def prepare(src_dir, input_fs, temp_dir):
         proc_fs (list): List of paths to files, which will processed.
     """
 
-    l.logP(8, ">>> Starting data import")
+    l.log_p(8, ">>> Starting data import")
 
     # Check if files are on network drive and if yes move to temporary folder
-    if not prep.check_network_file(input_fs[0]):
-        l.logP(2, ">>> Files are on a network drive")
+    if prep.check_network_file(input_fs[0]):
+        l.log_p(2, ">>> Files are on a network drive")
         proc_fs = prep.move_files_temp(input_fs, temp_dir)
-        l.logP(3, ">>> Copied files to local TEMP directory: " + temp_dir)
+        l.log_p(3, ">>> Copied files to local TEMP directory: " + temp_dir)
     else:
-        l.logP(2, ">>> Files are stored locally")
+        l.log_p(2, ">>> Files are stored locally")
         proc_fs = input_fs  # use the input files directly
 
     proc_dir = os.path.dirname(proc_fs[0])
-    l.logP(4, ">>> Processing directory: " + proc_dir)
-    l.logP(4, ">>> Creating userconfig.log in " + src_dir)
+    l.log_p(4, ">>> Processing directory: " + proc_dir)
+    l.log_p(4, ">>> Creating userconfig.log in " + src_dir)
     prep.copy_user_config(src_dir)
-    l.logP(0, "")
+    l.log_p(0, "")
     proc_fs = sorted(proc_fs, reverse=False)
 
     return proc_dir, proc_fs
@@ -136,7 +136,7 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
     """
 
     proc_items = []
-    l.logP(5, ">>> Starting data processing")
+    l.log_p(5, ">>> Starting data processing")
 
     for i, dat in enumerate(proc_fs):
         if config.log_level < 5:
@@ -163,16 +163,16 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
         if labjournal_error or not config.is_labj:
             try:
                 exec("item = %s(dat)" % config.m_type)
-                l.logP(10, ">>> Data without labjournal loaded: " + str(data_id))
+                l.log_p(10, ">>> Data without labjournal loaded: " + str(data_id))
             except IndexError as error:
-                l.logP(4, ">>> Failed to import " + dat)
+                l.log_p(4, ">>> Failed to import " + dat)
                 raise error
         else:
             try:
                 exec("item = %s(dat, **add_arg)" % add_arg["type"].capitalize())
-                l.logP(10, ">>> Data with labjournal loaded: " + str(data_id))
+                l.log_p(10, ">>> Data with labjournal loaded: " + str(data_id))
             except IndexError as error:
-                l.logP(
+                l.log_p(
                     4, ">>> Failed to import " + dat + " with labjournal information"
                 )
                 raise error
@@ -204,7 +204,7 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
             if not item.m_id.endswith("1") and item.m_file.endswith(".txt"):
                 x = len(proc_items) - 1
                 proc_items[x].append_cycle(item.data, item.m_id, item.remark)
-                l.logP(4, ">>> CV files " + proc_items[x].m_id + " are combined.")
+                l.log_p(4, ">>> CV files " + proc_items[x].m_id + " are combined.")
 
                 # As data has been appended to previous item, do not add
                 # it to the html report
@@ -221,13 +221,14 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
         if type(item).__name__ in ["Stm", "Ecstm", "Afm"]:
             item.flush_memory()
 
-    l.logP(8, "")
-    l.logP(8, ">>> Finished data processing ")
+    l.log_p(8, "")
+    l.log_p(8, ">>> Finished data processing.")
 
     if config.is_html_out:
-        l.logP(2, ">>> Create HTML report.")
+        l.log_p(2, ">>> Create HTML report.")
         sorted_items = sorted(proc_items, key=lambda x: x.datetime, reverse=False)
         html.create_html(src_dir, proc_dir, sorted_items)
+        l.log_p(2, ">>> HTML report created.")
 
 
 def cleanup(src_dir, proc_dir):
@@ -238,25 +239,25 @@ def cleanup(src_dir, proc_dir):
         proc_dir (str): Can be the same as src_dir, depends if files are on server.
     """
 
-    l.logP(2, "")
+    l.log_p(2, "")
 
     if config.hierarchy:
-        l.logP(9, ">>> Move data to final destination.")
+        l.log_p(9, ">>> Move data to final destination.")
         if not multiple_move(
             proc_dir, src_dir, ["ec.txt", "0"], hierarchy="sub", subfolder_name="_data"
         ):
-            l.logP(10, ">>> No data files were not moved.")
+            l.log_p(10, ">>> No data files were not moved.")
         if not multiple_move(
             proc_dir, src_dir, ["png"], hierarchy="sub", subfolder_name="_png"
         ):
-            l.logP(10, ">>> No images files were not moved.")
+            l.log_p(10, ">>> No images files were not moved.")
         if not multiple_move(proc_dir, src_dir, ["html"], hierarchy="parent"):
-            l.logP(10, ">>> No HTML report was moved.")
+            l.log_p(10, ">>> No HTML report was moved.")
     elif is_network_file:
-        l.logP(9, ">>> Move data and remove temporary folder")
+        l.log_p(9, ">>> Move data and remove temporary folder")
         multiple_move(proc_dir, src_dir, ["png", "0", "ec.txt", "html"])
 
-    l.logP(0, ">>>                  DONE                   <<<")
+    l.log_p(0, ">>>                  DONE                   <<<")
 
 
 if __name__ == "__main__":
@@ -268,6 +269,6 @@ if __name__ == "__main__":
         proc_dir, proc_fs = prepare(src_dir, input_fs, temp_dir)
         main(src_dir, proc_dir, proc_fs, labjournal)
         cleanup(src_dir, proc_dir)
-        l.saveLog(src_dir, config.log_f_name)
+        l.save_log(src_dir, config.log_f_name)
     finally:
         shutil.rmtree(temp_dir)
