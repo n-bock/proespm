@@ -139,7 +139,7 @@ def grab_labjournal(path_labj):
 def check_network_file(input_file):
     """Check if files are on a network drive.
 
-    Paths starting with double backflash or "[F-Z]:/*" are most likely
+    Paths starting with double backflash or [F-Z]:/* are most likely
     network share.
 
     Args:

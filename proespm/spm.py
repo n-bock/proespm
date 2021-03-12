@@ -184,8 +184,9 @@ class Spm(Data):
         This is needed to make the SPM data functional with the IGOR
         image processing addon.
 
-        "blahblah12345.xzy" --> "g1234_ori.t" - t: topo
-        "BLAH111_123456.BLA" --> "g123456_ori.t" - t: topo
+        Example:
+            "blahblah12345.xzy" --> "g1234_ori.t" - t: topo
+            "BLAH111_123456.BLA" --> "g123456_ori.t" - t: topo
 
         Args:
             data (str): Path to file.
@@ -351,8 +352,7 @@ class Stm(Spm):
 
         So the 512x512 np array is getting averaged to 512x1,
         it's resolution is determined by the line time of the
-        stm image (50 - 300 ms). This could be improved in future by
-        combination of forward and backward image data.
+        stm image (50 - 300 ms).
         """
 
         self._utun_ch_ids = Spm.find_channel(self, ["*Utun*"])
@@ -433,8 +433,7 @@ class Ecstm(Stm, Ec):
 
         So the 512x512 np array is getting averaged to 512x1,
         it's resolution is determined by the line time of the
-        stm image (50 - 300 ms). This could be improved in future by
-        combination of forward and backward image data.
+        stm image (50 - 300 ms).
         """
 
         if len(self._ecell_ch_id) > 0:
@@ -448,8 +447,7 @@ class Ecstm(Stm, Ec):
 
         So the 512x512 np array is getting averaged to 512x1,
         it's resolution is determined by the line time of the
-        stm image (50 - 300 ms). This could be improved in future by
-        combination of forward and backward image data.
+        stm image (50 - 300 ms).
         """
 
         if len(self._icell_ch_id) > 0:

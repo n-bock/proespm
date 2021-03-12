@@ -1,5 +1,5 @@
 Scanning Tunneling Microscopy
----------------------------
+------------------------------
 
 .. autoclass:: proespm.spm.Spm
     :members:

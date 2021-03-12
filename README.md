@@ -4,9 +4,7 @@ proespm - Image and Data Processing
 [![Pylint](https://github.com/n-bock/proespm/actions/workflows/pylint.yml/badge.svg)](https://github.com/n-bock/proespm/actions/workflows/pylint.yml)
 [![Documentation Status](https://readthedocs.org/projects/proespm/badge/?version=latest)](https://proespm.readthedocs.io/en/latest/?badge=latest)
 
-Processing of electrochemical, spectral and imaging files with optional import
-of labjournals. So far the following measurements can be processed: STM, ECSTM,
-AFM, SEM, CV, Chronoamperometry, XPS, Raman data, and Optical Microscope images.
+Processing of electrochemical, spectral and imaging files with optional import of labjournals. So far the following measurements can be processed: STM, ECSTM, AFM, SEM, CV, Chronoamperometry, XPS, Raman data, and Optical Microscope images. For further information see the [**documentation**](https://proespm.readthedocs.io/en/latest/)
 
 Usage
 ------
@@ -21,7 +19,7 @@ all the processed measurement data and the corresponding labjournal informations
 **How to change the SPM processing:**
 1) Run the desired function on some data from within Gwyddion
 1) Right click on the image and select 'View Log'
-1) Use the parameters found there to edit your config.py file, for more
+1) Use the parameters found there to edit your config.yml file, for more
 information see [module list](http://gwyddion.net/module-list.en.php)
 
 
