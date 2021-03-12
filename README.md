@@ -8,8 +8,8 @@ Processing of electrochemical, spectral and imaging files with optional import
 of labjournals. So far the following measurements can be processed: STM, ECSTM,
 AFM, SEM, CV, Chronoamperometry, XPS, Raman data, and Optical Microscope images.
 
-Usage as Script
-----------------
+Usage
+------
 Adjust the parameters in *config.yml* for your needs.
 Run the *proespm.py* file with Python 2.7. The optional **xlsx-labjournal** file
 can contain several measurement informations, e.g. type (stm, ecstm, afm, cv, peis, xps
@@ -25,8 +25,8 @@ all the processed measurement data and the corresponding labjournal informations
 information see [module list](http://gwyddion.net/module-list.en.php)
 
 
-Installation for Script Mode
------------------------------
+Installation
+------------
 **Linux**
 
     sudo apt-get install gwyddion, python2.7, pip

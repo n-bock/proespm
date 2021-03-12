@@ -10,8 +10,11 @@ import os
 import sys
 import yaml
 
+
 config_file = os.path.abspath(
-    os.path.join(os.path.join(sys.path[0], os.pardir), "config.yml")
+    os.path.join(
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..")), "config.yml"
+    )
 )
 with open(config_file) as f:
     config = yaml.safe_load(f)

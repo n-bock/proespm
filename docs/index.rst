@@ -1,19 +1,32 @@
-.. proespm documentation master file, created by
-   sphinx-quickstart on Fri Mar  5 20:27:50 2021.
-
-
-Welcome to proespm's documentation!
-===================================
-
-.. automodule:: proespm.spm
-    :members:
-
-.. autoclass:: Spm
-    :members:
+Proespm Documentation
+========================
+Processing of electrochemical, spectral and imaging files with optional import
+of labjournals. So far the following measurements can be processed: STM, ECSTM,
+AFM, SEM, CV, Chronoamperometry, XPS, Raman data, and Optical Microscope images.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :hidden:
+   :caption: Installation
+
+   install
+
+
+Documentation
+-------------
+Data types..
+
+.. toctree::
+   :maxdepth: 4
+   :hidden:
+   :caption: Data Types
+
+   spm
+   ec
+   spectroscopy
+   sem
+   image
+
 
 
 
