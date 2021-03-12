@@ -267,19 +267,10 @@ class Spm(Data):
             path (str): File path where the file should be save.
         """
 
-        if bool(re.search("\d", self.ch_list[0])):
-            for ch in self.topo_fwd_ch:
-                gwy.gwy_app_data_browser_select_data_field(self.container, ch[0])
-                self.img_topo_fwd = os.path.join(
-                    path,
-                    str(self.m_id) + "_" + str(ch[0]) + "_tf." + config.img_type_out,
-                )
-                gwyddion.save_image_file(self.container, self.img_topo_fwd)
-        else:
-            self.img_topo_fwd = os.path.join(
-                path, str(self.m_id) + "_tf." + config.img_type_out
-            )
-            gwyddion.save_image_file(self.container, self.img_topo_fwd)
+        self.img_topo_fwd = os.path.join(
+            path, str(self.m_id) + "_tf." + config.img_type_out
+        )
+        gwyddion.save_image_file(self.container, self.img_topo_fwd)
 
     def save_topo_bwd_image(self, path):
         """Save backward topography image file.
