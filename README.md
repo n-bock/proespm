@@ -44,6 +44,6 @@ Installation for Script Mode
     pip install -r requirements.txt
 
 
-Contact and Contribution
--------------------------
-- Found a bug or need a feature: <nicolas.bock@tum.de>
+Contact
+--------
+<nicolas.bock@tum.de>

@@ -22,11 +22,11 @@ def m_id(m_file):
     """
 
     if m_file.endswith("SM4"):
-        x = int(re.search(".*(\d{4})\.", m_file).group(1))
+        x = int(re.search(r".*(\d{4})\.", m_file).group(1))
     elif m_file.endswith("nid"):
-        x = int(re.search(".*(\d{4})\..{3}$", m_file).group(1))
+        x = int(re.search(r".*(\d{4})\..{3}$", m_file).group(1))
     else:
-        x = re.search(".*(\/|\\\)(.*)\.\S{3}", m_file).group(2)
+        x = re.search(r".*(\/|\\)(.*)\.\S{3}", m_file).group(2)
 
     return str(x)
 

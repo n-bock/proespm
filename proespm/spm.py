@@ -13,16 +13,19 @@ import_helper()
 if "path_gwyddion" not in locals():
     win32_helper()
 
+# pylint: disable=wrong-import-position
 import gwy
 import gwyutils
-import gwyddion
-import config
 import shutil
 import re
 import os
 import numpy as np
+import config
+import gwyddion
 from data import Data
 from ec import Ec
+
+# pylint: enable=wrong-import-position
 
 
 class Spm(Data):
@@ -157,10 +160,10 @@ class Spm(Data):
 
         return self.return_match_ch(
             [
-                "^Topo|Z.*[Ff]orward.*",
-                "^Topo|Z.*[Rr]ight.*",
-                "^Topo|Z.*[Ff]wd.*",
-                "(\d*)",
+                r"^Topo|Z.*[Ff]orward.*",
+                r"^Topo|Z.*[Rr]ight.*",
+                r"^Topo|Z.*[Ff]wd.*",
+                r"(\d*)",
             ],
             self.ch_list,
         )
@@ -171,7 +174,7 @@ class Spm(Data):
         self.ch_list = self.return_data_ch_titles()
 
         return self.return_match_ch(
-            ["^Topo|Z.*[Bb]ackward.*$", "^Topo|Z.*[Ll]eft.*$", "^Topo|Z.*[Bb]wd.*$"],
+            [r"^Topo|Z.*[Bb]ackward.*$", r"^Topo|Z.*[Ll]eft.*$", r"^Topo|Z.*[Bb]wd.*$"],
             self.ch_list,
         )
 
@@ -191,9 +194,9 @@ class Spm(Data):
         self.name = os.path.basename(data)
 
         self.pat_out = [
-            "^[a-z,A-Z]*.(\d{1,6})\..{3}$",
+            r"^[a-z,A-Z]*.(\d{1,6})\..{3}$",
             r"g\1_ori.t",
-            "^[a-z,A-Z]*\d*_(\d{1,6})\..{3}$",
+            r"^[a-z,A-Z]*\d*_(\d{1,6})\..{3}$",
             r"g\1_ori.t",
         ]
         for pat in range(0, len(self.pat_out), 2):
@@ -375,7 +378,7 @@ class Stm(Spm):
             self.meta_id = gwyddion.get_meta_ids(self.container)[0]
             try:
                 self.u_tun_string = self.container[self.meta_id]["Tip voltage"]
-                return re.sub("[^\d.]+", "", self.u_tun_string.replace(",", "."))
+                return re.sub(r"[^\d.]+", "", self.u_tun_string.replace(",", "."))
             except KeyError:
                 return None
 
@@ -503,7 +506,7 @@ class Afm(Spm):
     def return_phase_fwd_ch(self):
         """Return forward phase channel."""
 
-        self.pat_fwd = ["^.*[F||f]orward.*$", "^.*[R||r]ight.*$", ".*fwd.*"]
+        self.pat_fwd = [r"^.*[F||f]orward.*$", r"^.*[R||r]ight.*$", r".*fwd.*"]
         for ch in self.return_phase_ch():
             self.gen = (
                 ch
@@ -516,7 +519,7 @@ class Afm(Spm):
     def return_phase_bwd_ch(self):
         """Return backward phase channel."""
 
-        self.pat_bwd = ["^.*[B||b]ackward.*$", "^.*[L||l]eft.*$", ".*bwd.*"]
+        self.pat_bwd = [r"^.*[B||b]ackward.*$", r"^.*[L||l]eft.*$", r".*bwd.*"]
         for ch in self.returnPhaseCh():
             self.gen = (
                 ch

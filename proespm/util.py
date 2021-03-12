@@ -133,7 +133,7 @@ def is_file_type(file_name, file_type):
         bool: True for s (filetype is the asked one), False otherwise.
     """
 
-    return re.search(".*\.(.*)$", file_name).group(1) == file_type
+    return re.search(r".*\.(.*)$", file_name).group(1) == file_type
 
 
 def query_yes_no(question, default="yes"):

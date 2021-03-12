@@ -24,7 +24,7 @@ def create_html_head(src_dir):
 
     try:
         # Create overlap between server path and source directory
-        overlap = re.search(".*\/(.*)$", config.server_path).group(1)
+        overlap = re.search(r".*\/(.*)$", config.server_path).group(1)
         trimmed_src_dir = re.search(overlap + "(.*)$", src_dir).group(1)
         link_files = config.server_path + trimmed_src_dir
         if config.hierarchy:

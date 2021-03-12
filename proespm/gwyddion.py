@@ -13,9 +13,15 @@ import_helper()
 if "path_gwyddion" not in locals():
     win32_helper()
 
+# pylint: disable=wrong-import-position
 import gwy
-import gwyutils
+import os
+import time
+from datetime import datetime
 import config
+import data
+
+# pylint: enable=wrong-import-position
 
 
 def get_meta_ids(container):
@@ -38,3 +44,28 @@ def save_image_file(container, save_file):
         gwy.gwy_file_save(container, save_file, gwy.RUN_INTERACTIVE)
     else:
         gwy.gwy_file_save(container, save_file, gwy.RUN_NONINTERACTIVE)
+
+
+def mul_split(file_path):
+    """Splits all data channels into single gwy files"""
+
+    m_id = data.m_id(file_path)
+    dir_path = os.path.dirname(os.path.abspath(file_path))
+    con = gwy.gwy_app_file_load(file_path)
+    ch_ids = gwy.gwy_app_data_browser_get_data_ids(con)
+
+    def inner():
+        new_container = gwy.Container()
+        gwy.gwy_app_data_browser_add(new_container)
+        gwy.gwy_app_data_browser_copy_channel(con, ch_id, new_container)
+        file_name = str(m_id) + "_" + str(ch_id) + ".gwy"
+        file_out = os.path.join(dir_path, file_name)
+        meta_id = get_meta_ids(new_container)[0]
+        time_extract = new_container[meta_id]["Date"]
+        time_reformat = datetime.strptime(time_extract, "%Y-%m-%d %H:%M:%S")
+        gwy.gwy_app_file_write(new_container, file_out)
+        time_sec = time.mktime(time_reformat.timetuple())
+        os.utime(file_out, (time_sec, time_sec))
+        return file_out
+
+    return [inner() for ch_id in ch_ids]
