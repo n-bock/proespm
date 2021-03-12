@@ -13,16 +13,19 @@ import_helper()
 if "path_gwyddion" not in locals():
     win32_helper()
 
+# pylint: disable=wrong-import-position
 import gwy
 import gwyutils
-import config
 import shutil
 import re
 import os
 import numpy as np
+import config
 import gwyddion
 from data import Data
 from ec import Ec
+
+# pylint: enable=wrong-import-position
 
 
 class Spm(Data):

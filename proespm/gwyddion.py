@@ -13,8 +13,11 @@ import_helper()
 if "path_gwyddion" not in locals():
     win32_helper()
 
+# pylint: disable=wrong-import-position
 import gwy
 import config
+
+# pylint: enable=wrong-import-position
 
 
 def get_meta_ids(container):
