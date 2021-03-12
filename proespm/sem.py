@@ -15,9 +15,9 @@ if "path_gwyddion" not in locals():
 
 # pylint: disable=wrong-import-position
 import gwy
+import os
 import gwyddion
 import config
-import os
 from data import Data
 
 # pylint: enable=wrong-import-position

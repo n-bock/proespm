@@ -91,7 +91,7 @@ def prompt_labjournal():
         path_labj (str): Full path to the labjournal.
     """
 
-    while True and "labjournal" not in locals():
+    while True and "labj" not in locals():
         try:
             root = Tkinter.Tk()
             path_labj = tkFileDialog.askopenfiles(mode="rb", **config.dialog_labj)

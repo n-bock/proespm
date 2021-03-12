@@ -17,18 +17,20 @@ from __future__ import print_function
 import os
 import sys
 import shutil
-import config
-import html
-import prep
 import tempfile
 from os.path import dirname, abspath, join
+from itertools import chain
+import prep
+import config
+import html
+import gwyddion
 from data import m_id, Image
 from spm import Ecstm, Stm, Afm
 from sem import Sem
 from ec import Ec, Cv, Peis, Chrono
 from spectroscopy import Raman, Xps
 from util import progress_bar, multiple_move
-from log import logging
+from log import Logging
 
 os.chdir(sys.path[0])
 
@@ -65,7 +67,7 @@ def prompt():
             join(src_dir, "mul/GrRu_RT.mul"),
         ]
     elif config.is_single_f:
-        input_fs = prep.promptFiles()
+        input_fs = prep.prompt_files()
         src_dir = os.path.dirname(input_fs[0])
     else:
         input_fs, src_dir = prep.prompt_folder()
@@ -119,7 +121,10 @@ def prepare(src_dir, input_fs, temp_dir):
     l.log_p(4, ">>> Creating userconfig.log in " + src_dir)
     prep.copy_user_config(src_dir)
     l.log_p(0, "")
-    proc_fs = sorted(proc_fs, reverse=False)
+
+    mul_files = [gwyddion.mul_split(f) for f in proc_fs if f.endswith(".mul")]
+    mul_files_flat = list(chain.from_iterable(mul_files))
+    proc_fs = sorted(proc_fs + mul_files_flat, reverse=False)
 
     return proc_dir, proc_fs
 
@@ -262,7 +267,7 @@ def cleanup(src_dir, proc_dir):
 
 if __name__ == "__main__":
     temp_dir = tempfile.mkdtemp(prefix="python_", suffix="_temp")
-    l = logging()
+    l = Logging()
 
     try:
         src_dir, input_fs, labjournal = prompt()

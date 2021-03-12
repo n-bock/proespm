@@ -7,14 +7,15 @@ See LICENSE or http://www.gnu.org/licenses/gpl-3.0.html
 """
 
 import os
-import config
 import re
 import pandas
 import codecs
 import numpy as np
+from pint import UnitRegistry
+import config
 import util
 from data import Data
-from pint import UnitRegistry
+
 
 ureg = UnitRegistry()
 
