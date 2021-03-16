@@ -256,6 +256,10 @@ def cleanup(src_dir, proc_dir):
             proc_dir, src_dir, ["png"], hierarchy="sub", subfolder_name="_png"
         ):
             l.log_p(10, ">>> No images files were not moved.")
+        if not multiple_move(
+            proc_dir, src_dir, ["gwy"], hierarchy="sub", subfolder_name="_gwy"
+        ):
+            l.log_p(10, ">>> No gwy files were not moved.")
         if not multiple_move(proc_dir, src_dir, ["html"], hierarchy="parent"):
             l.log_p(10, ">>> No HTML report was moved.")
     elif is_network_file:
