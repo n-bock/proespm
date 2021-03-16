@@ -81,15 +81,15 @@ class Spm(Data):
                 "Time/Line",
             ],
             "self.type": [
-                "Op. mode", 
+                "Op. mode",
                 "Image mode",
                 "Mode",
-                ],
+            ],
             "self.bias": ["Bias"],
-            "self.current":["Current"],
+            "self.current": ["Current"],
             "self.xoffset": ["X-Offset"],
             "self.yoffset": ["Y-Offset"],
-            "self.scan_duration": ["Scan duration"]
+            "self.scan_duration": ["Scan duration"],
         }
         for k, pat_list in pattern.iteritems():
             for pat in pat_list:
