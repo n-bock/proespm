@@ -21,7 +21,7 @@ Run the *proespm.py* file with Python 2.7.
 
    $ python2 proespm.py
 
-The optional **xlsx-labjournal** file can contain several measurement informations, e.g. type (stm, ecstm, afm, cv, peis, xps, image, sem, or raman), day, surface, or remark (see `xlsx file  in /tests <https://github.com/n-bock/proespm/blob/master/tests/reference_files/lab_journal.xlsx>`_). Each row must have an explicit ID corresponding to the file name of the measurement in order to read in the information properly.
+The optional **xlsx-labjournal** file can contain several measurement informations, e.g. type (stm, ecstm, afm, cv, peis, xps, image, sem, or raman), day, surface, or remark (see xlsx file in /tests). Each row must have an explicit ID corresponding to the file name of the measurement in order to read in the information properly.
 
 .. list-table:: Labjournal Example
    :widths: 10 10 10 10 10 10
@@ -39,12 +39,6 @@ The optional **xlsx-labjournal** file can contain several measurement informatio
      - carbon
      - vacuum
      - beautiful stm image
-   * - 2020-11-16
-     - data02
-     - cv
-     - carbon
-     - H2SO4
-     - beautiful cv
 
 If you do not want to pass a labjournal set **labjournal available** and **fallback method** accordingly:
 
