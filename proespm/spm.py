@@ -52,6 +52,11 @@ class Spm(Data):
         self.size = None
         self.rotation = None
         self.line_time = None
+        self.bias = None
+        self.current = None
+        self.xoffset = None
+        self.yoffset = None
+        self.scan_duration = None
         self.extract_meta(gwyddion.get_meta_ids(self.container)[0])
 
     def extract_meta(self, meta_id):
@@ -75,7 +80,16 @@ class Spm(Data):
                 "IMAGE CONTROL::Scan:Size::Scan Control::Line time",
                 "Time/Line",
             ],
-            "self.type": ["Op. mode", "Image mode"],
+            "self.type": [
+                "Op. mode", 
+                "Image mode",
+                "Mode",
+                ],
+            "self.bias": ["Bias"],
+            "self.current":["Current"],
+            "self.xoffset": ["X-Offset"],
+            "self.yoffset": ["Y-Offset"],
+            "self.scan_duration": ["Scan duration"]
         }
         for k, pat_list in pattern.iteritems():
             for pat in pat_list:
