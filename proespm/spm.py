@@ -5,7 +5,14 @@ Part of proespm: Scanning probe microscopy data.
 (C) Copyright Nicolas Bock, licensed under GPL v3
 See LICENSE or http://www.gnu.org/licenses/gpl-3.0.html
 """
-
+import shutil
+import re
+import os
+import numpy as np
+import config
+import gwyddion
+from data import Data
+from ec import Ec
 from util import import_helper, win32_helper
 
 import_helper()
@@ -16,14 +23,6 @@ if "path_gwyddion" not in locals():
 # pylint: disable=wrong-import-position
 import gwy
 import gwyutils
-import shutil
-import re
-import os
-import numpy as np
-import config
-import gwyddion
-from data import Data
-from ec import Ec
 
 # pylint: enable=wrong-import-position
 
@@ -67,34 +66,34 @@ class Spm(Data):
         """
 
         pattern = {
-            "self.size": [
+            "size": [
                 "IMAGE CONTROL::Scan:Size::Scan Control::Scan size",
                 "Image size",
             ],
-            "self.rotation": [
+            "rotation": [
                 "IMAGE CONTROL::Scan:Size::Scan Control::Scan Rotation",
                 "Rotation",
                 "Tilt",
             ],
-            "self.line_time": [
+            "line_time": [
                 "IMAGE CONTROL::Scan:Size::Scan Control::Line time",
                 "Time/Line",
             ],
-            "self.type": [
+            "type": [
                 "Op. mode",
                 "Image mode",
                 "Mode",
             ],
-            "self.bias": ["Bias"],
-            "self.current": ["Current"],
-            "self.xoffset": ["X-Offset"],
-            "self.yoffset": ["Y-Offset"],
-            "self.scan_duration": ["Scan duration"],
+            "bias": ["Bias"],
+            "current": ["Current"],
+            "xoffset": ["X-Offset"],
+            "yoffset": ["Y-Offset"],
+            "scan_duration": ["Scan duration"],
         }
         for k, pat_list in pattern.iteritems():
             for pat in pat_list:
                 try:
-                    exec("{} = self.container[{}]['{}']".format(k, meta_id, pat))
+                    setattr(self, k, self.container[meta_id][pat])
                 except KeyError:
                     pass
 
@@ -256,8 +255,9 @@ class Spm(Data):
             gwy.gwy_app_data_browser_select_data_field(self.container, ch)
 
             self.run_gwy_func = {gwy.RUN_IMMEDIATE: config.run_gwy_immediate_func}
-            for k, values in self.run_gwy_func.iteritems():
-                [gwy.gwy_process_func_run(v, self.container, k) for v in values]
+            for k, funcs in self.run_gwy_func.iteritems():
+                for func in funcs:
+                    gwy.gwy_process_func_run(func, self.container, k)
 
             self.match_ch_topo = "/" + str(ch) + "/base/range-type"
             self.container[self.match_ch_topo] = 2
@@ -370,7 +370,7 @@ class Stm(Spm):
         """
 
         self._utun_ch_ids = Spm.find_channel(self, ["*Utun*"])
-        if len(self._utun_ch_ids) > 0:
+        if len(self._utun_ch_ids) != 0:
             self.u_tun_array = self.convert_np(self._utun_ch_ids[0])
             return np.average(self.u_tun_array, axis=0)
 
@@ -404,7 +404,7 @@ class Stm(Spm):
 
         self._itun_ch_ids = Spm.find_channel(self, ["*Current*"])
 
-        if len(self._itun_ch_ids) is not 0:
+        if len(self._itun_ch_ids) != 0:
             return self.convert_np(self._itun_ch_ids[0])
         else:
             return np.full((512, 512), 0)
@@ -428,7 +428,7 @@ class Ecstm(Stm, Ec):
         Ec.__init__(self, m_file, **kwargs)
         self._ecell_ch_id = Spm.find_channel(self, ["*VEC*"])
         self._icell_ch_id = Spm.find_channel(self, ["*IEC*"])
-        self.icell = self.i_cell_data()
+        self.icell = self.return_i_cell_data()
         self.file_ec_igor = None
         self.file_ic_igor = None
 
@@ -442,7 +442,7 @@ class Ecstm(Stm, Ec):
 
         return self.return_data_ch_title(self._icell_ch_id)
 
-    def e_cell_data(self):
+    def return_e_cell_data(self):
         """Electrochemical cell potential data.
 
         So the 512x512 np array is getting averaged to 512x1,
@@ -450,13 +450,13 @@ class Ecstm(Stm, Ec):
         stm image (50 - 300 ms).
         """
 
-        if len(self._ecell_ch_id) > 0:
+        if len(self._ecell_ch_id) != 0:
             self.e_cell_data = self.convert_np(self._ecell_ch_id[0])
             return np.average(self.e_cell_data, axis=0).tolist()
         else:
             return None
 
-    def i_cell_data(self):
+    def return_i_cell_data(self):
         """Electrochemical cell current data.
 
         So the 512x512 np array is getting averaged to 512x1,
@@ -464,7 +464,7 @@ class Ecstm(Stm, Ec):
         stm image (50 - 300 ms).
         """
 
-        if len(self._icell_ch_id) > 0:
+        if len(self._icell_ch_id) != 0:
             self.i_cell_data = self.convert_np(self._icell_ch_id[0])
             return np.average(self.i_cell_data, axis=0).tolist()
         else:
@@ -476,7 +476,7 @@ class Ecstm(Stm, Ec):
         self.ec_data_file = os.path.join(
             path, str(self.m_id) + "_ec" + "." + config.dat_type_out
         )
-        np.savetxt(self.ec_data_file, Ecstm.e_cell_data(self), delimiter=";")
+        np.savetxt(self.ec_data_file, self.return_e_cell_data(), delimiter=";")
 
         if config.dat_type_igor:
             self.file_ec_igor = os.path.join(path, "g" + str(self.m_id) + "_ori.ec0")
@@ -511,26 +511,18 @@ class Afm(Spm):
 
         self.pat_fwd = [r"^.*[F||f]orward.*$", r"^.*[R||r]ight.*$", r".*fwd.*"]
         for ch in self.return_phase_ch():
-            self.gen = (
-                ch
-                for pat in self.pat_fwd
-                if re.match(pat, self.return_data_ch_title(ch))
-            )
-            for pat in self.gen:
-                return ch
+            for pat in self.pat_fwd:
+                if re.match(pat, self.return_data_ch_title(ch)):
+                    return ch
 
     def return_phase_bwd_ch(self):
         """Return backward phase channel."""
 
         self.pat_bwd = [r"^.*[B||b]ackward.*$", r"^.*[L||l]eft.*$", r".*bwd.*"]
         for ch in self.returnPhaseCh():
-            self.gen = (
-                ch
-                for pat in self.pat_fwd
-                if re.match(pat, self.return_data_ch_title(ch))
-            )
-            for pat in self.gen:
-                return ch
+            for pat in self.pat_bwd:
+                if re.match(pat, self.return_data_ch_title(ch)):
+                    return ch
 
     def save_phase_fwd_image(self, path):
         """Save forward phase to image file."""

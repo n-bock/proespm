@@ -6,6 +6,11 @@ Part of proespm: Gwyddion helper functions.
 See LICENSE or http://www.gnu.org/licenses/gpl-3.0.html
 """
 
+import os
+import time
+from datetime import datetime
+import config
+import data
 from util import import_helper, win32_helper
 
 import_helper()
@@ -15,11 +20,6 @@ if "path_gwyddion" not in locals():
 
 # pylint: disable=wrong-import-position
 import gwy
-import os
-import time
-from datetime import datetime
-import config
-import data
 
 # pylint: enable=wrong-import-position
 
@@ -27,9 +27,7 @@ import data
 def get_meta_ids(container):
     """Returns the IDs where meta data is stored within a Gwyddion file."""
 
-    return list(
-        filter(lambda x: "Container" in type(container[x]).__name__, container.keys())
-    )
+    return [i for i in container.keys() if "Container" in type(container[i]).__name__]
 
 
 def save_image_file(container, save_file):
@@ -54,11 +52,11 @@ def mul_split(file_path):
     con = gwy.gwy_app_file_load(file_path)
     ch_ids = gwy.gwy_app_data_browser_get_data_ids(con)
 
-    def inner():
+    def inner(int_id):  # pylint: disable=missing-docstring
         new_container = gwy.Container()
         gwy.gwy_app_data_browser_add(new_container)
-        gwy.gwy_app_data_browser_copy_channel(con, ch_id, new_container)
-        file_name = str(m_id) + "_" + str(ch_id) + ".gwy"
+        gwy.gwy_app_data_browser_copy_channel(con, int_id, new_container)
+        file_name = str(m_id) + "_" + str(int_id) + ".gwy"
         file_out = os.path.join(dir_path, file_name)
         meta_id = get_meta_ids(new_container)[0]
         time_extract = new_container[meta_id]["Date"]
@@ -68,4 +66,4 @@ def mul_split(file_path):
         os.utime(file_out, (time_sec, time_sec))
         return file_out
 
-    return [inner() for ch_id in ch_ids]
+    return [inner(ch_id) for ch_id in ch_ids]

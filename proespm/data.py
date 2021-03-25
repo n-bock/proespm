@@ -44,8 +44,7 @@ class Data(object):
         ).strftime("%Y-%m-%d %H:%M:%S")
         self.meta = {}
         for key, value in kwargs.iteritems():
-            self.var_name = "self." + key
-            exec("%s = '%s'" % (self.var_name, value))
+            setattr(self, key, value)
             self.meta[key] = value
 
     def __str__(self):

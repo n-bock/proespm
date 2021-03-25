@@ -15,10 +15,9 @@ See LICENSE or http://www.gnu.org/licenses/gpl-3.0.html
 
 from __future__ import print_function
 import os
-import sys
+from os.path import dirname, abspath, join
 import shutil
 import tempfile
-from os.path import dirname, abspath, join
 from itertools import chain
 import prep
 import config
@@ -62,7 +61,7 @@ def prompt():
             join(src_dir, "xps_phi/xps_phi.csv"),
             join(src_dir, "sem/fei_sem.tif"),
             join(src_dir, "image/50x2.bmp"),
-            join(src_dir, "mul/GrRu_RT.mul"),
+            # ~ join(src_dir, "mul/GrRu_RT.mul"),
         ]
     elif config.is_single_f:
         input_fs = prep.prompt_files()
@@ -193,7 +192,7 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
 
         # AFM specific functions
         if type(item).__name__ in ["Afm"]:
-            if "item.type" in locals() and item.type is not "Dynamic Force":
+            if "item.type" in locals() and item.type != "Dynamic Force":
                 item.save_phase_bwd_image(proc_dir)
                 item.save_phase_fwd_image(proc_dir)
 
@@ -262,7 +261,7 @@ def cleanup(src_dir, proc_dir):
             l.log_p(10, ">>> No images files were not moved.")
         if not multiple_move(proc_dir, src_dir, ["html"], hierarchy="parent"):
             l.log_p(10, ">>> No HTML report was moved.")
-    elif is_network_file:
+    elif prep.check_network_file(src_dir[0]):
         l.log_p(9, ">>> Move data and remove temporary folder")
         multiple_move(proc_dir, src_dir, ["png", "0", "ec.txt", "html"])
 
@@ -270,14 +269,14 @@ def cleanup(src_dir, proc_dir):
 
 
 if __name__ == "__main__":
-    temp_dir = tempfile.mkdtemp(prefix="python_", suffix="_temp")
+    temp = tempfile.mkdtemp(prefix="python_", suffix="_temp")
     l = Logging()
 
     try:
-        src_dir, input_fs, labjournal = prompt()
-        proc_dir, proc_fs = prepare(src_dir, input_fs, temp_dir)
-        main(src_dir, proc_dir, proc_fs, labjournal)
-        cleanup(src_dir, proc_dir)
-        l.save_log(src_dir, config.log_f_name)
+        src, fs, labj = prompt()
+        pdir, proc = prepare(src, fs, temp)
+        main(src, pdir, proc, labj)
+        cleanup(src, pdir)
+        l.save_log(src, config.log_f_name)
     finally:
-        shutil.rmtree(temp_dir)
+        shutil.rmtree(temp)

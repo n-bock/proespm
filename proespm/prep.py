@@ -40,7 +40,7 @@ def prompt_folder():
                 for f in files:
                     if (
                         f.endswith(tuple(config.allowed_file_types))
-                        and p.split("/")[len(p.split("/")) - 1][0] is not "_"
+                        and p.split("/")[len(p.split("/")) - 1][0] != "_"
                     ):
                         input_files.append(os.path.join(p, f))
 
@@ -265,5 +265,5 @@ def stm_file_name(data):
 
 
 if __name__ == "__main__":
-    labjournal = prompt_labjournal()
-    input_files = prompt_folder()
+    labn = prompt_labjournal()
+    fs = prompt_folder()

@@ -76,4 +76,4 @@ system:
     win32 gwy path hint: C:\Program Files (x86)\Gwyddion\bin
     win32 gwyutils rel path: share\gwyddion\pygwy
     linux gwyutils path: /usr/share/gwyddion/pygwy
-    debug modus: Yes
+    debug modus: No

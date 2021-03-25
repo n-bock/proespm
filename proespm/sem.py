@@ -6,6 +6,10 @@ Part of proespm: Scanning electron microscopy data.
 See LICENSE or http://www.gnu.org/licenses/gpl-3.0.html
 """
 
+import os
+import gwyddion
+import config
+from data import Data
 from util import import_helper, win32_helper
 
 import_helper()
@@ -15,10 +19,6 @@ if "path_gwyddion" not in locals():
 
 # pylint: disable=wrong-import-position
 import gwy
-import os
-import gwyddion
-import config
-from data import Data
 
 # pylint: enable=wrong-import-position
 
@@ -51,17 +51,17 @@ class Sem(Data):
         """
 
         pattern = {
-            "self.hv": ["EBeam::HV"],
-            "self.dwell": ["EScan::Dwell"],
-            "self.frame_time": ["EScan::FrameTime"],
-            "self.frame_size": ["EScan::HorFieldsize"],
+            "hv": "EBeam::HV",
+            "dwell": "EScan::Dwell",
+            "frame_time": "EScan::FrameTime",
+            "frame_size": "EScan::HorFieldsize",
         }
-        for k, pat_list in pattern.iteritems():
-            for pat in pat_list:
-                try:
-                    exec("{} = self.container[{}]['{}']".format(k, meta_id, pat))
-                except KeyError:
-                    pass
+
+        for k, pat in pattern.iteritems():
+            try:
+                setattr(self, k, self.container[meta_id][pat])
+            except KeyError:
+                pass
 
     def save_image(self, path):
         """Saves SEM data to image file.

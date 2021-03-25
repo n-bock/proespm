@@ -115,14 +115,14 @@ class Cv(Ec):
 
         self.lines = util.read_lines(m_file, range(96))
         self.extract_par = [
-            [r"self.vs", r"Start", r"Start\s(\S*.\S)"],
-            [r"self.v1", r"V1", r"V1\s(\S*.\S)"],
-            [r"self.v2", r"V2", r"V2\s(\S*.\S)"],
-            [r"self.rate", r"Rate", r"Rate\s(\S*.\S)"],
+            [r"vs", r"Start", r"Start\s(\S*.\S)"],
+            [r"v1", r"V1", r"V1\s(\S*.\S)"],
+            [r"v2", r"V2", r"V2\s(\S*.\S)"],
+            [r"rate", r"Rate", r"Rate\s(\S*.\S)"],
         ]
-
-        for x in util.extract_value(self.extract_par, self.lines.values()):
-            exec(x[0] + '= ureg("' + x[1].replace(",", ".") + '")')
+        ext = util.extract_value(self.extract_par, self.lines.values())
+        for x in ext:
+            setattr(self, x[0], ureg(x[1].replace(",", ".")))
 
         self.data = np.loadtxt(m_file, usecols=(0, 1, 2), skiprows=96)
         self.ecell = pandas.DataFrame({"Cycle 1: Ecell": self.data[:, 1].tolist()})
@@ -165,16 +165,17 @@ class Cv(Ec):
         self.lines = util.read_lines(m_file, range(53))
         if "Cyclic Voltammetry" in self.lines[3]:
             self.extract_par = [
-                [r"self.vs", r"Ei", r"Ei\s\(V\)\s*(\S*)"],
-                [r"self.v1", r"E1", r"E1\s\(V\)\s*(\S*)"],
-                [r"self.v2", r"E2", r"E2\s\(V\)\s*(\S*)"],
-                [r"self.rate", r"dE/dt  ", r"dt\s*(\S*)"],
-                [r"self.sweeps", r"nc cycles", r"cycles\s*(\S*)"],
-                [r"self.skiprows", r"Nb header lines", r"lines\s:\s*(\d*)\s*"],
+                [r"vs", r"Ei", r"Ei\s\(V\)\s*(\S*)"],
+                [r"v1", r"E1", r"E1\s\(V\)\s*(\S*)"],
+                [r"v2", r"E2", r"E2\s\(V\)\s*(\S*)"],
+                [r"rate", r"dE/dt  ", r"dt\s*(\S*)"],
+                [r"sweeps", r"nc cycles", r"cycles\s*(\S*)"],
+                [r"skiprows", r"Nb header lines", r"lines\s:\s*(\d*)\s*"],
             ]
 
-            for x in util.extract_value(self.extract_par, self.lines.values()):
-                exec(x[0] + '= ureg("' + x[1] + '")')
+            ext = util.extract_value(self.extract_par, self.lines.values())
+            for x in ext:
+                setattr(self, x[0], ureg(x[1]))
 
             self.file_trimmed = codecs.open(m_file, encoding="cp1252")
             self.data = np.loadtxt(
@@ -251,17 +252,18 @@ class Peis(Ec):
         self.lines = util.read_lines(m_file, range(83))
         if "Potentio Electrochemical Impedance Spectroscopy" in self.lines[3]:
             self.extract_par = [
-                [r"self.ecell", r"E (V)", r"E\s\(V\)\s*(\S*)"],
-                [r"self.fi", r"fi                  ", r"^fi\s*(\S*)"],
-                [r"self.fi_unit", r"unit fi", r"\sfi\s*(\S*)"],
-                [r"self.ff", r"ff                  ", r"^ff\s*(\S*)"],
-                [r"self.ff_unit", r"unit ff", r"\sff\s*(\S*)"],
-                [r"self.amplitude", r"Va", r"\(mV\)\s*(\S*)"],
-                [r"self.skiprows", r"Nb header lines", r"lines\s:\s*(\d*)\s*"],
+                [r"ecell", r"E (V)", r"E\s\(V\)\s*(\S*)"],
+                [r"fi", r"fi                  ", r"^fi\s*(\S*)"],
+                [r"fi_unit", r"unit fi", r"\sfi\s*(\S*)"],
+                [r"ff", r"ff                  ", r"^ff\s*(\S*)"],
+                [r"ff_unit", r"unit ff", r"\sff\s*(\S*)"],
+                [r"amplitude", r"Va", r"\(mV\)\s*(\S*)"],
+                [r"skiprows", r"Nb header lines", r"lines\s:\s*(\d*)\s*"],
             ]
 
-            for x in util.extract_value(self.extract_par, self.lines.values()):
-                exec(x[0] + '= str("' + x[1] + '")')
+            ext = util.extract_value(self.extract_par, self.lines.values())
+            for x in ext:
+                setattr(self, x[0], str(x[1]))
 
             self.file_trimmed = codecs.open(m_file, encoding="cp1252")
             self.data = np.loadtxt(
@@ -296,12 +298,13 @@ class Chrono(Ec):
         self.lines = util.read_lines(m_file, range(57))
         if "Chrono" in self.lines[3]:
             self.extract_par = [
-                [r"self.ecell", r"Ei", r"Ei\s\(V\)\s*(\S*)"],
-                [r"self.skiprows", r"Nb header lines", r"lines\s:\s*(\d*)\s*"],
+                [r"ecell", r"Ei", r"Ei\s\(V\)\s*(\S*)"],
+                [r"skiprows", r"Nb header lines", r"lines\s:\s*(\d*)\s*"],
             ]
 
-            for x in util.extract_value(self.extract_par, self.lines.values()):
-                exec(x[0] + '= str("' + x[1] + '")')
+            ext = util.extract_value(self.extract_par, self.lines.values())
+            for x in ext:
+                setattr(self, x[0], str(x[1]))
 
             self.file_trimmed = codecs.open(m_file, encoding="cp1252")
             self.data = np.loadtxt(

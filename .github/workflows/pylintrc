@@ -146,7 +146,9 @@ disable=abstract-method,
         wrong-import-order,
         xrange-builtin,
         zip-builtin-not-iterating,
-		bad-indentation,
+        bad-indentation,
+        line-too-long,
+        len-as-condition,
 
 
 [REPORTS]
