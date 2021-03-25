@@ -6,6 +6,11 @@ Part of proespm: Gwyddion helper functions.
 See LICENSE or http://www.gnu.org/licenses/gpl-3.0.html
 """
 
+import os
+import time
+from datetime import datetime
+import config
+import data
 from util import import_helper, win32_helper
 
 import_helper()
@@ -15,11 +20,6 @@ if "path_gwyddion" not in locals():
 
 # pylint: disable=wrong-import-position
 import gwy
-import os
-import time
-from datetime import datetime
-import config
-import data
 
 # pylint: enable=wrong-import-position
 

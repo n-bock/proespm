@@ -62,7 +62,7 @@ def prompt():
             join(src_dir, "xps_phi/xps_phi.csv"),
             join(src_dir, "sem/fei_sem.tif"),
             join(src_dir, "image/50x2.bmp"),
-            join(src_dir, "mul/GrRu_RT.mul"),
+            # ~ join(src_dir, "mul/GrRu_RT.mul"),
         ]
     elif config.is_single_f:
         input_fs = prep.prompt_files()
@@ -262,7 +262,7 @@ def cleanup(src_dir, proc_dir):
             l.log_p(10, ">>> No images files were not moved.")
         if not multiple_move(proc_dir, src_dir, ["html"], hierarchy="parent"):
             l.log_p(10, ">>> No HTML report was moved.")
-    elif is_network_file:
+    elif prep.check_network_file(input_fs[0]):
         l.log_p(9, ">>> Move data and remove temporary folder")
         multiple_move(proc_dir, src_dir, ["png", "0", "ec.txt", "html"])
 
