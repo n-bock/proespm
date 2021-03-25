@@ -52,11 +52,11 @@ def mul_split(file_path):
     con = gwy.gwy_app_file_load(file_path)
     ch_ids = gwy.gwy_app_data_browser_get_data_ids(con)
 
-    def inner(_id):  # pylint: disable=missing-docstring
+    def inner(int_id):  # pylint: disable=missing-docstring
         new_container = gwy.Container()
         gwy.gwy_app_data_browser_add(new_container)
-        gwy.gwy_app_data_browser_copy_channel(con, _id, new_container)
-        file_name = str(m_id) + "_" + str(_id) + ".gwy"
+        gwy.gwy_app_data_browser_copy_channel(con, int_id, new_container)
+        file_name = str(m_id) + "_" + str(int_id) + ".gwy"
         file_out = os.path.join(dir_path, file_name)
         meta_id = get_meta_ids(new_container)[0]
         time_extract = new_container[meta_id]["Date"]

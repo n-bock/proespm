@@ -148,6 +148,7 @@ disable=abstract-method,
         zip-builtin-not-iterating,
         bad-indentation,
         line-too-long,
+        len-as-condition,
 
 
 [REPORTS]

@@ -66,34 +66,34 @@ class Spm(Data):
         """
 
         pattern = {
-            "self.size": [
+            "size": [
                 "IMAGE CONTROL::Scan:Size::Scan Control::Scan size",
                 "Image size",
             ],
-            "self.rotation": [
+            "rotation": [
                 "IMAGE CONTROL::Scan:Size::Scan Control::Scan Rotation",
                 "Rotation",
                 "Tilt",
             ],
-            "self.line_time": [
+            "line_time": [
                 "IMAGE CONTROL::Scan:Size::Scan Control::Line time",
                 "Time/Line",
             ],
-            "self.type": [
+            "type": [
                 "Op. mode",
                 "Image mode",
                 "Mode",
             ],
-            "self.bias": ["Bias"],
-            "self.current": ["Current"],
-            "self.xoffset": ["X-Offset"],
-            "self.yoffset": ["Y-Offset"],
-            "self.scan_duration": ["Scan duration"],
+            "bias": ["Bias"],
+            "current": ["Current"],
+            "xoffset": ["X-Offset"],
+            "yoffset": ["Y-Offset"],
+            "scan_duration": ["Scan duration"],
         }
         for k, pat_list in pattern.iteritems():
             for pat in pat_list:
                 try:
-                    exec("{} = self.container[{}]['{}']".format(k, meta_id, pat))
+                    setattr(self, k, self.container[meta_id][pat])
                 except KeyError:
                     pass
 
@@ -255,8 +255,9 @@ class Spm(Data):
             gwy.gwy_app_data_browser_select_data_field(self.container, ch)
 
             self.run_gwy_func = {gwy.RUN_IMMEDIATE: config.run_gwy_immediate_func}
-            for k, values in self.run_gwy_func.iteritems():
-                [gwy.gwy_process_func_run(v, self.container, k) for v in values]
+            for k, funcs in self.run_gwy_func.iteritems():
+                for func in funcs:
+                    gwy.gwy_process_func_run(func, self.container, k)
 
             self.match_ch_topo = "/" + str(ch) + "/base/range-type"
             self.container[self.match_ch_topo] = 2
@@ -519,13 +520,9 @@ class Afm(Spm):
 
         self.pat_bwd = [r"^.*[B||b]ackward.*$", r"^.*[L||l]eft.*$", r".*bwd.*"]
         for ch in self.returnPhaseCh():
-            self.gen = (
-                ch
-                for pat in self.pat_fwd
-                if re.match(pat, self.return_data_ch_title(ch))
-            )
-            for pat in self.gen:
-                return ch
+            for pat in self.pat_bwd:
+                if re.match(pat, self.return_data_ch_title(ch)):
+                    return ch
 
     def save_phase_fwd_image(self, path):
         """Save forward phase to image file."""
