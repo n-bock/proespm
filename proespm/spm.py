@@ -369,7 +369,7 @@ class Stm(Spm):
         """
 
         self._utun_ch_ids = Spm.find_channel(self, ["*Utun*"])
-        if len(self._utun_ch_ids) > 0:
+        if len(self._utun_ch_ids) != 0:
             self.u_tun_array = self.convert_np(self._utun_ch_ids[0])
             return np.average(self.u_tun_array, axis=0)
 
@@ -403,7 +403,7 @@ class Stm(Spm):
 
         self._itun_ch_ids = Spm.find_channel(self, ["*Current*"])
 
-        if len(self._itun_ch_ids) is not 0:
+        if len(self._itun_ch_ids) != 0:
             return self.convert_np(self._itun_ch_ids[0])
         else:
             return np.full((512, 512), 0)
@@ -449,7 +449,7 @@ class Ecstm(Stm, Ec):
         stm image (50 - 300 ms).
         """
 
-        if len(self._ecell_ch_id) > 0:
+        if len(self._ecell_ch_id) != 0:
             self.e_cell_data = self.convert_np(self._ecell_ch_id[0])
             return np.average(self.e_cell_data, axis=0).tolist()
         else:
@@ -463,7 +463,7 @@ class Ecstm(Stm, Ec):
         stm image (50 - 300 ms).
         """
 
-        if len(self._icell_ch_id) > 0:
+        if len(self._icell_ch_id) != 0:
             self.i_cell_data = self.convert_np(self._icell_ch_id[0])
             return np.average(self.i_cell_data, axis=0).tolist()
         else:
@@ -475,7 +475,7 @@ class Ecstm(Stm, Ec):
         self.ec_data_file = os.path.join(
             path, str(self.m_id) + "_ec" + "." + config.dat_type_out
         )
-        np.savetxt(self.ec_data_file, Ecstm.return_e_cell_data(self), delimiter=";")
+        np.savetxt(self.ec_data_file, self.return_e_cell_data(), delimiter=";")
 
         if config.dat_type_igor:
             self.file_ec_igor = os.path.join(path, "g" + str(self.m_id) + "_ori.ec0")

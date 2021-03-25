@@ -40,16 +40,13 @@ def extract_value(nested_list, to_be_extracted):
         nested_list (list of list): e.g. [['v1', 'E1', '.*']]
         to_be_extracted (str): 'E1 0.2'
     """
-    # ~ [['self.skiprows', '54'], ['self.vs', '0.000'], ['self.rate', '100.000'], ['self.v1', '-1.300'], ['self.v2', '0.700'], ['self.sweeps', '2']]
-    output = []
-    [
-        output.append([x[0], re.search(x[2], string).group(1)])
+
+    return [
+        [x[0], re.search(x[2], string).group(1)]
         for string in to_be_extracted
         for x in nested_list
         if x[1] in string
     ]
-
-    return output
 
 
 def import_helper():

@@ -27,9 +27,7 @@ import gwy
 def get_meta_ids(container):
     """Returns the IDs where meta data is stored within a Gwyddion file."""
 
-    return list(
-        filter(lambda x: "Container" in type(container[x]).__name__, container.keys())
-    )
+    return [i for i in container.keys() if "Container" in type(container[i]).__name__]
 
 
 def save_image_file(container, save_file):
@@ -54,11 +52,11 @@ def mul_split(file_path):
     con = gwy.gwy_app_file_load(file_path)
     ch_ids = gwy.gwy_app_data_browser_get_data_ids(con)
 
-    def inner():
+    def inner(_id):  # pylint: disable=missing-docstring
         new_container = gwy.Container()
         gwy.gwy_app_data_browser_add(new_container)
-        gwy.gwy_app_data_browser_copy_channel(con, ch_id, new_container)
-        file_name = str(m_id) + "_" + str(ch_id) + ".gwy"
+        gwy.gwy_app_data_browser_copy_channel(con, _id, new_container)
+        file_name = str(m_id) + "_" + str(_id) + ".gwy"
         file_out = os.path.join(dir_path, file_name)
         meta_id = get_meta_ids(new_container)[0]
         time_extract = new_container[meta_id]["Date"]
@@ -68,4 +66,4 @@ def mul_split(file_path):
         os.utime(file_out, (time_sec, time_sec))
         return file_out
 
-    return [inner() for ch_id in ch_ids]
+    return [inner(ch_id) for ch_id in ch_ids]

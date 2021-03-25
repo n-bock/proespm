@@ -40,7 +40,7 @@ def prompt_folder():
                 for f in files:
                     if (
                         f.endswith(tuple(config.allowed_file_types))
-                        and p.split("/")[len(p.split("/")) - 1][0] is not "_"
+                        and p.split("/")[len(p.split("/")) - 1][0] != "_"
                     ):
                         input_files.append(os.path.join(p, f))
 
