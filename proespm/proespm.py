@@ -61,7 +61,7 @@ def prompt():
             join(src_dir, "xps_phi/xps_phi.csv"),
             join(src_dir, "sem/fei_sem.tif"),
             join(src_dir, "image/50x2.bmp"),
-            # ~ join(src_dir, "mul/GrRu_RT.mul"),
+            join(src_dir, "mul/GrRu_RT.mul"),
         ]
     elif config.is_single_f:
         input_fs = prep.prompt_files()
