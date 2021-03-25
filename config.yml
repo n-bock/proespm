@@ -4,7 +4,7 @@ import:
     single file import: No      # No: select folders containing files
     labjournal available: Yes
     ask for labjournal: Yes     # No: will look in parent folder
-    fallback method: Image      # if not specified in labjournal e.g. ecstm, stm, afm, cv, raman, image
+    fallback method: stm      # if not specified in labjournal e.g. ecstm, stm, afm, cv, raman, image
     allowed file types:
       - txt                     # Renishaw Raman files
       - SM4                     # RHK STM/ECSTM files
@@ -76,4 +76,4 @@ system:
     win32 gwy path hint: C:\Program Files (x86)\Gwyddion\bin
     win32 gwyutils rel path: share\gwyddion\pygwy
     linux gwyutils path: /usr/share/gwyddion/pygwy
-    debug modus: No
+    debug modus: Yes

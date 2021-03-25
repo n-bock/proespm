@@ -14,11 +14,6 @@ Installation
     pip install -r requirements.txt
 
 
-Usage
-------
-See the [**documentation**](https://proespm.readthedocs.io/en/latest/).
-
-
 Contact
 --------
 <nicolas.bock@tum.de>

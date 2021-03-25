@@ -85,7 +85,6 @@ def read_lines(m_file, lines):
     """
 
     output = {}
-    print(m_file)
     with open(m_file) as f:
         for i, line in enumerate(f):
             for j in lines:

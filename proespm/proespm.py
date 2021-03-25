@@ -27,12 +27,10 @@ import gwyddion
 from data import m_id, Image
 from spm import Ecstm, Stm, Afm
 from sem import Sem
-from ec import Ec, Cv, Peis, Chrono
+from ec import Cv, Peis, Chrono
 from spectroscopy import Raman, Xps
 from util import progress_bar, multiple_move
 from log import Logging
-
-os.chdir(sys.path[0])
 
 
 def prompt():
@@ -107,7 +105,6 @@ def prepare(src_dir, input_fs, temp_dir):
 
     l.log_p(8, ">>> Starting data import")
 
-    # Check if files are on network drive and if yes move to temporary folder
     if prep.check_network_file(input_fs[0]):
         l.log_p(2, ">>> Files are on a network drive")
         proc_fs = prep.move_files_temp(input_fs, temp_dir)
@@ -165,22 +162,25 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
             else:
                 labjournal_error = True
 
+        classes = {
+            "image": Image,
+            "stm": Stm,
+            "ecstm": Ecstm,
+            "afm": Afm,
+            "sem": Sem,
+            "cv": Cv,
+            "peis": Peis,
+            "chrono": Chrono,
+            "raman": Raman,
+            "xps": Xps,
+        }
+
         if labjournal_error or not config.is_labj:
-            try:
-                exec("item = %s(dat)" % config.m_type)
-                l.log_p(10, ">>> Data without labjournal loaded: " + str(data_id))
-            except IndexError as error:
-                l.log_p(4, ">>> Failed to import " + dat)
-                raise error
+            item = classes.get(config.m_type)(dat, **add_arg)
         else:
-            try:
-                exec("item = %s(dat, **add_arg)" % add_arg["type"].capitalize())
-                l.log_p(10, ">>> Data with labjournal loaded: " + str(data_id))
-            except IndexError as error:
-                l.log_p(
-                    4, ">>> Failed to import " + dat + " with labjournal information"
-                )
-                raise error
+            item = classes.get(add_arg["type"])(dat, **add_arg)
+
+        l.log_p(10, ">>> {0} loaded: {1}".format(type(item).__name__, str(data_id)))
 
         # STM specific functions
         if type(item).__name__ in ["Stm", "Ecstm", "Afm"]:
@@ -249,17 +249,17 @@ def cleanup(src_dir, proc_dir):
     if config.hierarchy:
         l.log_p(9, ">>> Move data to final destination.")
         if not multiple_move(
-            proc_dir, src_dir, ["ec.txt", "0"], hierarchy="sub", subfolder_name="_data"
+            proc_dir,
+            src_dir,
+            ["ec.txt", "0", "gwy"],
+            hierarchy="sub",
+            subfolder_name="_data",
         ):
             l.log_p(10, ">>> No data files were not moved.")
         if not multiple_move(
             proc_dir, src_dir, ["png"], hierarchy="sub", subfolder_name="_png"
         ):
             l.log_p(10, ">>> No images files were not moved.")
-        if not multiple_move(
-            proc_dir, src_dir, ["gwy"], hierarchy="sub", subfolder_name="_gwy"
-        ):
-            l.log_p(10, ">>> No gwy files were not moved.")
         if not multiple_move(proc_dir, src_dir, ["html"], hierarchy="parent"):
             l.log_p(10, ">>> No HTML report was moved.")
     elif is_network_file:
