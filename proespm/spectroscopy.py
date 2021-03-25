@@ -102,10 +102,10 @@ class Xps(Spectroscopy):
             self.import_phi_xps(m_file)
 
     def correct_work_function(self, offset):
-        """Adds corrected XPS data by work function of sample.
+        """Corrects for the XPS analyzer work function.
 
         Args:
-            offset (float): Work function of sample in [eV].
+            offset (float): Work function [eV].
         """
 
         self.ekin_cor = [i - offset for i in self.ekin]

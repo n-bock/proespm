@@ -20,3 +20,17 @@ Install the following packages and use standard settings when asked.
 .. code-block:: console
 
     $ pip install -r <path-to-requirements.txt>
+
+
+Set system parameters
+--------------------------
+Edit `config.yml <https://github.com/n-bock/proespm/blob/master/config.yml>`_ file to match the gwyddion executable. You can test the correct installation by setting ``debug modus: Yes`` and execute the program.
+
+ .. code-block:: yaml
+
+    system:
+        win32 gwy name: gwyddion.exe
+        win32 gwy path hint: C:\Program Files (x86)\Gwyddion\bin
+        win32 gwyutils rel path: share\gwyddion\pygwy
+        linux gwyutils path: /usr/share/gwyddion/pygwy
+        debug modus: No

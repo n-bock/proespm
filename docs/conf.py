@@ -16,7 +16,9 @@
 import os
 import sys
 
+sys.path.insert(0, os.path.abspath('../proespm'))
 sys.path.insert(0, os.path.abspath('..'))
+autodoc_mock_imports = ['Tkinter', 'tkFileDialog', 'gwy', 'genshi']
 
 
 # -- Project information ----------------------------------------------
@@ -40,7 +42,7 @@ release = u"2018/03/14"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "sphinx.ext.autodoc",
+    # ~ "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
     "sphinx.ext.napoleon",
 ]
