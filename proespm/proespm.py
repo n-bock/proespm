@@ -261,7 +261,7 @@ def cleanup(src_dir, proc_dir):
             l.log_p(10, ">>> No images files were not moved.")
         if not multiple_move(proc_dir, src_dir, ["html"], hierarchy="parent"):
             l.log_p(10, ">>> No HTML report was moved.")
-    elif prep.check_network_file(input_fs[0]):
+    elif prep.check_network_file(src_dir[0]):
         l.log_p(9, ">>> Move data and remove temporary folder")
         multiple_move(proc_dir, src_dir, ["png", "0", "ec.txt", "html"])
 
@@ -269,14 +269,14 @@ def cleanup(src_dir, proc_dir):
 
 
 if __name__ == "__main__":
-    temp_dir = tempfile.mkdtemp(prefix="python_", suffix="_temp")
+    temp = tempfile.mkdtemp(prefix="python_", suffix="_temp")
     l = Logging()
 
     try:
         src, fs, labj = prompt()
-        pdir, proc_fs = prepare(src, fs, temp_dir)
-        main(src, pdir, proc_fs, labj)
+        pdir, proc = prepare(src, fs, temp)
+        main(src, pdir, proc, labj)
         cleanup(src, pdir)
         l.save_log(src, config.log_f_name)
     finally:
-        shutil.rmtree(temp_dir)
+        shutil.rmtree(temp)

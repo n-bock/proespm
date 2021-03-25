@@ -5,7 +5,14 @@ Part of proespm: Scanning probe microscopy data.
 (C) Copyright Nicolas Bock, licensed under GPL v3
 See LICENSE or http://www.gnu.org/licenses/gpl-3.0.html
 """
-
+import shutil
+import re
+import os
+import numpy as np
+import config
+import gwyddion
+from data import Data
+from ec import Ec
 from util import import_helper, win32_helper
 
 import_helper()
@@ -16,14 +23,6 @@ if "path_gwyddion" not in locals():
 # pylint: disable=wrong-import-position
 import gwy
 import gwyutils
-import shutil
-import re
-import os
-import numpy as np
-import config
-import gwyddion
-from data import Data
-from ec import Ec
 
 # pylint: enable=wrong-import-position
 
@@ -511,13 +510,9 @@ class Afm(Spm):
 
         self.pat_fwd = [r"^.*[F||f]orward.*$", r"^.*[R||r]ight.*$", r".*fwd.*"]
         for ch in self.return_phase_ch():
-            self.gen = (
-                ch
-                for pat in self.pat_fwd
-                if re.match(pat, self.return_data_ch_title(ch))
-            )
-            for pat in self.gen:
-                return ch
+            for pat in self.pat_fwd:
+                if re.match(pat, self.return_data_ch_title(ch)):
+                    return ch
 
     def return_phase_bwd_ch(self):
         """Return backward phase channel."""
