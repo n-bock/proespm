@@ -15,10 +15,9 @@ See LICENSE or http://www.gnu.org/licenses/gpl-3.0.html
 
 from __future__ import print_function
 import os
-import sys
+from os.path import dirname, abspath, join
 import shutil
 import tempfile
-from os.path import dirname, abspath, join
 from itertools import chain
 import prep
 import config
@@ -193,7 +192,7 @@ def main(src_dir, proc_dir, proc_fs, labjournal):
 
         # AFM specific functions
         if type(item).__name__ in ["Afm"]:
-            if "item.type" in locals() and item.type is not "Dynamic Force":
+            if "item.type" in locals() and item.type != "Dynamic Force":
                 item.save_phase_bwd_image(proc_dir)
                 item.save_phase_fwd_image(proc_dir)
 
@@ -274,10 +273,10 @@ if __name__ == "__main__":
     l = Logging()
 
     try:
-        src_dir, input_fs, labjournal = prompt()
-        proc_dir, proc_fs = prepare(src_dir, input_fs, temp_dir)
-        main(src_dir, proc_dir, proc_fs, labjournal)
-        cleanup(src_dir, proc_dir)
-        l.save_log(src_dir, config.log_f_name)
+        src, fs, labj = prompt()
+        pdir, proc_fs = prepare(src, fs, temp_dir)
+        main(src, pdir, proc_fs, labj)
+        cleanup(src, pdir)
+        l.save_log(src, config.log_f_name)
     finally:
         shutil.rmtree(temp_dir)

@@ -7,7 +7,6 @@ See LICENSE or http://www.gnu.org/licenses/gpl-3.0.html
 """
 
 import os
-import sys
 import yaml
 
 

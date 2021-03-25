@@ -428,7 +428,7 @@ class Ecstm(Stm, Ec):
         Ec.__init__(self, m_file, **kwargs)
         self._ecell_ch_id = Spm.find_channel(self, ["*VEC*"])
         self._icell_ch_id = Spm.find_channel(self, ["*IEC*"])
-        self.icell = self.i_cell_data()
+        self.icell = self.return_i_cell_data()
         self.file_ec_igor = None
         self.file_ic_igor = None
 
@@ -442,7 +442,7 @@ class Ecstm(Stm, Ec):
 
         return self.return_data_ch_title(self._icell_ch_id)
 
-    def e_cell_data(self):
+    def return_e_cell_data(self):
         """Electrochemical cell potential data.
 
         So the 512x512 np array is getting averaged to 512x1,
@@ -456,7 +456,7 @@ class Ecstm(Stm, Ec):
         else:
             return None
 
-    def i_cell_data(self):
+    def return_i_cell_data(self):
         """Electrochemical cell current data.
 
         So the 512x512 np array is getting averaged to 512x1,
@@ -476,7 +476,7 @@ class Ecstm(Stm, Ec):
         self.ec_data_file = os.path.join(
             path, str(self.m_id) + "_ec" + "." + config.dat_type_out
         )
-        np.savetxt(self.ec_data_file, Ecstm.e_cell_data(self), delimiter=";")
+        np.savetxt(self.ec_data_file, Ecstm.return_e_cell_data(self), delimiter=";")
 
         if config.dat_type_igor:
             self.file_ec_igor = os.path.join(path, "g" + str(self.m_id) + "_ori.ec0")

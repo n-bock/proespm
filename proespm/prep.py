@@ -265,5 +265,5 @@ def stm_file_name(data):
 
 
 if __name__ == "__main__":
-    labjournal = prompt_labjournal()
-    input_files = prompt_folder()
+    labj = prompt_labjournal()
+    fs = prompt_folder()
