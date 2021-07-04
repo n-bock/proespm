@@ -250,3 +250,19 @@ def multiple_move(source, destination, filetypes, hierarchy="", subfolder_name="
                         break
 
     return s
+
+
+def check_filestart(file, string_to_check):
+    """Check if a file starts with a certain string
+    
+    Args:
+        file (str): file to check
+        string_to_check (str): string that is checked if file starts with it
+
+    Returns:
+        bool: True if file starts with string_to_check, False if not
+    """
+
+    with open(file) as f:
+        first_line = f.readline()
+    return True if first_line.startswith(string_to_check) else False
