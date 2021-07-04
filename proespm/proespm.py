@@ -27,8 +27,8 @@ from data import m_id, Image
 from spm import Ecstm, Stm, Afm
 from sem import Sem
 from ec import Cv, Peis, Chrono
-from spectroscopy import Raman, Xps
-from util import progress_bar, multiple_move
+from spectroscopy import Raman, Xps, xps_vt_split
+from util import progress_bar, multiple_move, check_filestart
 from log import Logging
 
 
@@ -62,6 +62,7 @@ def prompt():
             join(src_dir, "sem/fei_sem.tif"),
             join(src_dir, "image/50x2.bmp"),
             join(src_dir, "mul/GrRu_RT.mul"),
+            join(src_dir, "xps_vtstm/Mo_Sampleholder_NAPSTM.txt"),
         ]
     elif config.is_single_f:
         input_fs = prep.prompt_files()
@@ -120,7 +121,12 @@ def prepare(src_dir, input_fs, temp_dir):
 
     mul_files = [gwyddion.mul_split(f) for f in proc_fs if f.endswith(".mul")]
     mul_files_flat = list(chain.from_iterable(mul_files))
-    proc_fs = sorted(proc_fs + mul_files_flat, reverse=False)
+    
+    xps_vt_files = [xps_vt_split(f) for f in proc_fs if f.endswith(".txt") and 
+                    check_filestart(f, "Region")]
+    xps_vt_files_flat = list(chain.from_iterable(xps_vt_files))
+
+    proc_fs = sorted(proc_fs + mul_files_flat + xps_vt_files_flat, reverse=False)
 
     return proc_dir, proc_fs
 
