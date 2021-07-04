@@ -1008,7 +1008,7 @@
             </div>
           </div>
         </div>
-        <div py:if="type(item).__name__ is 'Xps'">
+        <div py:if="type(item).__name__ is 'Xps' and item.xps != 'vtstm'">
           <div class="column" style="margin-right: 20%; width:50%; ">
                <style>
                  .id${item.m_id}{}
@@ -1017,6 +1017,7 @@
                <?python
                 from bokeh.plotting import figure
                 from bokeh.embed import components
+
 
                 x = item.e_kin
                 y = item.intensity
@@ -1065,6 +1066,85 @@
                 <tr>
                   <td><b>Scans</b></td>
                   <td class="value">${item.scans}</td>
+                </tr>
+            </table>
+            <div class="comment">
+              <b>Remark:</b><p>${item.remark}</p>
+            </div>
+          </div>
+        </div>
+		<div py:if="type(item).__name__ is 'Xps' and item.xps == 'vtstm'">
+          <div class="column" style="margin-right: 20%; width:50%; ">
+               <style>
+                 .id${item.m_id}{}
+               </style>
+               <button id = "id${item.m_id}" class="button" type="button" onclick="iLike(this, '${item.m_id}', 'id${item.m_id}')" style="position:absolute" >Like it?</button>
+               <?python
+                from bokeh.plotting import figure
+                from bokeh.embed import components
+
+
+                x = item.e_bind
+                y = item.counts
+                x_axis_label = 'E_b / eV'
+					
+                plot = figure(plot_width = 1000,
+                              plot_height = 540,
+                              x_axis_label = x_axis_label,
+                              y_axis_label = 'Intensity / ab. units',
+							  x_range = (x[-1], x[0]),
+                              sizing_mode = 'scale_width',
+                              tools = 'pan, wheel_zoom, box_zoom, crosshair, save, reset')
+                plot.toolbar.active_drag = "auto"
+                plot.toolbar.active_scroll = "auto"
+                plot.toolbar.active_inspect = None
+                plot.toolbar.logo = None
+                plot.background_fill_alpha = 0
+                plot.circle(x, y, size=2)
+                plot.toolbar.active_scroll = "auto"
+                script_cv, div_cv = components(plot, wrap_script=False)
+
+              ?>
+              <script py:content="Markup(script_cv)"></script>
+              <div py:replace="Markup(div_cv)"></div>
+            </div>
+            <div id="div_table_vertical">
+              <table id="dry_table">
+                <tr>
+                  <th>Datetime</th>
+                  <th class="value">${item.datetime}</th>
+                </tr>
+                <tr>
+                  <th>ID<sub>xps</sub></th>
+                  <th class="value"><a href="${'file:' + item.m_file}" title="Open file">${item.m_id}</a></th>
+                </tr>
+                <tr>
+                  <th>Surface</th>
+                  <th class="value">${item.surface}</th>
+                </tr>
+                <tr>
+                  <th>Signal</th>
+                  <th class="value">${item.signal}</th>
+                </tr>
+                <tr>
+                  <th>E<sub>pass</sub></th>
+                  <th class="value">${item.e_pass}</th>
+                </tr>
+				<tr>
+                  <th>Range</th>
+                  <th class="value">${item.Start} - ${item.End} eV</th>
+                </tr>
+				<tr>
+                  <th>Step</th>
+                  <th class="value">${item.Step}</th>
+                </tr>
+                <tr>
+                  <th>Sweeps</th>
+                  <th class="value">${item.Sweeps}</th>
+                </tr>
+				<tr>
+                  <td><b>Dwell</b></td>
+                  <td class="value">${item.Dwell}</td>
                 </tr>
             </table>
             <div class="comment">
