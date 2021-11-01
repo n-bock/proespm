@@ -57,7 +57,7 @@ class Logging(object):
                 )
 
     def flush_delay(self):
-        """Flush the Python terminal buffer. """
+        """Flush the Python terminal buffer."""
 
         sys.stdout.flush()
         time.sleep(0.01)

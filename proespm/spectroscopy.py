@@ -11,14 +11,14 @@ from data import Data
 
 
 class Spectroscopy(Data):
-    """ Spectroscopy measurements."""
+    """Spectroscopy measurements."""
 
     def __init__(self, m_file, **kwargs):
         Data.__init__(self, m_file, **kwargs)
 
 
 class Raman(Spectroscopy):
-    """ Raman measurements."""
+    """Raman measurements."""
 
     def __init__(self, m_file, **kwargs):
         Spectroscopy.__init__(self, m_file, **kwargs)
@@ -52,7 +52,7 @@ class Raman(Spectroscopy):
 
 
 class Xps(Spectroscopy):
-    """ X-ray photon electron spectroscopy measurements."""
+    """X-ray photon electron spectroscopy measurements."""
 
     def __init__(self, m_file, **kwargs):
         Spectroscopy.__init__(self, m_file, **kwargs)
