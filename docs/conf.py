@@ -24,13 +24,13 @@ autodoc_mock_imports = ['Tkinter', 'tkFileDialog', 'gwy', 'genshi']
 # -- Project information ----------------------------------------------
 
 project = u"proespm"
-copyright = u"2021, Nicolas Bock"
+copyright = u"2023, Nicolas Bock"
 author = u"Nicolas Bock"
 
 # The short X.Y version
 version = u""
 # The full version, including alpha/beta/rc tags
-release = u"2018/03/14"
+release = u"2023/07/07"
 
 
 # -- General configuration --------------------------------------------
