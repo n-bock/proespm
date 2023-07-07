@@ -43,7 +43,6 @@ Proespm Documentation
 Supported Methods
 -----------------
 
-* **SPM:** STM, ECSTM, AFM,
-* SEM, Optical Microscope images
-* **EC:** CV, Chronoamperometry, PEIS
-* **Spectroscopy:** XPS, Raman data
+* **Microscopy:** Optical, electron or scanning tunneling microscopy (also in electrochmical environments) and atomic force microscopy
+* **Electrochemistry:** cyclic voltammetry, chronoamperometry, impedance spectroscopy
+* **Spectroscopy:** x-ray photoelectron or raman spectroscopy
