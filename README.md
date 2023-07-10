@@ -4,8 +4,3 @@ proespm - Image and Data Processing
 [![Documentation Status](https://readthedocs.org/projects/proespm/badge/?version=latest)](https://proespm.readthedocs.io/en/latest/?badge=latest)
 
 Processing of electrochemical, spectral, and microscopical files with optional import of labjournals. So far the following measurements can be processed: STM, ECSTM, AFM, SEM, CV, Chronoamperometry, PEIS, XPS, Raman data, and Optical Microscope images. For further information see the [**documentation**](https://proespm.readthedocs.io/en/latest/).
-
-
-Contact
---------
-<nicolas.bock@tum.de>
