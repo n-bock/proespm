@@ -42,7 +42,6 @@ Proespm Documentation
 
 Supported Methods
 -----------------
-
 * **Microscopy:** optical, electron or scanning tunneling microscopy (also in electrochmical environments) and atomic force microscopy
 * **Electrochemistry:** cyclic voltammetry, chronoamperometry, impedance spectroscopy
 * **Spectroscopy:** x-ray photoelectron or raman spectroscopy
