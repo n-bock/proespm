@@ -6,6 +6,8 @@ Linux
     $ sudo apt install python2.7
     $ curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
     $ python2.7 get-pip.py
+    $ git clone https://github.com/n-bock/proespm.git
+    $ cd proespm
     $ pip2 install -r requirements.txt
 
 You might have to add the pip2 executable to your `PATH` variable before executing the last command. E.g adding `export PATH=$HOME/.local/bin:$PATH` to your ~/.zshrc file.

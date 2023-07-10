@@ -105,10 +105,6 @@ all the processed measurement data and the corresponding labjournal informations
 
 
 
-
-
-
-
 Program execution
 -----------------
 Run the *proespm.py* file with Python 2.7.
