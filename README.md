@@ -1,6 +1,6 @@
 proespm - Image and Data Processing
 ====================================
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/n-bock/proespm/master.svg)](https://results.pre-commit.ci/latest/github/n-bock/proespm/master)
-[![Documentation Status](https://readthedocs.org/projects/proespm/badge/?version=latest)](https://proespm.readthedocs.io/en/latest/?badge=latest)
+> [!WARNING]  
+> This repository uses outdated Python dependencies. Please consider using the Python3 fork: https://github.com/matkrin/proespm-py3
 
-Processing of electrochemical, spectral, and microscopical files with optional import of labjournals. So far the following measurements can be processed: STM, ECSTM, AFM, SEM, CV, Chronoamperometry, PEIS, XPS, Raman data, and Optical Microscope images. For further information see the [**documentation**](https://proespm.readthedocs.io/en/latest/).
+Processing of electrochemical, spectral, and microscopical files with optional import of labjournals. So far the following measurements can be processed: STM, ECSTM, AFM, SEM, CV, Chronoamperometry, PEIS, XPS, Raman data, and Optical Microscope images. Check out an [**example**](https://html-preview.github.io/?url=https://github.com/n-bock/proespm_example/blob/master/data_report.html) or the [**documentation**](https://proespm.readthedocs.io/en/latest/).
